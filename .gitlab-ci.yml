@@ -1,0 +1,54 @@
+# This is the basic pipeline use for the project
+#
+# A pipeline is composed of independent jobs that run scripts, grouped into stages.
+# Stages run in sequential order, but jobs within stages run in parallel.
+#
+# For more information, see: https://docs.gitlab.com/ee/ci/yaml/index.html#stages
+#
+# You can copy and paste this template into a new `.gitlab-ci.yml` file.
+# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
+#
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
+variables:
+  DOCKERNAME: docker.signintra.com/qa-dashboard/qa-dashboard/flightctrl/sqdashboard:latest
+
+default:
+  image: $DOCKERNAME
+
+stages:          # List of stages for jobs, and their order of execution
+  - build
+  - test
+  - deploy
+
+build-job:       # This job runs in the build stage, which runs first.
+  stage: build
+  image: docker:latest
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build -t $DOCKERNAME .
+    - docker push $DOCKERNAME
+  when: manual
+
+sqdashboard-job-jira_tsc:      # This job runs in the deploy stage.
+  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  environment: production
+  script:
+    - echo "Run is starting"
+    - envsubst < ${CI_PROJECT_DIR}/FC_Test_tmpl.json > ${CI_PROJECT_DIR}/FC_Test.json
+    #- python3 ${CI_PROJECT_DIR}/testMSSQL.py
+    #- the jira_gilds parameter represents the target jira instance. it can be also jira_issues.
+    - python3 ${CI_PROJECT_DIR}/Connect2Sqlserver.py FC_Test fc_db jira_tsc
+
+sqdashboard-job-jira_gilds:      # This job runs in the deploy stage.
+  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  environment: production
+  script:
+    - echo "Run is starting"
+    - envsubst < ${CI_PROJECT_DIR}/FC_Test_tmpl.json > ${CI_PROJECT_DIR}/FC_Test.json
+    #- python3 ${CI_PROJECT_DIR}/testMSSQL.py
+    #- the jira_gilds parameter represents the target jira instance. it can be also jira_issues.
+    - python3 ${CI_PROJECT_DIR}/Connect2Sqlserver.py FC_Test fc_db jira_gilds

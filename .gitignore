@@ -1,0 +1,15 @@
+FC_Test.json
+FC_Test.json_sic
+clean_sq_db.sql
+drop table sq.sql
+SET ANSI_NULLS ON.sql
+Untitled-3.sql
+Untitled-4.sql
+.vscode/settings.json
+.vscode/settings.json
+.vscode/launch.json
+*.pyc
+__pycache__
+old_script.txt
+atlassian/__pycache__/*
+ownDev/*

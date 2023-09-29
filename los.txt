@@ -1,0 +1,41 @@
+{
+    "local" : {
+        "username" : "tsc_fc_read",
+        "password" : "$(read_fc_test_password)",
+        "host" : "127.0.0.1",
+        "DB.host":"flightcontrol-test.database.windows.net",
+        "database":"FC_NG22"
+    },
+
+    "fc_db" : {
+        "username" : "tsc_fc_ddl",
+        "password" : "$(ddl_fc_test_password)",
+        "host":"flightcontrol-test.database.windows.net",
+        "DB.host":"flightcontrol-test.database.windows.net",
+        "database":"FC_NG22"
+    },
+
+    "jira_tsc" : {
+        "url":"https://issues.atlassian.net/",
+        "username":"$(jira_issues_user)",
+        "api_token":"$(jira_issues_password)"
+    },
+
+    "jira_gilds" : {
+        "url":"https://itmbaland.atlassian.net/",
+        "username":"$(jira_gilds_user)",
+        "api_token":"$(jira_gilds_password)"
+    },
+
+    "jira_itmlogistc" : {
+        "url":"",
+        "username":"",
+        "api_token":""
+    },
+
+    "test_rail": {
+        "username": "",
+        "password": ""
+    }
+
+}
