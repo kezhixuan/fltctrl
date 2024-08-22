@@ -1,7 +1,10 @@
 from testrail import APIClient
+from dotenv import load_dotenv
+import os
 
-##TODO: read url from configuration
-clientAPI = APIClient("https://dbschenker.testrail.io")
+load_dotenv()
+testrail_url = os.getenv('TESTRAIL_URL')
+clientAPI = APIClient(testrail_url)
 
 class TestRailAPI(APIClient):
     def __init__(self, base_url):
