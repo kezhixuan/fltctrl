@@ -13,12 +13,14 @@ class TestRailAPI(APIClient):
     def getCase(case):
         return clientAPI.send_get(f'get_case/{case}')
 
-    def getCases(project, suite=None):
+    def getCases(project, suite=None, custom_regressiontype=None):
 
         parameters = {}
 
         if suite:
             parameters['suite'] = suite
+        if custom_regressiontype:
+            parameters['custom_regressiontype'] = custom_regressiontype
 
         if parameters:
             query_string = '&'.join([f'{key}={value}' for key, value in parameters.items()])
