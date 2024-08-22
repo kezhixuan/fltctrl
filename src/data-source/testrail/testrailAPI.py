@@ -10,8 +10,20 @@ class TestRailAPI(APIClient):
     def getCase(case):
         return clientAPI.send_get(f'get_case/{case}')
 
-    def getCases(project, suite):
-        return clientAPI.send_get(f'get_cases/{project}&suite_id={suite}')
+    def getCases(project, suite=None):
+
+        parameters = {}
+
+        if suite:
+            parameters['suite'] = suite
+
+        if parameters:
+            query_string = '&'.join([f'{key}={value}' for key, value in parameters.items()])
+            url = f'get_cases/{project}&{query_string}'
+        else:
+            url = f'get_cases/{project}'
+
+        return clientAPI.send_get(url)
 
     def getHistoryForCase(case):
         return clientAPI.send_get(f'get_history_for_case/{case}')
