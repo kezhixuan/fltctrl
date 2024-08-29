@@ -44,3 +44,28 @@ class TestRailAPI(APIClient):
 
     def getResultsForRun(run):
         return clientAPI.send_get(f'get_results_for_run/{run}')
+
+    def getUser(usrId):
+        return clientAPI.send_get(f'get_user/{usrId}')
+
+    #TODO: Add and consider this as valid use case also for storing users in the DB
+    #this way we could see who is working on what
+    #Note: since TR 6.6 TR admins can call get_users with no parameter
+    def getUsers(projectId=None):
+
+        parameters = {}
+
+        if projectId:
+            parameters['projectId'] = projectId
+
+        if parameters:
+            query_string = '&'.join([f'{key}={value}' for key, value in parameters.items()])
+            url = f'get_users/{query_string}'
+        else:
+            url = f'get_users/'
+
+        return clientAPI.send_get(url)
+
+    ##TODO add this
+    def get_results_for_case():
+        return print('fTODO')
