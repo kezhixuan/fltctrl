@@ -19,7 +19,7 @@ connect2 = connData[localTest]
 print(connect2.head())
 url_object = URL.create(
             "mssql+pyodbc",
-            username=connect2["username"]+"@"+connect2["DB.host"],
+            username=connect2["username"],
             password=connect2["password"],  # plain (unescaped) text
             host=connect2["host"],
             database=connect2["database"],

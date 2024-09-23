@@ -8,7 +8,7 @@ import numpy as np
 import re
 from openpyxl import Workbook
 import cleanDF as clDF
-import dashboared_config as dbc
+import loadConfig as conf
 from atlassian.utils import manageLogin as mgl
 
 class issuesReleases:
@@ -20,12 +20,6 @@ class issuesReleases:
     self.instance = instance
 
     pass
-  
-  def read_config(self):
-    config = pd.read_excel('system_config.xlsx', sheet_name='projList')
-    return config
-
-
 
   def connect2jira(self, creds, project):
     start_at = 0
@@ -96,13 +90,8 @@ class issuesReleases:
 
   def get_releases(self):
     release_lst =  pd.DataFrame()
-    dbconf = dbc.dashboard_config()
-
-
-    projects = dbconf.get_issue_projects(self.instance)
-
+    projects = conf.loadConfig().getProjectsByInstance(self.instance)
     print(projects.head())
-
     for index, row in projects.iterrows():
       proj_release=pd.DataFrame(self.connect2jira(self.creds, row['jira_project']))
       proj_release["project"]=row['jira_project']
