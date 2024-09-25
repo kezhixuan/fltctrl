@@ -42,5 +42,33 @@ dim_tr_cases = Table('dim_cases', m,
     ForeignKeyConstraint(["type_id"],dim_tr_case_types.primary_key,use_alter=True,name="fk_tr_case_type_sq_config"),
     schema="SQ")
 
+fact_tr_run = Table('fact_run', m,
+    Column('id', BIGINT) ,
+    Column('runid_RC', BIGINT, primary_key=True) ,
+    Column('case_id', BIGINT) ,
+    Column('milestone_id', BIGINT) ,
+    Column('submilestone_id', BIGINT) ,
+    Column('run_name', VARCHAR(None)) ,
+    Column('created_by', BIGINT) ,
+    Column('created_on', DATETIME) ,
+    Column('status', VARCHAR(200)),
+    Column('Refresh_Cycle', BIGINT),
+    Column('project_RC', VARCHAR(200)),
+    ForeignKeyConstraint(["project_RC"],dim_sq_config.primary_key,use_alter=True,name="fk_tr_run_sq_config"),
+    ForeignKeyConstraint(["Refresh_Cycle"],["SQ.dim_refresh_history.IDX"], use_alter=True, name="fk_index_refresh_hist" ),
+    ForeignKeyConstraint(["case_id"],dim_tr_cases.primary_key,use_alter=True,name="fk_tr_case_sq_config"),
+    schema="SQ")
+
+fact_tr_result = Table('fact_result', m,
+    Column('id', BIGINT) ,
+    Column('runid_RC', BIGINT) ,
+    Column('tester', VARCHAR(None)) ,
+    Column('result', VARCHAR(None)) ,
+    Column('run_date', DATETIME) ,
+    Column('Refresh_Cycle', BIGINT),
+    Column('project_RC', VARCHAR(200)),
+    ForeignKeyConstraint(["runid_RC"],fact_tr_run.primary_key,use_alter=True,name="fk_tr_result_sq_config"),
+    schema="SQ")
+
 m.create_all(bind=engine)
 
