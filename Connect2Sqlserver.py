@@ -4,7 +4,7 @@ import pyodbc
 import atlassian.ConnectAtlassian as ca
 import ownDev.defect_regression as dr
 import atlassian.issuesReleases as ir
-import atlassian.config.ReadConfig as dbc
+import loadConfig as conf
 from ownDev.Issues import Issues
 from sqlalchemy import MetaData, Table, ForeignKeyConstraint, create_engine, URL, text
 from sqlalchemy.sql import select
@@ -39,7 +39,7 @@ class Connect2Sqlserver(object):
         print(self.connect2.head())
         url_object = URL.create(
                     "mssql+pyodbc",
-                    username=self.connect2["username"]+"@"+self.connect2["DB.host"],
+                    username=self.connect2["username"],
                     password=self.connect2["password"],  # plain (unescaped) text
                     host=self.connect2["host"],
                     database=self.connect2["database"],
@@ -101,8 +101,7 @@ class Connect2Sqlserver(object):
             dateDF.to_sql(self.prefix+"refresh_history", conn,schema='SQ', chunksize=2000, index=False, if_exists='append')
 
 
-        DashBoardConfig = dbc.ReadConfig()
-        dfConfig = DashBoardConfig.readConfig()
+        dfConfig = conf.loadConfig().readConfig()
         dfConfig["Refresh_Cycle"] = int(self.refresh_IDX)
         with self.engine.begin() as conn:
         #   conn.exec_driver_sql(f"delete from sq.dim_sq_config")

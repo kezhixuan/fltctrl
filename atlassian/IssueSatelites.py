@@ -8,9 +8,9 @@ import numpy as np
 import re
 from openpyxl import Workbook
 import atlassian.utils.cleanDF as clDF
-import atlassian.config.ReadConfig as dbc
 from datetime import datetime
 from numpy import int64
+import loadConfig as conf
 
 
 class IssueSatelites:

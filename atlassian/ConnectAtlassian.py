@@ -6,7 +6,7 @@ import datetime as dt
 import time
 import numpy as np
 import codecs
-import atlassian.config.ReadConfig as dbc
+import loadConfig
 from datetime import datetime
 from numpy import int64
 from atlassian import IssueSatelites as atl
@@ -207,7 +207,7 @@ class ConnectAtlassian:
   
   def GetIssues(self, project, jiraService, engine, refresh_IDX):
       issue_lst =  pd.DataFrame()
-      dbconf = dbc.ReadConfig()
+      dbconf = loadConfig().readConfig()
       
       
       projects = dbconf.getIssueProjects(project, jiraService)

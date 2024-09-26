@@ -1,0 +1,219 @@
+[
+    {
+      "testrail_id": 4,
+      "jira_id": "WebClaims",
+      "suite_id": [3],
+      "refresh_active": "y",
+      "automation_flag": "y"
+    },
+    {
+      "testrail_id": 6,
+      "jira_id": "LIN",
+      "suite_id": [5],
+      "refresh_active": "y",
+      "automation_flag": "y"
+    },
+    {
+      "testrail_id": 16,
+      "jira_id": "MDMDEV",
+      "suite_id": [30],
+      "refresh_active": "y",
+      "automation_flag": "y"
+    },
+    {
+      "testrail_id": 14,
+      "jira_id": "SIMS",
+      "suite_id": [27],
+      "refresh_active": "y",
+      "automation_flag": "y"
+    },
+    {
+      "testrail_id": 3,
+      "jira_id": "ODM",
+      "suite_id": [2],
+      "refresh_active": "y",
+      "automation_flag": "y"
+    },
+    {
+      "testrail_id": 39,
+      "jira_id": "CMP",
+      "suite_id": [181],
+      "refresh_active": "y",
+      "automation_flag": "y"
+    },
+    {
+      "testrail_id": 12,
+      "jira_id": "GXD",
+      "suite_id": [622,703],
+      "refresh_active": "y",
+      "automation_flag": "n"
+    },
+    {
+      "testrail_id": 12,
+      "jira_id": "GXD",
+      "suite_id": [411],
+      "refresh_active": "y",
+      "automation_flag": "y"
+    },
+    {
+      "testrail_id": 34,
+      "jira_id": "GXD20R",
+      "suite_id": [552],
+      "refresh_active": "y",
+      "automation_flag": "y"
+    },
+    {
+      "testrail_id": 73,
+      "jira_id": "GXDTSCSDAM",
+      "suite_id": [2162],
+      "refresh_active": "y",
+      "automation_flag": "n"
+    },
+    {
+      "testrail_id": 21,
+      "jira_id": "SPAC",
+      "suite_id": [181],
+      "refresh_active": "y",
+      "automation_flag": "n"
+    },
+    {
+      "testrail_id": 77,
+      "jira_id": "GCT",
+      "suite_id": [2803],
+      "refresh_active": "y",
+      "automation_flag": "y"
+    },
+    {
+      "testrail_id": 89,
+      "jira_id": "ATD",
+      "suite_id": [6226],
+      "refresh_active": "y",
+      "automation_flag": "y"
+    },
+    {
+      "testrail_id": 86,
+      "jira_id": "AWA",
+      "suite_id": [4189],
+      "refresh_active": "y",
+      "automation_flag": "n"
+    },
+    {
+      "testrail_id": 102,
+      "jira_id": "GXDRE",
+      "suite_id": [10973],
+      "refresh_active": "y",
+      "automation_flag": "n"
+    },
+    {
+      "testrail_id": 12,
+      "jira_id": "GXD",
+      "suite_id": [20],
+      "refresh_active": "y",
+      "automation_flag": "y"
+    },
+    {
+      "testrail_id": 85,
+      "jira_id": "S20CTC",
+      "suite_id": [3711],
+      "refresh_active": "y",
+      "automation_flag": "n"
+    },
+    {
+      "testrail_id": 106,
+      "jira_id": "IRE",
+      "suite_id": [13290],
+      "refresh_active": "y",
+      "automation_flag": "n"
+    },
+    {
+      "testrail_id": 110,
+      "jira_id": "JFP",
+      "suite_id": [16148],
+      "refresh_active": "y",
+      "automation_flag": "n"
+    },
+    {
+      "testrail_id": 15,
+      "jira_id": "AMSSC",
+      "suite_id": [29],
+      "refresh_active": "y",
+      "automation_flag": "n"
+    },
+    {
+      "testrail_id": 10,
+      "jira_id": "AEC",
+      "suite_id": [13],
+      "refresh_active": "y",
+      "automation_flag": "n"
+    },
+    {
+      "testrail_id": 900001,
+      "jira_id": "AECAPI",
+      "suite_id": [900001],
+      "refresh_active": "n",
+      "automation_flag": "n"
+    },
+    {
+      "testrail_id": 116,
+      "jira_id": "GE20",
+      "suite_id": [17711],
+      "refresh_active": "y",
+      "automation_flag": "y"
+    },
+    {
+      "testrail_id": 115,
+      "jira_id": "C2MDM",
+      "suite_id": [17667],
+      "refresh_active": "y",
+      "automation_flag": "y"
+    },
+    {
+      "testrail_id": 60,
+      "jira_id": "SELS",
+      "suite_id": [1154],
+      "refresh_active": "y",
+      "automation_flag": "y"
+    },
+    {
+      "testrail_id": 127,
+      "jira_id": "CIH",
+      "suite_id": [19760],
+      "refresh_active": "y",
+      "automation_flag": "n"
+    },
+    {
+      "testrail_id": 117,
+      "jira_id": "RATE",
+      "suite_id": [18469],
+      "refresh_active": "y",
+      "automation_flag": "n"
+    },
+    {
+      "testrail_id": 134,
+      "jira_id": "D4SECM",
+      "suite_id": [20778],
+      "refresh_active": "y",
+      "automation_flag": "n"
+    },
+    {
+      "testrail_id": 122,
+      "jira_id": "CP",
+      "suite_id": [19344],
+      "refresh_active": "y",
+      "automation_flag": "n"
+    },
+    {
+      "testrail_id": 900003,
+      "jira_id": "CISCOSLC",
+      "suite_id": [900003],
+      "refresh_active": "n",
+      "automation_flag": "n"
+    },
+    {
+      "testrail_id": 141,
+      "jira_id": "CUS",
+      "suite_id": [141],
+      "refresh_active": "y",
+      "automation_flag": "n"
+    }
+]
