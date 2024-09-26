@@ -25,7 +25,7 @@ dim_sq_config = Table('dim_sq_config', m,
         Column('project_RC', VARCHAR(200), primary_key=True),
         schema="SQ")
 
-dim_releases = Table('dim_releases', m,
+dim_releases = Table('dim_ji_releases', m,
         Column('self', VARCHAR(None)) ,
         Column('id', BIGINT) ,
         Column('name', VARCHAR(None)),
@@ -44,7 +44,7 @@ dim_releases = Table('dim_releases', m,
         ForeignKeyConstraint(["project_RC"],["SQ.dim_sq_config.project_RC"],use_alter=True,name="fk_release_sq_config"),
         schema="SQ")
 
-fact_issues = Table('fact_issues', m,
+fact_issues = Table('fact_ji_issues', m,
         Column('index', BIGINT),
         Column('id', BIGINT),
         Column('issue_key', VARCHAR(None) ),
@@ -85,7 +85,7 @@ fact_issues = Table('fact_issues', m,
         ForeignKeyConstraint(["project_RC"],["SQ.dim_sq_config.project_RC"],use_alter=True,name="fk_issues_sq_config"),
         schema="SQ")
 
-fact_versions = Table('fact_versions', m,
+fact_versions = Table('fact_ji_versions', m,
         Column('self', VARCHAR(None)),
         Column('id', BIGINT),
         Column('description', VARCHAR(None)),
@@ -96,10 +96,10 @@ fact_versions = Table('fact_versions', m,
         Column('issue_key', VARCHAR(None)),
         Column('Refresh_Cycle', BIGINT),
         Column('issueKey_RC', VARCHAR(50)),
-        ForeignKeyConstraint(["issueKey_RC"],["SQ.fact_issues.issueKey_RC"], use_alter=True, name="fk_versions_issues"),
+        ForeignKeyConstraint(["issueKey_RC"],["SQ.fact_ji_issues.issueKey_RC"], use_alter=True, name="fk_versions_issues"),
         schema="SQ")
 
-fact_fixversions = Table('fact_fixversions', m,
+fact_fixversions = Table('fact_ji_fixversions', m,
         Column('self', VARCHAR(None)),
         Column('id', BIGINT),
         Column('description', VARCHAR(None)),
@@ -110,18 +110,18 @@ fact_fixversions = Table('fact_fixversions', m,
         Column('issue_key', VARCHAR(None)),
         Column('Refresh_Cycle', BIGINT),
         Column('issueKey_RC', VARCHAR(50)),
-        ForeignKeyConstraint(["issueKey_RC"],["SQ.fact_issues.issueKey_RC"], use_alter=True, name="fk_fixversions_issues"),
+        ForeignKeyConstraint(["issueKey_RC"],["SQ.fact_ji_issues.issueKey_RC"], use_alter=True, name="fk_fixversions_issues"),
         schema="SQ")
 
 
-fact_components = Table('fact_components', m,
+fact_components = Table('fact_ji_components', m,
         Column('self', VARCHAR(None)),
         Column('id', BIGINT),
         Column('name', VARCHAR(None)),
         Column('issue_key', VARCHAR(None)),
         Column('Refresh_Cycle', BIGINT),
         Column('issueKey_RC', VARCHAR(50)),
-        ForeignKeyConstraint(["issueKey_RC"],["SQ.fact_issues.issueKey_RC"], use_alter=True, name="fk_components_issues"),
+        ForeignKeyConstraint(["issueKey_RC"],["SQ.fact_ji_issues.issueKey_RC"], use_alter=True, name="fk_components_issues"),
         schema="SQ")
 
 

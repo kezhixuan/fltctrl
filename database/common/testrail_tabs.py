@@ -1,17 +1,18 @@
 from sqlalchemy import Table, MetaData, Column, Integer, VARCHAR, BIGINT, Boolean, DATETIME, PrimaryKeyConstraint, ForeignKeyConstraint
 from connect import engine
 from jira_tabs import dim_sq_config
+from jira_tabs import dim_refresh_history
 
 m = MetaData()
 
-dim_tr_case_types = Table('dim_case_type',m,
+dim_tr_case_types = Table('dim_tr_case_type',m,
     Column('id', BIGINT, primary_key=True),
     Column('is_default', Boolean),
     Column('name', VARCHAR(None)),
     schema="SQ"
     )
 
-dim_tr_cases = Table('dim_cases', m,
+dim_tr_cases = Table('dim_tr_cases', m,
     Column('id', BIGINT) ,
     Column('title', VARCHAR(None)) ,
     Column('section_id', BIGINT) ,
@@ -38,11 +39,12 @@ dim_tr_cases = Table('dim_cases', m,
     Column('custom_goals', VARCHAR(None)) ,
     Column('Refresh_Cycle', BIGINT),
     Column('project_RC', VARCHAR(200)),
+    Column('caseId_RC', BIGINT, primary_key=True),
     ForeignKeyConstraint(["project_RC"],dim_sq_config.primary_key,use_alter=True,name="fk_tr_cases_sq_config"),
     ForeignKeyConstraint(["type_id"],dim_tr_case_types.primary_key,use_alter=True,name="fk_tr_case_type_sq_config"),
     schema="SQ")
 
-fact_tr_run = Table('fact_run', m,
+fact_tr_run = Table('fact_tr_run', m,
     Column('id', BIGINT) ,
     Column('runid_RC', BIGINT, primary_key=True) ,
     Column('case_id', BIGINT) ,
@@ -54,12 +56,13 @@ fact_tr_run = Table('fact_run', m,
     Column('status', VARCHAR(200)),
     Column('Refresh_Cycle', BIGINT),
     Column('project_RC', VARCHAR(200)),
+    Column('caseId_RC', BIGINT),
     ForeignKeyConstraint(["project_RC"],dim_sq_config.primary_key,use_alter=True,name="fk_tr_run_sq_config"),
-    ForeignKeyConstraint(["Refresh_Cycle"],["SQ.dim_refresh_history.IDX"], use_alter=True, name="fk_index_refresh_hist" ),
-    ForeignKeyConstraint(["case_id"],dim_tr_cases.primary_key,use_alter=True,name="fk_tr_case_sq_config"),
+    ForeignKeyConstraint(["Refresh_Cycle"],dim_refresh_history.primary_key, use_alter=True, name="fk_tr_run_index_refresh_hist" ),
+    ForeignKeyConstraint(["caseId_RC"],dim_tr_cases.primary_key,use_alter=True,name="fk_tr_case_sq_config"),
     schema="SQ")
 
-fact_tr_result = Table('fact_result', m,
+fact_tr_result = Table('fact_tr_result', m,
     Column('id', BIGINT) ,
     Column('runid_RC', BIGINT) ,
     Column('tester', VARCHAR(None)) ,
