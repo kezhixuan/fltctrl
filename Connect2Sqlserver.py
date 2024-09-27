@@ -47,6 +47,7 @@ class Connect2Sqlserver(object):
                         "driver": "ODBC Driver 17 for SQL Server"
                     }
             )
+        print(url_object)
         
         ############## end Database Connection Configuration ##################
         # create and establish a database session
