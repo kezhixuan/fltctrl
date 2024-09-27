@@ -6,7 +6,7 @@ import datetime as dt
 import time
 import numpy as np
 import codecs
-import loadConfig
+import atlassian.utils.loadConfig as lC 
 from datetime import datetime
 from numpy import int64
 from atlassian import IssueSatelites as atl
@@ -207,10 +207,9 @@ class ConnectAtlassian:
   
   def GetIssues(self, project, jiraService, engine, refresh_IDX):
       issue_lst =  pd.DataFrame()
-      dbconf = loadConfig().readConfig()
-      
-      
-      projects = dbconf.getIssueProjects(project, jiraService)
+      conf = lC.loadConfig()
+
+      projects = conf.getIssueProjects(project, jiraService)
 
       strings = ['issue_key','summary', 'issuetype', 'labels', 'issuetype','creator',
             'severity','bug classification','project','priority','release phase','status','defect_age','affected version',
@@ -221,7 +220,7 @@ class ConnectAtlassian:
       for index, row in projects.iterrows():
         issues, issues_copy = self.createDataFrame(row['jira_project'],jiraService, engine, refresh_IDX)
 
-        prefix = "fact_"
+        prefix = "fact_ji_"
         issues["issueKey_RC"] = issues["issue_key"] + "-" + str(refresh_IDX)
         for s in strings:
           try:

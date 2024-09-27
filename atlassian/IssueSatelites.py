@@ -10,11 +10,11 @@ from openpyxl import Workbook
 import atlassian.utils.cleanDF as clDF
 from datetime import datetime
 from numpy import int64
-import loadConfig as conf
+import atlassian.utils.loadConfig as conf
 
 
 class IssueSatelites:
-  prefixFact = "fact_"
+  prefixFact = "fact_ji_"
   
   def __init__(self, df, project, engine, refresh_IDX, credentials):
     self.creds = credentials

@@ -8,7 +8,7 @@ import numpy as np
 import re
 from openpyxl import Workbook
 import cleanDF as clDF
-import loadConfig as conf
+import atlassian.utils.loadConfig as conf
 from atlassian.utils import manageLogin as mgl
 
 class issuesReleases:
