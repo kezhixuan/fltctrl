@@ -3,7 +3,7 @@ import codecs
 
 class loadConfig:
 
-    def __init__ (self):
+    def __init__(self):
         pass
     
     ##get all jira configurations

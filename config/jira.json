@@ -182,8 +182,8 @@
     {
         "refresh_active": "y",
         "jira_system": "TSC",
-        "jira_id": "IRE",
-        "jira_project": "IRE",
+        "jira_id": "GRIP",
+        "jira_project": "GRIP",
         "jira_project_name": "Global Risk & Insurance Rating Engine",
         "project_name": "Global Risk & Insurance Rating Engine",
         "issue_types": "",
