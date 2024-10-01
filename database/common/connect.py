@@ -7,30 +7,39 @@ import pandas as pd
 import codecs 
 from sqlalchemy import URL
 
-env = sys.argv[1]
-localTest = sys.argv[2]
-prefix = "dim_"
 
-# Configure Database connnection
-connData = pd.read_json(codecs.open(env+".json",'r','utf-8'))
+class connectDB():
 
-connect2 = connData[localTest]
+    def __init__(self, env, localTest):
+        env = env
+        localTest = localTest
 
-print(connect2.head())
-url_object = URL.create(
-            "mssql+pyodbc",
-            username=connect2["username"],
-            password=connect2["password"],  # plain (unescaped) text
-            host=connect2["host"],
-            database=connect2["database"],
-            query={
-                "driver": "ODBC Driver 17 for SQL Server"
-            }
-     )
-############## end Database Connection Configuration ##################
-# create and establish a database session
-engine = create_engine(url_object)
+        # Configure Database connnection
+        connData = pd.read_json(codecs.open(env+".json",'r','utf-8'))
 
-with engine.connect() as connection:
-    result = connection.execute(text('select GETDATE()'))
-    print(result.all())
+        connect2 = connData[localTest]
+        self.jiraCon = connData[self.jiraService]
+
+        print(connect2.head())
+        self.url_object = URL.create(
+                    "mssql+pyodbc",
+                    username=connect2["username"],
+                    password=connect2["password"],  # plain (unescaped) text
+                    host=connect2["host"],
+                    database=connect2["database"],
+                    query={
+                        "driver": "ODBC Driver 17 for SQL Server"
+                    }
+            )
+        ############## end Database Connection Configuration ##################
+        # create and establish a database session
+        self.engine = create_engine(self.url_object)
+
+        self.connection = self.engine.connect()
+        #    result = connection.execute(text('select GETDATE()'))
+        #    print(result.all())
+        
+        pass
+
+    def getEngine(self):
+        return str(self.engine)

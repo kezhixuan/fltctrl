@@ -5,6 +5,7 @@ import atlassian.ConnectAtlassian as ca
 import ownDev.defect_regression as dr
 import atlassian.issuesReleases as ir
 import atlassian.utils.loadConfig as conf
+from database.common.connect import connectDB
 from ownDev.Issues import Issues
 from sqlalchemy import MetaData, Table, ForeignKeyConstraint, create_engine, URL, text
 from sqlalchemy.sql import select
@@ -15,7 +16,7 @@ import sys
 import json
 
 
-class Connect2Sqlserver(object):
+class Connect2Sqlserver(connectDB):
     env=[]
     localTest=[]
     prefix="dim_"
@@ -31,28 +32,12 @@ class Connect2Sqlserver(object):
         self.prefix = "dim_ji_"
 
         # Configure Database connnection
-        self.connData = pd.read_json(codecs.open(self.env+".json",'r','utf-8'))
 
-        self.connect2 = self.connData[self.localTest]
-        self.jiraCon = self.connData[self.jiraService]
-
-        print(self.connect2.head())
-        url_object = URL.create(
-                    "mssql+pyodbc",
-                    username=self.connect2["username"],
-                    password=self.connect2["password"],  # plain (unescaped) text
-                    host=self.connect2["host"],
-                    database=self.connect2["database"],
-                    query={
-                        "driver": "ODBC Driver 17 for SQL Server"
-                    }
-            )
-        print(url_object)
         
         ############## end Database Connection Configuration ##################
         # create and establish a database session
-        self.engine = create_engine(url_object)
-        session = Session(self.engine)
+        super().__init__(sys.argv[1], sys.argv[2])
+
 
         # get and set history index
         with self.engine.connect() as conn:

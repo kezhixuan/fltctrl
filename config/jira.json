@@ -289,6 +289,18 @@
     },
     {
         "refresh_active": "y",
+        "jira_system": "GILDS",
+        "jira_id": "SPLAT",
+        "jira_project": "SPLAT",
+        "jira_project_name": "SLS Agile",
+        "project_name": "SLS Agile",
+        "issue_types": "",
+        "report_start_date": "",
+        "topic_id": "",
+        "issues_system": ""
+    },
+    {
+        "refresh_active": "y",
         "jira_system": "CL",
         "jira_id": "CIH",
         "jira_project": "CIH",
