@@ -18,6 +18,7 @@ class connectDB():
         connData = pd.read_json(codecs.open(env+".json",'r','utf-8'))
 
         connect2 = connData[localTest]
+        self.jiraCon = connData[self.jiraService]
 
         print(connect2.head())
         self.url_object = URL.create(
