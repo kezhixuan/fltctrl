@@ -36,8 +36,7 @@ class IssueSatelites:
   
   def fixVersions(self, df, project, engine, refresh_IDX):
     ### changing from nested structure to integrated harmonized json structure. e.g. versioons {self, id, ...} to versions.self; versions.id e.g.
-    prefixFact = "fact_"
-
+   
     try:
       if 'fixVersions' in df.columns:
         df_f = df['fixVersions'].explode().apply(pd.Series)
