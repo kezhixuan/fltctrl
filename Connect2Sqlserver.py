@@ -48,17 +48,6 @@ class Connect2Sqlserver(connectDB):
             except:
                 self.refresh_IDX = 1
 
-        #deactive Foreign Key Constraints
-
-        #
-        # with engine.connect() as conn:
-        #    try:
-        #        conn.execute(ForeignKeyConstraint(["index"],["SQ.dim_refresh_history.index"], use_alter=True, name="fk_index_refresh_hist").drop())
-        #        conn.execute(ForeignKeyConstraint(columns=["index"],refcolumns=["SQ.dim_refresh_history.index"]).drop())
-        #    except:
-        #        print("No Index dropped!")
-
-
 
         #regression AI
 
