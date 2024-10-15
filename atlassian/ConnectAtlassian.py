@@ -235,7 +235,6 @@ class ConnectAtlassian:
         for x in datetimex:  
           try:
             issues[x] = issues.apply(lambda y: self.convertToDateTime(y[x]), axis=1)
-
           except KeyError:
               print("Field : " + x + " not found")
 

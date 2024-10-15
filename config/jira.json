@@ -312,7 +312,7 @@
         "issues_system": ""
     },
     {
-        "refresh_active": "y",
+        "refresh_active": "n",
         "jira_system": "TSC",
         "jira_id": "RATE",
         "jira_project": "RATE",
