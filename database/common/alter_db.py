@@ -11,6 +11,7 @@ class alter_db(connectDB):
         super().__init__(env, db)
 
         query = f'ALTER TABLE sq.fact_ji_issues add squad VARCHAR(100);'
+
         with self.engine.connect() as conn:
             try:
                 conn.execute(text(query))

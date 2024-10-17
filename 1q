@@ -1,0 +1,13 @@
+Intro of alter_db script
+
+see previus commit.
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch piple_fix
+# Your branch is ahead of 'origin/piple_fix' by 1 commit.
+#   (use "git push" to publish your local commits)
+#
+# Changes to be committed:
+#	new file:   database/common/alter_db.py
+#
