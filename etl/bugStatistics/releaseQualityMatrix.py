@@ -66,10 +66,14 @@ class loadIssuse4Release(connectDB):
 
     def getAllBug(self):
         with self.engine.connect() as connection:
-            allBugs = pd.read_sql("select * from sq.fact_ji_issues iss,sq.fact_ji_versions vs where iss.project in ('SLS Agile', 'GRIP', 'WWSCL') and iss.Refresh_Cycle=22 and iss.issuekey_RC=vs.issuekey_RC" ,connection)
+            lastCycle = str(pd.read_sql("select max(IDX) from sq.dim_refresh_history",connection).iat[0,0])
+            print(lastCycle)
+            sql_str = "select * from sq.fact_ji_issues iss,sq.fact_ji_versions vs where iss.project in ('SLS Agile', 'GRIP', 'WWSCL') and iss.Refresh_Cycle= " + lastCycle + " and iss.issuekey_RC=vs.issuekey_RC"
+            allBugs = pd.read_sql(sql_str ,connection)
 
         aggBugs = allBugs[['issue_key','issuetype','bug classification','severity','priority','project','created','release phase','name','releaseDate','issueKey_RC']].copy()
         print(aggBugs.isnull().sum())
+        print(aggBugs.head())
 
         aggBugs['year'] = pd.to_datetime(aggBugs['created']).dt.year  
         aggBugs['sevScore'] = aggBugs.apply(loadIssuse4Release.sevScore, axis=1)
@@ -80,11 +84,15 @@ class loadIssuse4Release(connectDB):
          (aggBugs['issuetype'] == 'Bug') &
          (aggBugs['year'] >= 2020)) 
 
-        sn.displot(data=aggBugs[filt_gen_22], col='project', col_wrap=3, x ="sevScore", hue="year", fill=True, facet_kws={'sharey': False, 'sharex': False},kind="kde",  aspect=1.5, alpha=0.2)
-        print(aggBugs.head())
-        plt.xlabel('Severity Score')
+        bugAgg = aggBugs.groupby(['project','issuetype','severity','name'], as_index=False).agg({'issuetype': 'count','severity': 'count'})
 
-        plt.show()
+        print(bugAgg.head())
+        
+#        sn.displot(data=aggBugs[filt_gen_22], col='project', col_wrap=3, x ="sevScore", hue="year", fill=True, facet_kws={'sharey': False, 'sharex': False},kind="kde",  aspect=1.5, alpha=0.2)
+#        print(aggBugs.head())
+#        plt.xlabel('Severity Score')
+
+#        plt.show()
 
 
 xx = loadIssuse4Release()
