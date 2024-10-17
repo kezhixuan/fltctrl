@@ -7,7 +7,7 @@ import time
 import numpy as np
 import re
 from openpyxl import Workbook
-import cleanDF as clDF
+import atlassian.utils.cleanDF as clDF
 import atlassian.utils.loadConfig as conf
 from atlassian.utils import manageLogin as mgl
 
