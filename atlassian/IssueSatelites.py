@@ -58,7 +58,7 @@ class IssueSatelites:
             df_fixversions['issue_key'] = df['key']
             df_fixversions["Refresh_Cycle"] = int(refresh_IDX)
      # df_fixversions.rename(columns={col:f'fields.fixVersions.{col}' for col in df_fixversions.columns}, inplace=True)
-      df_fixversions.to_sql(prefixFact+'fixversions', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
+      df_fixversions.to_sql(self.prefixFact+'fixversions', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
     except Exception as e:
         print("----> fixVersions --> " + df["key"])
         print(f"Unexpected {e=}, {type(e)=}")
