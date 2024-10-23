@@ -13,6 +13,7 @@ dim_tr_case_types = Table('dim_case_type',m,
 
 dim_tr_cases = Table('dim_cases', m,
     Column('id', BIGINT) ,
+    Column('caseID_RC', VARCHAR(200), primary_key=True),
     Column('title', VARCHAR(None)) ,
     Column('section_id', BIGINT) ,
     Column('template_id', BIGINT) ,
@@ -43,9 +44,10 @@ dim_tr_cases = Table('dim_cases', m,
     schema="SQ")
 
 fact_tr_run = Table('fact_run', m,
+    Column('self', VARCHAR(None)),
     Column('id', BIGINT) ,
-    Column('runid_RC', BIGINT, primary_key=True) ,
-    Column('case_id', BIGINT) ,
+    Column('runid_RC', VARCHAR(200), primary_key=True) ,
+    Column('caseID_RC', BIGINT) ,
     Column('milestone_id', BIGINT) ,
     Column('submilestone_id', BIGINT) ,
     Column('run_name', VARCHAR(None)) ,
@@ -56,19 +58,100 @@ fact_tr_run = Table('fact_run', m,
     Column('project_RC', VARCHAR(200)),
     ForeignKeyConstraint(["project_RC"],dim_sq_config.primary_key,use_alter=True,name="fk_tr_run_sq_config"),
     ForeignKeyConstraint(["Refresh_Cycle"],["SQ.dim_refresh_history.IDX"], use_alter=True, name="fk_index_refresh_hist" ),
-    ForeignKeyConstraint(["case_id"],dim_tr_cases.primary_key,use_alter=True,name="fk_tr_case_sq_config"),
+    ForeignKeyConstraint(["caseID_RC"],dim_tr_cases.primary_key,use_alter=True,name="fk_tr_case_id_run"),
     schema="SQ")
 
-fact_tr_result = Table('fact_result', m,
+fact_tr_results = Table('fact_results', m,
+    Column('self', VARCHAR(None)),
     Column('id', BIGINT) ,
-    Column('runid_RC', BIGINT) ,
+    Column('runid_RC', VARCHAR(200)) ,
     Column('tester', VARCHAR(None)) ,
     Column('result', VARCHAR(None)) ,
+    Column('defect_id', VARCHAR(None)) ,
     Column('run_date', DATETIME) ,
     Column('Refresh_Cycle', BIGINT),
     Column('project_RC', VARCHAR(200)),
-    ForeignKeyConstraint(["runid_RC"],fact_tr_run.primary_key,use_alter=True,name="fk_tr_result_sq_config"),
+    ForeignKeyConstraint(["runid_RC"], fact_tr_run.c.runid_RC, use_alter=True, name="fk_tr_results_run"),
     schema="SQ")
+
+# Create in 24/10/23 by Ken
+dim_tr_projects = Table('dim_projects', m,
+    Column('id', BIGINT),
+    Column('name', VARCHAR(200)),
+    Column('projectID_RC', VARCHAR(200), primary_key=True),
+    Column('project_RC', VARCHAR(200)),
+    ForeignKeyConstraint(["project_RC"], dim_sq_config.primary_key, use_alter=True, name="fk_tr_projects_sq_config"),
+    schema="SQ"
+)
+
+fact_tr_case_fields = Table('fact_case_fields', m,
+    Column('self', VARCHAR(255)),
+    Column('id', BIGINT),
+    Column('caseID_RC', VARCHAR(200)),
+    Column('priority', VARCHAR(255)),
+    Column('automated', VARCHAR(255)),
+    Column('security', VARCHAR(255)),
+    Column('regression', VARCHAR(255)),
+    # below is for ITDAO
+    Column('test_data', VARCHAR(255)),
+    Column('robot', VARCHAR(255)),
+    Column('execution_type', VARCHAR(255)),
+    Column('project_RC', VARCHAR(200)),
+    ForeignKeyConstraint(["caseID_RC"], dim_tr_cases.primary_key, use_alter=True, name="fk_tr_case_fields_cases"),
+    schema="SQ"
+)
+
+fact_tr_case_types = Table('fact_case_types', m,
+    Column('self', VARCHAR(255)),
+    Column('id', BIGINT),
+    Column('caseID_RC', VARCHAR(200)),
+    Column('type', VARCHAR(255)),
+    Column('regression', Boolean),
+    ForeignKeyConstraint(["caseID_RC"], dim_tr_cases.primary_key, use_alter=True, name="fk_tr_case_types_cases"),
+    schema="SQ"
+)
+
+fact_tr_groups = Table('fact_groups', m,
+    Column('self', VARCHAR(255)),
+    Column('id', BIGINT),
+    Column('name', VARCHAR(255)),
+    Column('role', VARCHAR(255)),
+    Column('projectID_RC', VARCHAR(50)),
+    ForeignKeyConstraint(["projectID_RC"], dim_tr_projects.primary_key, use_alter=True, name="fk_tr_groups_projects"),
+    schema="SQ"
+)
+
+fact_tr_users = Table('fact_users', m,
+    Column('self', VARCHAR(255)),
+    Column('id', BIGINT),
+    Column('name', VARCHAR(255)),
+    Column('group', VARCHAR(255)),
+    Column('projectID_RC', VARCHAR(50)),
+    ForeignKeyConstraint(["projectID_RC"], dim_tr_projects.primary_key, use_alter=True, name="fk_tr_users_projects"),
+    schema="SQ"
+)
+
+fact_tr_suites = Table('fact_suites', m,
+    Column('self', VARCHAR(255)),
+    Column('id', BIGINT),
+    Column('name', VARCHAR(255)),
+    Column('caseID_RC', VARCHAR(200)),
+    Column('projectID_RC', VARCHAR(50)),
+    ForeignKeyConstraint(["projectID_RC"], dim_tr_projects.primary_key, use_alter=True, name="fk_tr_suites_projects"),
+    ForeignKeyConstraint(["caseID_RC"], dim_tr_cases.primary_key, use_alter=True, name="fk_tr_suites_cases"),
+    schema="SQ"
+)
+
+fact_tr_section = Table('fact_section', m,
+    Column('self', VARCHAR(255)),
+    Column('id', BIGINT),
+    Column('name', VARCHAR(255)),
+    Column('caseID_RC', VARCHAR(200)),
+    Column('projectID_RC', VARCHAR(50)),
+    ForeignKeyConstraint(["projectID_RC"], dim_tr_projects.primary_key, use_alter=True, name="fk_tr_section_projects"),
+    ForeignKeyConstraint(["caseID_RC"], dim_tr_cases.primary_key, use_alter=True, name="fk_tr_section_cases"),
+    schema="SQ"
+)
 
 m.create_all(bind=engine)
 
