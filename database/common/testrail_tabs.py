@@ -65,13 +65,16 @@ fact_tr_results = Table('fact_results', m,
     Column('self', VARCHAR(None)),
     Column('id', BIGINT) ,
     Column('runid_RC', VARCHAR(200)) ,
+    Column('caseID_RC', VARCHAR(200)),
     Column('tester', VARCHAR(None)) ,
     Column('result', VARCHAR(None)) ,
     Column('defect_id', VARCHAR(None)) ,
+    Column('version', VARCHAR(None)) ,
     Column('run_date', DATETIME) ,
     Column('Refresh_Cycle', BIGINT),
     Column('project_RC', VARCHAR(200)),
     ForeignKeyConstraint(["runid_RC"], fact_tr_run.c.runid_RC, use_alter=True, name="fk_tr_results_run"),
+    ForeignKeyConstraint(["caseID_RC"], dim_tr_cases.primary_key, use_alter=True, name="fk_tr_results_case"),
     schema="SQ")
 
 # Create in 24/10/23 by Ken
