@@ -8,13 +8,13 @@ import numpy as np
 import re
 from openpyxl import Workbook
 import atlassian.utils.cleanDF as clDF
-import atlassian.config.ReadConfig as dbc
 from datetime import datetime
 from numpy import int64
+import atlassian.utils.loadConfig as conf
 
 
 class IssueSatelites:
-  prefixFact = "fact_"
+  prefixFact = "fact_ji_"
   
   def __init__(self, df, project, engine, refresh_IDX, credentials):
     self.creds = credentials
@@ -36,8 +36,7 @@ class IssueSatelites:
   
   def fixVersions(self, df, project, engine, refresh_IDX):
     ### changing from nested structure to integrated harmonized json structure. e.g. versioons {self, id, ...} to versions.self; versions.id e.g.
-    prefixFact = "fact_"
-
+   
     try:
       if 'fixVersions' in df.columns:
         df_f = df['fixVersions'].explode().apply(pd.Series)
@@ -59,7 +58,7 @@ class IssueSatelites:
             df_fixversions['issue_key'] = df['key']
             df_fixversions["Refresh_Cycle"] = int(refresh_IDX)
      # df_fixversions.rename(columns={col:f'fields.fixVersions.{col}' for col in df_fixversions.columns}, inplace=True)
-      df_fixversions.to_sql(prefixFact+'fixversions', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
+      df_fixversions.to_sql(self.prefixFact+'fixversions', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
     except Exception as e:
         print("----> fixVersions --> " + df["key"])
         print(f"Unexpected {e=}, {type(e)=}")
