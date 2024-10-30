@@ -145,6 +145,7 @@ class IssueSatelites:
       print("Not found: labels")
     return
 
+# Squads are used in GILDS, special in SELS to organize the teams. Bugs must be assigned to one Squad.
   def jiraSquads(self, df, engine, refresh_IDX):
       try: 
           if 'squads' in df.columns:
