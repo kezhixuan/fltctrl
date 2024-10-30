@@ -10,8 +10,8 @@ class alter_db(connectDB):
         m = self.m
         super().__init__(env, db)
 
-        query = f'ALTER TABLE sq.fact_ji_issues add squad VARCHAR(100);'
-
+        #query = f'ALTER TABLE sq.fact_ji_issues add squad VARCHAR(100);'
+        query = f'select 1 from dual'
         with self.engine.connect() as conn:
             try:
                 conn.execute(text(query))

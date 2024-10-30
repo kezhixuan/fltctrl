@@ -31,6 +31,6 @@ class create_db(connectDB):
         #testrail_tabs.m.create_all(bind=self.engine)
 
         print("ALTER TABLES")
-        at = alter_db(self.env, self.localTest)
+       # at = alter_db(self.env, self.localTest)
 
 cd = create_db()

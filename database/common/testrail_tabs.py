@@ -2,12 +2,27 @@ from sqlalchemy import Table, MetaData, Column, Integer, VARCHAR, BIGINT, Boolea
 from connect import connectDB
 from jira_tabs import jira_tabs
 
+
+
 class testrail_tabs (connectDB):
         m = MetaData()
         
-        def __init__(self,env, db):
-            m = self.m
-            super().__init__(env, db)
+
+
+        def __init__(self, env, db):
+                m = self.m
+                super().__init__(env, db)
+
+                m.create_all(bind=self.engine)
+        
+        dim_tr_case_types = Table('dim_tr_case_types', m,
+            Column('self', VARCHAR(255)),
+            Column('id', BIGINT),
+            Column('caseID_RC', VARCHAR(200), primary_key=True),
+            Column('type', VARCHAR(255)),
+            Column('regression', Boolean),
+            schema="SQ"
+        )
 
         dim_tr_cases = Table('dim_cases', m,
             Column('id', BIGINT) ,
@@ -37,15 +52,15 @@ class testrail_tabs (connectDB):
             Column('custom_goals', VARCHAR(None)) ,
             Column('Refresh_Cycle', BIGINT),
             Column('project_RC', VARCHAR(200)),
-            ForeignKeyConstraint(["project_RC"],dim_sq_config.primary_key,use_alter=True,name="fk_tr_cases_sq_config"),
-            ForeignKeyConstraint(["type_id"],dim_tr_case_types.primary_key,use_alter=True,name="fk_tr_case_type_sq_config"),
+            ForeignKeyConstraint(["project_RC"],jira_tabs.dim_sq_config.primary_key,use_alter=True,name="fk_tr_cases_sq_config"),
+            ForeignKeyConstraint(["caseID_RC"],dim_tr_case_types.primary_key,use_alter=True,name="fk_tr_case_type_sq_config"),
             schema="SQ")
 
-        fact_tr_run = Table('fact_run', m,
+        fact_tr_run = Table('fact_tr_run', m,
             Column('self', VARCHAR(None)),
             Column('id', BIGINT) ,
             Column('runid_RC', VARCHAR(200), primary_key=True) ,
-            Column('caseID_RC', BIGINT) ,
+            Column('caseID_RC', VARCHAR(200)) ,
             Column('milestone_id', BIGINT) ,
             Column('submilestone_id', BIGINT) ,
             Column('run_name', VARCHAR(None)) ,
@@ -54,8 +69,8 @@ class testrail_tabs (connectDB):
             Column('status', VARCHAR(200)),
             Column('Refresh_Cycle', BIGINT),
             Column('project_RC', VARCHAR(200)),
-            ForeignKeyConstraint(["project_RC"],dim_sq_config.primary_key,use_alter=True,name="fk_tr_run_sq_config"),
-            ForeignKeyConstraint(["Refresh_Cycle"],["SQ.dim_refresh_history.IDX"], use_alter=True, name="fk_index_refresh_hist" ),
+            ForeignKeyConstraint(["project_RC"],jira_tabs.dim_sq_config.primary_key,use_alter=True,name="fk_tr_run_sq_config"),
+            ForeignKeyConstraint(["Refresh_Cycle"],jira_tabs.dim_refresh_history.primary_key, use_alter=True, name="fk_tr_run_index_refresh_hist" ),
             ForeignKeyConstraint(["caseID_RC"],dim_tr_cases.primary_key,use_alter=True,name="fk_tr_case_id_run"),
             schema="SQ")
 
@@ -71,7 +86,7 @@ class testrail_tabs (connectDB):
             Column('run_date', DATETIME) ,
             Column('Refresh_Cycle', BIGINT),
             Column('project_RC', VARCHAR(200)),
-            ForeignKeyConstraint(["runid_RC"], fact_tr_run.c.runid_RC, use_alter=True, name="fk_tr_results_run"),
+            ForeignKeyConstraint(["runid_RC"], fact_tr_run.primary_key, use_alter=True, name="fk_tr_results_run"),
             ForeignKeyConstraint(["caseID_RC"], dim_tr_cases.primary_key, use_alter=True, name="fk_tr_results_case"),
             schema="SQ")
 
@@ -81,7 +96,7 @@ class testrail_tabs (connectDB):
             Column('name', VARCHAR(200)),
             Column('projectID_RC', VARCHAR(200), primary_key=True),
             Column('project_RC', VARCHAR(200)),
-            ForeignKeyConstraint(["project_RC"], dim_sq_config.primary_key, use_alter=True, name="fk_tr_projects_sq_config"),
+            ForeignKeyConstraint(["project_RC"], jira_tabs.dim_sq_config.primary_key, use_alter=True, name="fk_tr_projects_sq_config"),
             schema="SQ"
         )
 
@@ -102,22 +117,12 @@ class testrail_tabs (connectDB):
             schema="SQ"
         )
 
-        fact_tr_case_types = Table('fact_case_types', m,
-            Column('self', VARCHAR(255)),
-            Column('id', BIGINT),
-            Column('caseID_RC', VARCHAR(200)),
-            Column('type', VARCHAR(255)),
-            Column('regression', Boolean),
-            ForeignKeyConstraint(["caseID_RC"], dim_tr_cases.primary_key, use_alter=True, name="fk_tr_case_types_cases"),
-            schema="SQ"
-        )
-
         fact_tr_groups = Table('fact_groups', m,
             Column('self', VARCHAR(255)),
             Column('id', BIGINT),
             Column('name', VARCHAR(255)),
             Column('role', VARCHAR(255)),
-            Column('projectID_RC', VARCHAR(50)),
+            Column('projectID_RC', VARCHAR(200)),
             ForeignKeyConstraint(["projectID_RC"], dim_tr_projects.primary_key, use_alter=True, name="fk_tr_groups_projects"),
             schema="SQ"
         )
@@ -127,7 +132,7 @@ class testrail_tabs (connectDB):
             Column('id', BIGINT),
             Column('name', VARCHAR(255)),
             Column('group', VARCHAR(255)),
-            Column('projectID_RC', VARCHAR(50)),
+            Column('projectID_RC', VARCHAR(200)),
             ForeignKeyConstraint(["projectID_RC"], dim_tr_projects.primary_key, use_alter=True, name="fk_tr_users_projects"),
             schema="SQ"
         )
@@ -137,7 +142,7 @@ class testrail_tabs (connectDB):
             Column('id', BIGINT),
             Column('name', VARCHAR(255)),
             Column('caseID_RC', VARCHAR(200)),
-            Column('projectID_RC', VARCHAR(50)),
+            Column('projectID_RC', VARCHAR(200)),
             ForeignKeyConstraint(["projectID_RC"], dim_tr_projects.primary_key, use_alter=True, name="fk_tr_suites_projects"),
             ForeignKeyConstraint(["caseID_RC"], dim_tr_cases.primary_key, use_alter=True, name="fk_tr_suites_cases"),
             schema="SQ"
@@ -148,11 +153,11 @@ class testrail_tabs (connectDB):
             Column('id', BIGINT),
             Column('name', VARCHAR(255)),
             Column('caseID_RC', VARCHAR(200)),
-            Column('projectID_RC', VARCHAR(50)),
+            Column('projectID_RC', VARCHAR(200)),
             ForeignKeyConstraint(["projectID_RC"], dim_tr_projects.primary_key, use_alter=True, name="fk_tr_section_projects"),
             ForeignKeyConstraint(["caseID_RC"], dim_tr_cases.primary_key, use_alter=True, name="fk_tr_section_cases"),
             schema="SQ"
         )
 
-        m.create_all(bind=self.engine)
+
 
