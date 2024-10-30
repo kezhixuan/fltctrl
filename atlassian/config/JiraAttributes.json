@@ -43,7 +43,8 @@
             "customfield_20128",
             "customfield_20129",
             "customfield_20130",
-            "customfield_20141"],
+            "customfield_20141"]
+        ,
         "standardGilds" :[
             "parent",
             "resolution",
@@ -69,13 +70,16 @@
             "status",
             "creator",
             "created",
-            "security"],
+            "security"]
+        ,
         "customFieldsGilds" : [
             "customfield_14455",
+            "customfield_11095",
             "customfield_11487",
             "customfield_11106",
             "customfield_11107",
-            "customfield_11095"],
+            "end0"]
+        ,
         "filter" : [
             "Defect", 
             "Bug", 
@@ -89,11 +93,13 @@
             "Epic", 
             "'User Story'", 
             "'UAT Finding'", 
-            "'QA Test Finding'"],
+            "'QA Test Finding'"]
+        ,
         "filterGilds" : [
             "Bug",
             "'Defect/Bug'",
-            "'Story'"],
+            "'Story'"]
+        ,
         "release" : [
             "id",
             "description",

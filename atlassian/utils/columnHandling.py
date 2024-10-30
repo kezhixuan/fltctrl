@@ -81,6 +81,7 @@ class columnHandling:
         dfSatelite.rename(columns={'fields.fixVersions': 'fixVersions'}, inplace = True )
         dfSatelite.rename(columns={'fields.versions': 'versions'}, inplace = True )
         dfSatelite.rename(columns={'fields.project.name':'project'}, inplace = True )
+        dfSatelite.rename(columns={'fields.customfield_11095':'squads'}, inplace = True)
         #dfSatelite.rename(columns={'fields.customfield_14162.id': 'customfield_14162.id'}, inplace = True )
         #dfSatelite.rename(columns={'fields.customfield_14162.name': 'customfield_14162.name'}, inplace = True )
         #dfSatelite.rename(columns={'fields.customfield_14162.archived': 'customfield_14162.archived'}, inplace = True )

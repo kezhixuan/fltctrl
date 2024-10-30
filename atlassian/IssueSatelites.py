@@ -24,6 +24,8 @@ class IssueSatelites:
     self.jiraComponents(df, engine, refresh_IDX)
     self.jiraCustomfield(df, engine, refresh_IDX)
     self.jiraLabels(df, engine, refresh_IDX)
+    self.jiraSquads(df, engine, refresh_IDX)
+    
     pass
   
   def customReleaseName(self,project, release):
@@ -142,6 +144,29 @@ class IssueSatelites:
     except:
       print("Not found: labels")
     return
+
+  def jiraSquads(self, df, engine, refresh_IDX):
+      try: 
+          if 'squads' in df.columns:
+            #df_l = df.assign(labels=df.labels.str.split(",")).explode("labels")
+            df_l = df.explode("squads").apply(pd.Series)
+            if 'id' in df_l:
+              df_l= df_l[df_l['id'].notna()]
+              if not df_l.empty:
+                df_squads = pd.DataFrame()
+                df_squads["issueKey_RC"] = df_l["key"] + "-" + str(refresh_IDX)
+                df_squads["squad"] = df_l["squads"].apply(pd.Series)["value"]
+                df_squads["issue_key"] = df_l["key"]
+                df_squads["Refresh_Cycle"] = int(refresh_IDX)
+                df_squads.to_sql(self.prefixFact+'squad', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
+          
+        #df_labels.rename(columns={col:f'fields.labels.{col}' for col in df_labels.columns}, inplace=True)
+      except Exception as e:
+        print("----> squad --> " + df["key"])
+        print(f"Unexpected {e=}, {type(e)=}")
+      except:
+        print("Not found: squad")
+      return
 
 
   def jiraCustomfield(self, df, engine, refresh_IDX):

@@ -2,7 +2,7 @@ import pandas as pd
 import codecs
 import pyodbc
 import atlassian.ConnectAtlassian as ca
-import ownDev.defect_regression as dr
+#import ownDev.defect_regression as dr
 import atlassian.issuesReleases as ir
 import atlassian.utils.loadConfig as conf
 from database.common.connect import connectDB
