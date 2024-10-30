@@ -10,7 +10,7 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "args": ["FC_Test", "fc_db", "jira_tsc"],
+            "args": ["FC_Test", "fc_db", "jira_gilds"],
             "console": "integratedTerminal",
             "justMyCode": true
         }

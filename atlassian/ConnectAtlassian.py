@@ -37,13 +37,14 @@ class ConnectAtlassian:
 
     while (not end_of_stream) and (retries < 4):
 
-      url = f"{creds['url']}rest/api/3/search?startAt={start_at}&maxResults=100"
+      url = f"{creds['url']}rest/api/2/search?startAt={start_at}&maxResults=100"
 
       headers = {
         "Accept": "application/json"
       }
 
       auth = HTTPBasicAuth(creds["username"], creds["api_token"])
+      
       query = {
         #TODO: add custom JQL here
         'jql': "project in (" + project +
@@ -112,7 +113,7 @@ class ConnectAtlassian:
     
 
     try:  
-      cols = [col for col in df.columns if col not in ['fields.fixVersions','fields.labels','fields.customfield_14162','fields.versions','fields.components']]
+      cols = [col for col in df.columns if col not in ['fields.fixVersions','fields.customfield_11095','fields.labels','fields.customfield_14162','fields.versions','fields.components']]
      # df = df[cols].join(df_fixversions).join(df_labels).join(df_affected_version).join(df_versions).join(df_components)
     except:
       print("Issue: joining not working")  
@@ -168,8 +169,8 @@ class ConnectAtlassian:
       dfCore = df.loc[:, df.columns.isin(["id","key","fields.issuetype.name","fields.project.name", "fields.project.key","fields.priority.name",
         "fields.status.name","fields.creator.displayName", "fields.created","fields.summary",
         "fields.statuscategorychangedate","fields.duedate","fields.updated",
-        "fields.customfield_14455.value","fields.customfield_11487.value","fields.customfield_11106.value","fields.customfield_11107.value","fields.customfield_11095.value"])]
-      dfSatelite = df.loc[:, df.columns.isin(["id", "key","fields.project.name","fields.labels","fields.versions","fields.fixVersions","fields.components"])]
+        "fields.customfield_14455.value","fields.customfield_11487.value","fields.customfield_11106.value","fields.customfield_11107.value"])]
+      dfSatelite = df.loc[:, df.columns.isin(["id", "key","fields.customfield_11095","fields.project.name","fields.labels","fields.versions","fields.fixVersions","fields.components"])]
 
     elif jiraService == "jira_tsc":
       dfCore = df.loc[:, df.columns.isin(["id","key","fields.issuetype.name","fields.project.name", "fields.project.key","fields.priority.name",
@@ -211,9 +212,9 @@ class ConnectAtlassian:
 
       projects = conf.getIssueProjects(project, jiraService)
 
-      strings = ['issue_key','summary', 'issuetype', 'labels', 'issuetype','creator',
+      strings = ['issue_key','summary', 'issuetype', 'creator',
             'severity','bug classification','project','priority','release phase','status','defect_age','affected version',
-            'fixversions','labels','versions','componentsname','affected version','fixversions']
+            'fixversions','labels','versions','componentsname']
       datetimex = ['statuscategorychangedate','created','duedate','updated','affected version releasedate']
       numbers = ['index','id']
 

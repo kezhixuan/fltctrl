@@ -42,4 +42,4 @@ class loadConfig:
         return jiraProjects
     
     
-loadConfig().getIssueProjects('MDMADM','jira_tsc')
+#loadConfig().getIssueProjects('MDMADM','jira_tsc')
