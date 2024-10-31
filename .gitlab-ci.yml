@@ -31,7 +31,7 @@ build-job:       # This job runs in the build stage, which runs first.
   script:
     - docker build -t $DOCKERNAME .
     - docker push $DOCKERNAME
-  when: manual
+  when: always
 
 sqdashboard-job-jira_tsc:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
