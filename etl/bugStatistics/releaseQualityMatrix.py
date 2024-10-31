@@ -1,6 +1,6 @@
-import numpy as np
-import seaborn as sn
-import matplotlib.pyplot as plt
+#import numpy as np
+#import seaborn as sn
+#import matplotlib.pyplot as plt
 import sys
 import pandas as pd
 from database.common.connect import connectDB
@@ -68,12 +68,19 @@ class loadIssuse4Release(connectDB):
         with self.engine.connect() as connection:
             lastCycle = str(pd.read_sql("select max(IDX) from sq.dim_refresh_history",connection).iat[0,0])
             print(lastCycle)
-            sql_str = "select * from sq.fact_ji_issues iss,sq.fact_ji_versions vs where iss.project in ('SLS Agile', 'GRIP', 'WWSCL') and iss.Refresh_Cycle= " + lastCycle + " and iss.issuekey_RC=vs.issuekey_RC"
+            min = int(lastCycle) -7
+            sql_str = "select * from sq.fact_ji_issues iss,sq.fact_ji_versions vs where iss.project in ('SLS Agile', 'GRIP', 'WWSCL') and iss.Refresh_Cycle between " + lastCycle + " and " + str(min) + " and iss.issuekey_RC=vs.issuekey_RC"
             allBugs = pd.read_sql(sql_str ,connection)
+
+            sql_squad = "select * from sq.fact_ji_squads squad where squad.Refresh_Cycle between " + lastCycle + " and " + str(min)
+            allSquads = pd.read_sql(sql_squad,connection)
+
 
         aggBugs = allBugs[['issue_key','issuetype','bug classification','severity','priority','project','created','release phase','name','releaseDate','issueKey_RC']].copy()
         print(aggBugs.isnull().sum())
         print(aggBugs.head())
+
+        print(allSquads.head())
 
         aggBugs['year'] = pd.to_datetime(aggBugs['created']).dt.year  
         aggBugs['sevScore'] = aggBugs.apply(loadIssuse4Release.sevScore, axis=1)
