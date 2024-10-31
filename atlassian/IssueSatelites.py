@@ -24,7 +24,7 @@ class IssueSatelites:
     self.jiraComponents(df, engine, refresh_IDX)
     self.jiraCustomfield(df, engine, refresh_IDX)
     self.jiraLabels(df, engine, refresh_IDX)
-    self.jiraSquads(df, engine, refresh_IDX)
+    self.jiraSquads(df, engine, project, refresh_IDX)
     
     pass
   
@@ -146,7 +146,7 @@ class IssueSatelites:
     return
 
 # Squads are used in GILDS, special in SELS to organize the teams. Bugs must be assigned to one Squad.
-  def jiraSquads(self, df, engine, refresh_IDX):
+  def jiraSquads(self, df, project, engine, refresh_IDX):
       try: 
           if 'squads' in df.columns:
             #df_l = df.assign(labels=df.labels.str.split(",")).explode("labels")
@@ -164,7 +164,7 @@ class IssueSatelites:
         #df_labels.rename(columns={col:f'fields.labels.{col}' for col in df_labels.columns}, inplace=True)
       except Exception as e:
         print("----> squad --> " + df["key"])
-        print(f"Unexpected {e=}, {type(e)=}")
+        print("Project: " + project  + f"Unexpected {e=}, {type(e)=}")
       except:
         print("Not found: squad")
       return
