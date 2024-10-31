@@ -24,7 +24,7 @@ class IssueSatelites:
     self.jiraComponents(df, engine, refresh_IDX)
     self.jiraCustomfield(df, engine, refresh_IDX)
     self.jiraLabels(df, engine, refresh_IDX)
-    self.jiraSquads(df, engine, project, refresh_IDX)
+    self.jiraSquads(df, project, engine,  refresh_IDX)
     
     pass
   
