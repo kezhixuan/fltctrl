@@ -163,8 +163,8 @@ class IssueSatelites:
           
         #df_labels.rename(columns={col:f'fields.labels.{col}' for col in df_labels.columns}, inplace=True)
       except Exception as e:
-        print("----> squad --> " + df["key"])
-        print("Project: " + project  + f"Unexpected {e=}, {type(e)=}")
+        print("Project: " + project + "----> squad --> " + df["key"])
+        print(f"Unexpected {e=}, {type(e)=}")
       except:
         print("Not found: squad")
       return
