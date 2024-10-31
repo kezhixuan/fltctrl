@@ -159,7 +159,7 @@ class IssueSatelites:
                 df_squads["squad"] = df_l["squads"].apply(pd.Series)["value"]
                 df_squads["issue_key"] = df_l["key"]
                 df_squads["Refresh_Cycle"] = int(refresh_IDX)
-                df_squads.to_sql(self.prefixFact+'squad', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
+                df_squads.to_sql(self.prefixFact+'squads', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
           
         #df_labels.rename(columns={col:f'fields.labels.{col}' for col in df_labels.columns}, inplace=True)
       except Exception as e:

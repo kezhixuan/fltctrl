@@ -12,4 +12,5 @@ Untitled-4.sql
 __pycache__
 old_script.txt
 atlassian/__pycache__/*
+atlassian/utils/__pycache__/*
 ownDev/*
