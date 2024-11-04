@@ -82,30 +82,25 @@ class loadIssuse4Release(connectDB):
             
             
             allBugs = pd.read_sql(sql_str ,connection)
-
-            #sql_squad = "select * from sq.fact_ji_squads squad where squad.Refresh_Cycle between " + str(min) + " and " + lastCycle
-            #allSquads = pd.read_sql(sql_squad,connection)
-
-
-        #tmpBugs = pd.merge(allBugs, allSquads, how="left",  on="issueKey_RC", validate="one_to_many")
-        #aggBugs = allBugs[['issue_key','issuetype','bug classification','severity','priority','project','created','release phase','name','releaseDate','issueKey_RC']].copy()
-        print(allBugs.isnull().sum())
-        print(allBugs.head())
-
         
-        #print(allSquads.head())
-
+        # adding further statistic fields to simplify reporting.
         allBugs['year'] = pd.to_datetime(allBugs['Created']).dt.year  
         allBugs['sevScore'] = allBugs.apply(loadIssuse4Release.sevScore, axis=1)
         allBugs['severity_val'] = allBugs.apply(loadIssuse4Release.SevMapping, axis=1)
         allBugs['releaseP_val'] = allBugs.apply(loadIssuse4Release.RelPMapping, axis=1)
 
+        allBugs.to_sql('etl_bugs_stats', con=self.engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
+
+        print(allBugs.isnull().sum())
+        print(allBugs.head())
+
+
         filt_gen_22 =( 
          (allBugs['IssueType'] == 'Bug') &
          (allBugs['year'] >= 2020)) 
 
-        bugAgg = allBugs.groupby(['Project','IssueType','Squad','Severity','ReleaseName'], as_index=False).agg({'IssueType': 'count','Severity': 'count'})
-
+        bugAgg = allBugs.groupby(['Project','IssueType','ReleasePhase','Squad','Severity','ReleaseName'], as_index=False).agg({'IssueType': 'count','Severity': 'count'})
+        bugAgg.to_sql('etl_bugs_agg', con=self.engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
         print(bugAgg.head())
         
         sn.displot(data=allBugs[filt_gen_22], col='Project', col_wrap=4, x ="sevScore", hue="year", fill=True, facet_kws={'sharey': False, 'sharex': False},kind="kde",  aspect=1.5, alpha=0.2)
