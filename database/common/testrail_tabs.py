@@ -24,7 +24,7 @@ class testrail_tabs (connectDB):
             schema="SQ"
         )
 
-        dim_tr_cases = Table('dim_cases', m,
+        dim_tr_cases = Table('dim_tr_cases', m,
             Column('id', BIGINT) ,
             Column('caseID_RC', VARCHAR(200), primary_key=True),
             Column('title', VARCHAR(None)) ,
@@ -74,7 +74,7 @@ class testrail_tabs (connectDB):
             ForeignKeyConstraint(["caseID_RC"],dim_tr_cases.primary_key,use_alter=True,name="fk_tr_case_id_run"),
             schema="SQ")
 
-        fact_tr_results = Table('fact_results', m,
+        fact_tr_results = Table('fact_tr_results', m,
             Column('self', VARCHAR(None)),
             Column('id', BIGINT) ,
             Column('runid_RC', VARCHAR(200)) ,
@@ -91,7 +91,7 @@ class testrail_tabs (connectDB):
             schema="SQ")
 
         # Create in 24/10/23 by Ken
-        dim_tr_projects = Table('dim_projects', m,
+        dim_tr_projects = Table('dim_tr_projects', m,
             Column('id', BIGINT),
             Column('name', VARCHAR(200)),
             Column('projectID_RC', VARCHAR(200), primary_key=True),
@@ -100,7 +100,7 @@ class testrail_tabs (connectDB):
             schema="SQ"
         )
 
-        fact_tr_case_fields = Table('fact_case_fields', m,
+        fact_tr_case_fields = Table('fact_tr_case_fields', m,
             Column('self', VARCHAR(255)),
             Column('id', BIGINT),
             Column('caseID_RC', VARCHAR(200)),
@@ -117,7 +117,7 @@ class testrail_tabs (connectDB):
             schema="SQ"
         )
 
-        fact_tr_groups = Table('fact_groups', m,
+        fact_tr_groups = Table('fact_tr_groups', m,
             Column('self', VARCHAR(255)),
             Column('id', BIGINT),
             Column('name', VARCHAR(255)),
@@ -127,7 +127,7 @@ class testrail_tabs (connectDB):
             schema="SQ"
         )
 
-        fact_tr_users = Table('fact_users', m,
+        fact_tr_users = Table('fact_tr_users', m,
             Column('self', VARCHAR(255)),
             Column('id', BIGINT),
             Column('name', VARCHAR(255)),
@@ -137,7 +137,7 @@ class testrail_tabs (connectDB):
             schema="SQ"
         )
 
-        fact_tr_suites = Table('fact_suites', m,
+        fact_tr_suites = Table('fact_tr_suites', m,
             Column('self', VARCHAR(255)),
             Column('id', BIGINT),
             Column('name', VARCHAR(255)),
@@ -148,7 +148,7 @@ class testrail_tabs (connectDB):
             schema="SQ"
         )
 
-        fact_tr_section = Table('fact_section', m,
+        fact_tr_section = Table('fact_tr_section', m,
             Column('self', VARCHAR(255)),
             Column('id', BIGINT),
             Column('name', VARCHAR(255)),
