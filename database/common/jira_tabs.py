@@ -143,5 +143,13 @@ class jira_tabs(connectDB):
                 Column('Refresh_Cycle', BIGINT),
                 ForeignKeyConstraint(["issueKey_RC"],["SQ.fact_ji_issues.issueKey_RC"], use_alter=True, name="fk_squads_issues"),
                 schema="SQ")
+        
+        fact_labels = Table('fact_ji_labels', m,
+                Column('issueKey_RC', VARCHAR(50)),
+                Column('label', VARCHAR(None)),
+                Column('issue_key', VARCHAR(None)),
+                Column('Refresh_Cycle', BIGINT),
+                ForeignKeyConstraint(["issueKey_RC"],["SQ.fact_ji_issues.issueKey_RC"], use_alter=True, name="fk_labels_issues"),
+                schema="SQ")
 
         
