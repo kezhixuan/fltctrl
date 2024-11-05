@@ -10,8 +10,19 @@ drop table sq.dim_ji_releases
 -- Delete TestRail Tables --
 drop table sq.fact_tr_result
 drop table sq.fact_tr_run
-drop table sq.dim_tr_case_type
-drop table sq.dim_tr_cases
+drop table sq.dim_tr_case_types
+drop table sq.dim_cases
+drop table sq.fact_case_fields
+drop table sq.fact_groups
+drop table sq.fact_results
+drop table sq.fact_section
+drop table sq.fact_suites
+drop table sq.fact_users
+drop table sq.dim_projects
+
+-- Delete ETL Tables
+drop table sq.etl_bugs_agg
+drop table sq.etl_bugs_stats
 
 -- Delete config tables
 drop table sq.dim_refresh_history
