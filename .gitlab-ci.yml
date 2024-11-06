@@ -38,8 +38,15 @@ build-job:       # This job runs in the build stage, which runs first.
     - docker push $DOCKERNAME
   when: manual
 
+sqdashboard-job-unit-test:
+  stage: test
+  environment: production
+  script:
+    - echo "Start of the Unit Tests"
+    - python3 -m pytest
+
 sqdashboard-job-jira_tsc:      # This job runs in the deploy stage.
-  stage: build  # It only runs when *both* jobs in the test stage complete successfully.
+  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
   only:
     refs:
@@ -52,7 +59,7 @@ sqdashboard-job-jira_tsc:      # This job runs in the deploy stage.
     - python3 ${CI_PROJECT_DIR}/Connect2Sqlserver.py FC_Test fc_db jira_tsc
 
 sqdashboard-job-jira_gilds:      # This job runs in the deploy stage.
-  stage: build  # It only runs when *both* jobs in the test stage complete successfully.
+  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
   script:
     - echo "Run is starting"
