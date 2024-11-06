@@ -10,6 +10,7 @@ Untitled-4.sql
 .vscode/launch.json
 *.pyc
 __pycache__
+.pytest_cache
 old_script.txt
 atlassian/__pycache__/*
 atlassian/utils/__pycache__/*
