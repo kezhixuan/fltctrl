@@ -51,25 +51,6 @@ class Connect2Sqlserver(connectDB):
             except:
                 self.refresh_IDX = 1
 
-
-        #regression AI
-
-        #dfIssues = dfIssues.reindex(columns=['project','created','severity','priority','issuetype','release phase'])
-        #regressAI = dfIssues.reset_index(drop=True, inplace=True)
-
-        # regressAI = pd.MultiIndex(dfIssues)
-        #regressAI.query("issuetype == 'Bug' & priority != 'NaN' & severity != 'NaN' & 'release phase' != 'NaN'", inplace=True)
-
-
-
-        #defreg = dr.defect_regression()
-        #regressAI['severityScore'] = regressAI.apply(defreg.SevMapping, axis=1)
-        #regressAI['priorityScore'] = regressAI.apply(defreg.PrioMapping, axis=1)
-        #regressAI['sevScore'] = regressAI.apply(defreg.sevScore,axis=1)
-
-        #defreg.calculate_regression(regressAI)
-
-
         datedata = {"IDX": self.refresh_IDX, "RefreshDate": datetime.today()}
         dateDF = pd.DataFrame([datedata])
         with self.engine.begin() as conn:
