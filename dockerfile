@@ -67,5 +67,6 @@ RUN python3 -m pip install \
     seaborn \
     scikit-learn \
     numpy \
-    matplotlib
+    matplotlib \
+    pytest
     
