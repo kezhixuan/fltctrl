@@ -37,7 +37,7 @@ sqdashboard-job-unit-test:
   environment: production
   script:
     - echo "Start of the Unit Tests"
-    - pytest
+    - python3 -m pytest
 
 sqdashboard-job-jira_tsc:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
