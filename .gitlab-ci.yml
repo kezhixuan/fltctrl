@@ -16,8 +16,8 @@
 #  rules:
 #    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"'
 
-#variables:
-  #DOCKERNAME: docker.signintra.com/qa-dashboard/qa-dashboard/flightctrl/sqdashboard:latest
+variables:
+  DOCKERNAME: docker.signintra.com/qa-dashboard/qa-dashboard/flightctrl/sqdashboard:latest
 
 default:
   image: $DOCKERNAME
@@ -33,6 +33,7 @@ include:
 #  when: manual
 
 sqdashboard-job-unit-test:
+  image: ${CI_REGISTRY_IMAGE}:sha-${CI_COMMIT_SHA}
   stage: test
   environment: production
   script:
