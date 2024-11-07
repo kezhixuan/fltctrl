@@ -27,20 +27,9 @@ stages:          # List of stages for jobs, and their order of execution
   - test
   - deploy
 
-build-job:       # This job runs in the build stage, which runs first.
-  stage: build
-  image: docker:latest
-  before_script:
-    - echo "-- Login into Docker Registry"
-    - echo $CI_JOB_TOKEN | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
-    - ech "-- Login into Docker Registry done"
-  script:
-    - echo "-- building Docker "
-    - docker build -t $DOCKERNAME .
-    - echo "-- Docker build finished"
-    - docker push $DOCKERNAME
-  after_script:
-    - docker logout $CI_REGISTRY
+
+include:
+    - component: $CI_SERVER_FQDN/tap/cicd-components/docker/build@~latest
 #  when: manual
 
 sqdashboard-job-unit-test:
