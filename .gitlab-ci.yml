@@ -30,6 +30,8 @@ stages:          # List of stages for jobs, and their order of execution
 
 include:
     - component: $CI_SERVER_FQDN/tap/cicd-components/docker/build@~latest
+      inputs:
+        stage: build
 #  when: manual
 
 sqdashboard-job-unit-test:
