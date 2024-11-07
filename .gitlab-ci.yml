@@ -38,6 +38,7 @@ sqdashboard-job-unit-test:
   environment: production
   script:
     - echo "Start of the Unit Tests"
+    - envsubst < ${CI_PROJECT_DIR}/FC_Test_tmpl.json > ${CI_PROJECT_DIR}/FC_Test.json
     - python3 -m pytest
 
 sqdashboard-job-jira_tsc:      # This job runs in the deploy stage.
