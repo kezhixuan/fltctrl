@@ -9,12 +9,14 @@ import codecs
 import atlassian.utils.loadConfig as lC 
 from datetime import datetime
 from numpy import int64
+from database.common.connect import connectDB as connect
 from atlassian import IssueSatelites as atl
 from atlassian.utils import columnHandling as utl
 from atlassian.utils import columnHandlingCustom as cutl
 from atlassian.utils import manageLogin as mgl
 
-# https://www.google.de/search?q=python+text_replacement&sca_esv=555953162&sxsrf=AB5stBi95sXFOEGqwiNnIn7G5ZELFXfXog%3A1691768112906&source=hp&ei=MFXWZL2_M-2Uxc8P4YWp2AY&iflsig=AD69kcEAAAAAZNZjQGEV9pe0kUafOJmF9y-4ca4UUb_J&ved=0ahUKEwi9l6Kr99SAAxVtSvEDHeFCCmsQ4dUDCAs&uact=5&oq=python+text_replacement&gs_lp=Egdnd3Mtd2l6IhdweXRob24gdGV4dF9yZXBsYWNlbWVudDIHEAAYDRiABDIGEAAYFhgeMggQABgWGB4YCjIGEAAYFhgeMgYQABgWGB4yBhAAGBYYHjIGEAAYFhgeMgYQABgWGB4yBhAAGBYYHjIGEAAYFhgeSKhAUABYgjVwAngAkAEAmAGjAaABixOqAQQyMC41uAEDyAEA-AEBwgIEECMYJ8ICBxAjGIoFGCfCAggQABiKBRiRAsICCxAuGIAEGMcBGNEDwgIFEAAYgATCAgUQLhiABMICChAAGIAEGBQYhwLCAggQABiABBjLAcICCBAuGIAEGMsBwgIHEAAYgAQYCg&sclient=gws-wiz
+pd.options.mode.copy_on_write = True
+
 
 #define function to merge columns with same names together
 def same_merge(x): return ','.join(x[x.notnull()].astype(str))
@@ -29,6 +31,8 @@ class ConnectAtlassian:
     pass
   
   def connect2jira(self, creds, project, jql_fields, filter, startDate):
+# This function connects to the defined Jira Insance and collects all issues based on the pre-defined filter.
+# The collected jire fileds are predifined to lean the network processing.
     start_at = 0
     end_of_stream = False
     issue_lst = []
@@ -91,6 +95,7 @@ class ConnectAtlassian:
     return issue_lst
 
   def createDataFrame(self, project, jiraService, engine, refresh_IDX):
+# Preparation of the Jira JQL statement and the required jira fileds.
     columH = utl.columnHandling()
     columCH = cutl.columnHandlingCustom()
 
@@ -117,7 +122,7 @@ class ConnectAtlassian:
      # df = df[cols].join(df_fixversions).join(df_labels).join(df_affected_version).join(df_versions).join(df_components)
     except:
       print("Issue: joining not working")  
-      #df.dropna(axis=1, how='all', inplace=True)
+      
 
     ### Customized fields from jira instance ####
     url = f"{self.creds['url']}rest/api/3/field"
@@ -135,35 +140,35 @@ class ConnectAtlassian:
       auth=auth
     )
     
-    ### Creating general core jira attributes that are unique per definition
-    # fields.customfield_19890 --> severity
-    # fields.customfield_20083 --> severity_IRE
-    # fields.customfield_20005 --> severity_ATD
-    # fields.customfield_20118 --> severity_GPIS
-    # fields.customfield_19900 --> release_phase
-    # fields.customfield_20081 --> release_phase_IRE
-    # fields.customfield_20003 --> release_phase_ATD
-    # fields.customfield_20128 --> release_phase_GPIS
-    # fields.customfield_19901 --> bug_classification
-    # fields.customfield_20080 --> bug_classification_IRE
-    # fields.customfield_20004 --> bug_classification_ATD
-    # fields.customfield_20129 --> bug_classification_GPIS
-    # fields.customfield_20130 --> defect_age_GPIS
-    # fields.customfield_20141 --> Affecte_Version_GPIS
-    # fields.customfield_14162.name --> Affected Version
-    # fields.customfield_14162.id --> AffectedVersion.id
-    # fields.customfield_20006 --> Affected Version_ATD
-    # fields.customfield_20090.value --> Affected Version_IRE
-    # fields.customfield_20091.value --> Fixed Version_IRE
-    # fields.customfield_19916 --> FIMS ID
-    # fields.customfield_19100 --> SIMS_Demand_ext
-    # fields.customfield_10362 --> sprint
-    # GILDS
-    # fields.customfield_14455 --> Defect_age,
-    # fields.customfield_11487 --> bug_classification,
-    # fields."customfield_11106 --> Severity_GILDS,
-    # fields."customfield_11107 --> release_phase,
-    # fields."customfield_11095 --> SLS_squad 
+### Creating general core jira attributes that are unique per definition
+# fields.customfield_19890 --> severity
+# fields.customfield_20083 --> severity_IRE
+# fields.customfield_20005 --> severity_ATD
+# fields.customfield_20118 --> severity_GPIS
+# fields.customfield_19900 --> release_phase
+# fields.customfield_20081 --> release_phase_IRE
+# fields.customfield_20003 --> release_phase_ATD
+# fields.customfield_20128 --> release_phase_GPIS
+# fields.customfield_19901 --> bug_classification
+# fields.customfield_20080 --> bug_classification_IRE
+# fields.customfield_20004 --> bug_classification_ATD
+# fields.customfield_20129 --> bug_classification_GPIS
+# fields.customfield_20130 --> defect_age_GPIS
+# fields.customfield_20141 --> Affecte_Version_GPIS
+# fields.customfield_14162.name --> Affected Version
+# fields.customfield_14162.id --> AffectedVersion.id
+# fields.customfield_20006 --> Affected Version_ATD
+# fields.customfield_20090.value --> Affected Version_IRE
+# fields.customfield_20091.value --> Fixed Version_IRE
+# fields.customfield_19916 --> FIMS ID
+# fields.customfield_19100 --> SIMS_Demand_ext
+# fields.customfield_10362 --> sprint
+# GILDS
+# fields.customfield_14455 --> Defect_age,
+# fields.customfield_11487 --> bug_classification,
+# fields."customfield_11106 --> Severity_GILDS,
+# fields."customfield_11107 --> release_phase,
+# fields."customfield_11095 --> SLS_squad 
 
     if jiraService == "jira_gilds":
       dfCore = df.loc[:, df.columns.isin(["id","key","fields.issuetype.name","fields.project.name", "fields.project.key","fields.priority.name",
@@ -188,7 +193,7 @@ class ConnectAtlassian:
         "fields.customfield_14162.id","fields.customfield_14162.name","fields.customfield_14162.archived","fields.customfield_14162.released","fields.customfield_14162.releaseDate"])]
           
     dfSatelite["key"] = dfSatelite["key"].astype("string")
-    print(dfSatelite.dtypes)
+    
 
     ### Change Column names to target database table design 
     dfCore , dfSatelite = columH.cleanColumnNames(project, dfCore, dfSatelite)
@@ -209,8 +214,10 @@ class ConnectAtlassian:
   def GetIssues(self, project, jiraService, engine, refresh_IDX):
       issue_lst =  pd.DataFrame()
       conf = lC.loadConfig()
-
+# Getting all for the reporting configured projects from the json file, filtered by the Jira Instance (jiraSerivce)
+# The porject can be collected separatelly, when it's empty all configured projects of an Jira Insance are collected.
       projects = conf.getIssueProjects(project, jiraService)
+
 
       strings = ['issue_key','summary', 'issuetype', 'creator',
             'severity','bug classification','project','priority','release phase','status','defect_age','affected version',
@@ -252,13 +259,14 @@ class ConnectAtlassian:
         print("---------- Columns for project :  " + row['jira_project']  + "  ---------------------------------")
         print(issues.columns)
 
-        with engine.begin() as conn:
-            issues["Refresh_Cycle"] = int(refresh_IDX)
-            issues['project_RC'] = issues['jira_key'] + str(refresh_IDX)
-            issues.to_sql(prefix+'issues', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
         
-        conn.commit()
+# Adding primary keys to the dataFrame
+        issues["Refresh_Cycle"] = int(refresh_IDX)
+        issues['project_RC'] = issues['jira_key'] + str(refresh_IDX)
 
+# Storing the collected DataFrame in the database
+        connect.write2DB(self, engine, issues, "issues", prefix)
+# Adding the Satelite Table data to the database
         atl.IssueSatelites(issues_copy, project, engine, refresh_IDX,self.creds)
 
         issue_lst = pd.concat([issue_lst,issues], axis=0)
