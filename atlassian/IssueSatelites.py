@@ -7,11 +7,13 @@ import time
 import numpy as np
 import re
 from openpyxl import Workbook
+from database.common.connect import connectDB as connect
 import atlassian.utils.cleanDF as clDF
 from datetime import datetime
 from numpy import int64
 import atlassian.utils.loadConfig as conf
 
+pd.options.mode.copy_on_write = True
 
 class IssueSatelites:
   prefixFact = "fact_ji_"
@@ -60,7 +62,8 @@ class IssueSatelites:
             df_fixversions['issue_key'] = df['key']
             df_fixversions["Refresh_Cycle"] = int(refresh_IDX)
      # df_fixversions.rename(columns={col:f'fields.fixVersions.{col}' for col in df_fixversions.columns}, inplace=True)
-      df_fixversions.to_sql(self.prefixFact+'fixversions', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
+            connect.write2DB(self, engine, df_fixversions, "fixversions", self.prefixFact)
+      #df_fixversions.to_sql(self.prefixFact+'fixversions', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
     except Exception as e:
         print("----> fixVersions --> " + df["key"])
         print(f"Unexpected {e=}, {type(e)=}")
@@ -89,7 +92,8 @@ class IssueSatelites:
                   df_versions['issue_key'] = df['key']
                   df_versions["Refresh_Cycle"] = int(refresh_IDX)
                   df_versions["issueKey_RC"] = df["key"] + "-" + str(refresh_IDX)
-            df_versions.to_sql(self.prefixFact+'versions', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
+                  connect.write2DB(self, engine, df_versions, "versions", self.prefixFact)
+            #df_versions.to_sql(self.prefixFact+'versions', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
             #df_versions.rename(columns={col:f'fields.versions.{col}' for col in df_versions.columns}, inplace=True)
     except Exception as e:
         print("----> versions --> " + df["key"])
@@ -114,7 +118,8 @@ class IssueSatelites:
             df_components["issue_key"] = df["key"]
             df_components["Refresh_Cycle"] = int(refresh_IDX)
             df_components["issueKey_RC"] = df["key"] + "-" + str(refresh_IDX)
-            df_components.to_sql(self.prefixFact+'components', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
+            connect.write2DB(self, engine, df_components, "components", self.prefixFact)
+            #df_components.to_sql(self.prefixFact+'components', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
       #df_components.rename(columns={col:f'fields.components{col}' for col in df_components.columns}, inplace=True)
     except Exception as e:
       print("----> components --> " + df["key"])
@@ -135,8 +140,8 @@ class IssueSatelites:
           df_labels["label"] = df_l["labels"]        
           df_labels["issue_key"] = df_l["key"]
           df_labels["Refresh_Cycle"] = int(refresh_IDX)
-          df_labels.to_sql(self.prefixFact+'labels', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
-      
+          #df_labels.to_sql(self.prefixFact+'labels', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
+          connect.write2DB(self, engine, df_labels, "labels", self.prefixFact)
       #df_labels.rename(columns={col:f'fields.labels.{col}' for col in df_labels.columns}, inplace=True)
     except Exception as e:
       print("----> labels --> " + df["key"])
@@ -159,7 +164,8 @@ class IssueSatelites:
                 df_squads["squad"] = df_l["squads"].apply(pd.Series)["value"]
                 df_squads["issue_key"] = df_l["key"]
                 df_squads["Refresh_Cycle"] = int(refresh_IDX)
-                df_squads.to_sql(self.prefixFact+'squads', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
+                connect.write2DB(self, engine, df_squads, "squads", self.prefixFact)
+                #df_squads.to_sql(self.prefixFact+'squads', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
           
         #df_labels.rename(columns={col:f'fields.labels.{col}' for col in df_labels.columns}, inplace=True)
       except Exception as e:
@@ -189,7 +195,8 @@ class IssueSatelites:
               df_affected_version["releaseDate"] = dfr[colCheck + '.releasedate']
               df_affected_version["issue_key"] = df["key"]
               df_affected_version["Refresh_Cycle"] = int(refresh_IDX)
-              df_affected_version.to_sql(self.prefixFact+'versions', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
+              connect.write2DB(self, engine, df_affected_version, "versions", self.prefixFact)
+              #df_affected_version.to_sql(self.prefixFact+'versions', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
           
           # df_affected_version.rename(columns={col:f'fields.customfield_14162.{col}' for col in df_affected_version.columns}, inplace=True)
           except Exception as e:
