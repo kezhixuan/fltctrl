@@ -267,7 +267,7 @@ class ConnectAtlassian:
 # Storing the collected DataFrame in the database
         connect.write2DB(self, engine, issues, "issues", prefix)
 # Adding the Satelite Table data to the database
-        atl.IssueSatelites(issues_copy, project, engine, refresh_IDX,self.creds)
+        atl.IssueSatelites(issues_copy, project, engine, refresh_IDX)
 
         issue_lst = pd.concat([issue_lst,issues], axis=0)
       

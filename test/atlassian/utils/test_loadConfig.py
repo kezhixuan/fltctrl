@@ -14,5 +14,5 @@ class TestloadConfig():
         assert jiraProjects.empty is False
         #assert ( jiraProjects[(jiraProjects["jira_id"] == "ODM")].size == 1)
 
-tr = TestloadConfig()
-tr.test_getIssueProjects()
+#tr = TestloadConfig()
+#tr.test_getIssueProjects()
