@@ -33,11 +33,11 @@ class TestconnectDB():
             
             # Aufruf der zu testenden Funktion
             
-            atl.IssueSatelites(mock_issue, "project", engine , 600)
-            result = True
+            res = atl.IssueSatelites(mock_issue, "project", engine , 600)
+            
             #print(result)
             # Überprüfen, ob das Ergebnis korrekt ist
-            assert result== True
+            assert res.status == True
             
 
 

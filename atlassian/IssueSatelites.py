@@ -18,17 +18,33 @@ pd.options.mode.copy_on_write = True
 
 class IssueSatelites:
   prefixFact = "fact_ji_"
-  
+  status = True
   def __init__(self, df, project, engine, refresh_IDX):
   
 
-    self.affectedVersion(df, project, engine, refresh_IDX)
-    self.fixVersions(df, project, engine, refresh_IDX)
-    self.jiraComponents(df, engine, refresh_IDX)
-    self.jiraCustomfield(df, engine, refresh_IDX)
-    self.jiraLabels(df, engine, refresh_IDX)
-    self.jiraSquads(df, project, engine,  refresh_IDX)
+    success_aV = self.affectedVersion(df, project, engine, refresh_IDX)
+    success_fV = self.fixVersions(df, project, engine, refresh_IDX)
+    success_Co = self.jiraComponents(df, engine, refresh_IDX)
+    success_Cf = self.jiraCustomfield(df, engine, refresh_IDX)
+    success_La = self.jiraLabels(df, engine, refresh_IDX)
+    success_Sq = self.jiraSquads(df, project, engine,  refresh_IDX)
     
+    
+    if success_aV != True:
+      self.status = False
+    elif success_fV != True:
+      self.status = False
+    elif success_Co != True:
+      self.status = False
+    elif success_Cf != True:
+      self.status = False
+    elif success_La != True:
+      self.status = False
+    elif success_Sq!= True:
+      self.status = False
+    else:
+      self.status = True
+
     pass
   
   def customReleaseName(self,project, release):
@@ -71,9 +87,11 @@ class IssueSatelites:
     except Exception as e:
         connect.getLogger().info("FIXVERION: Project " + project + " failed" + " -- " + df["key"] )
         print(f"Unexpected {e=}, {type(e)=}" + project)
+        return False
     except:
       print("Not found: fixVersion" + " - SateliteClass Exception")
-    return
+      return False
+    return True
 
   def affectedVersion(self, df, project, engine, refresh_IDX):
     # also known as "affectedVersion"
@@ -103,11 +121,12 @@ class IssueSatelites:
             #df_versions.to_sql(self.prefixFact+'versions', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
             #df_versions.rename(columns={col:f'fields.versions.{col}' for col in df_versions.columns}, inplace=True)
     except Exception as e:
-        connect.getLogger().info("VERSIONS: Project " + project + " failed" + " -- " + df["key"] )
-        connect.getLogger().info(f"Unexpected {e=}, {type(e)=}" + project)
+      connect.getLogger().info("VERSIONS: Project " + project + " failed" + " -- " + df["key"] )
+      connect.getLogger().info(f"Unexpected {e=}, {type(e)=}" + project)
     except:
-        connect.getLogger().info("Not found: versions in: " + project) 
-    return
+      connect.getLogger().info("Not found: versions in: " + project) 
+      return False
+    return True
   
   
   def jiraComponents(self, df, engine, refresh_IDX):
@@ -133,8 +152,8 @@ class IssueSatelites:
       print(f"Unexpected {e=}, {type(e)=}")
     except:
       print("Not found: components")  
-    
-    return
+      return False
+    return True
 
   def jiraLabels(self, df, engine, refresh_IDX):
     try: 
@@ -155,7 +174,8 @@ class IssueSatelites:
       print(f"Unexpected {e=}, {type(e)=}")
     except:
       print("Not found: labels")
-    return
+      return False
+    return True
 
 # Squads are used in GILDS, special in SELS to organize the teams. Bugs must be assigned to one Squad.
   def jiraSquads(self, df, project, engine, refresh_IDX):
@@ -183,7 +203,8 @@ class IssueSatelites:
         print(f"Unexpected {e=}, {type(e)=}")
       except:
         print("Not found: squad")
-      return
+        return False
+      return True
 
 
   def jiraCustomfield(self, df, engine, refresh_IDX):
@@ -217,6 +238,6 @@ class IssueSatelites:
             print(f"Unexpected {e=}, {type(e)=}")
           except:
             print("Not found: 14162 (affected version)") 
-
-    return "Alll gooood !"
+            return False
+    return True
       
