@@ -54,7 +54,10 @@ class IssueSatelites:
             df_fixversions["name"] = self.customReleaseName(project, df_f["name"])
             df_fixversions["archived"] = df_f["archived"]
             df_fixversions["released"] = df_f['released']
-            df_fixversions["releaseDate"] = df_f['releaseDate']
+            if 'releaseDate' in df_f:
+              df_fixversions["releaseDate"] = df_f['releaseDate']
+            else:
+              df_fixversions["releaseDate"] = ""
             df_fixversions["description"] = df_f['description']
             print(df_fixversions.columns)
             df_f.drop(0, axis=1, inplace=True)
@@ -196,7 +199,10 @@ class IssueSatelites:
               df_affected_version["name"] = dfr[colCheck +".name"]
               df_affected_version["archived"] = dfr[colCheck + ".archived"]
               df_affected_version["released"] = dfr[colCheck + '.released']
-              df_affected_version["releaseDate"] = dfr[colCheck + '.releasedate']
+              if "releasedate" in dfr:
+                df_affected_version["releaseDate"] = dfr[colCheck + '.releasedate']
+              else:
+                df_affected_version["releaseDate"] = ""
               df_affected_version["issue_key"] = df["key"]
               df_affected_version["Refresh_Cycle"] = int(refresh_IDX)
               connect.write2DB(self, engine, df_affected_version, "versions", self.prefixFact)
