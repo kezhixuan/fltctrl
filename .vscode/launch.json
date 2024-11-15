@@ -12,7 +12,7 @@
             "program": "${file}",
             "args": ["FC_Test", "fc_db", "jira_tsc"],
             "console": "integratedTerminal",
-            "justMyCode": true
+            "justMyCode": false
         }
     ]
 }
