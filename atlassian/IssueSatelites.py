@@ -168,7 +168,10 @@ class IssueSatelites:
               if not df_l.empty:
                 df_squads = pd.DataFrame()
                 df_squads["issueKey_RC"] = df_l["key"] + "-" + str(refresh_IDX)
-                df_squads["squad"] = df_l["squads"].apply(pd.Series)["value"]
+                if "squad" in df_l:
+                  df_squads["squad"] = df_l["squads"].apply(pd.Series)["value"]
+                else:
+                  df_squads["squad"] = ""
                 df_squads["issue_key"] = df_l["key"]
                 df_squads["Refresh_Cycle"] = int(refresh_IDX)
                 connect.write2DB(self, engine, df_squads, "squads", self.prefixFact)
