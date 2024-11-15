@@ -13,13 +13,14 @@ from datetime import datetime
 from numpy import int64
 import atlassian.utils.loadConfig as conf
 
+
 pd.options.mode.copy_on_write = True
 
 class IssueSatelites:
   prefixFact = "fact_ji_"
   
-  def __init__(self, df, project, engine, refresh_IDX, credentials):
-    self.creds = credentials
+  def __init__(self, df, project, engine, refresh_IDX):
+  
 
     self.affectedVersion(df, project, engine, refresh_IDX)
     self.fixVersions(df, project, engine, refresh_IDX)
@@ -65,8 +66,8 @@ class IssueSatelites:
             connect.write2DB(self, engine, df_fixversions, "fixversions", self.prefixFact)
       #df_fixversions.to_sql(self.prefixFact+'fixversions', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
     except Exception as e:
-        print("----> fixVersions --> " + df["key"])
-        print(f"Unexpected {e=}, {type(e)=}")
+        connect.getLogger().info("FIXVERION: Project " + project + " failed" + " -- " + df["key"] )
+        print(f"Unexpected {e=}, {type(e)=}" + project)
     except:
       print("Not found: fixVersion" + " - SateliteClass Exception")
     return
@@ -84,11 +85,14 @@ class IssueSatelites:
                   df_versions["name"] = self.customReleaseName(project, df_v["name"])
                   df_versions["archived"] = df_v["archived"]
                   df_versions["released"] = df_v['released']
-                  df_versions["releaseDate"] = df_v['releaseDate']
+                  if 'releaseDate' in df_v:
+                    df_versions["releaseDate"] = df_v['releaseDate']
+                  else:
+                    df_versions["releseDate"] = ""
                   df_versions["description"] = df_v['description']
-                  print(df_versions.columns)
-                  df_v.drop(0, axis=1, inplace=True)
-                  print(df_versions.columns)
+                  #print(df_versions.columns)
+                  #df_v.drop(0, axis=1, inplace=True)
+                  #print(df_versions.columns)
                   df_versions['issue_key'] = df['key']
                   df_versions["Refresh_Cycle"] = int(refresh_IDX)
                   df_versions["issueKey_RC"] = df["key"] + "-" + str(refresh_IDX)
@@ -96,10 +100,10 @@ class IssueSatelites:
             #df_versions.to_sql(self.prefixFact+'versions', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
             #df_versions.rename(columns={col:f'fields.versions.{col}' for col in df_versions.columns}, inplace=True)
     except Exception as e:
-        print("----> versions --> " + df["key"])
-        print(f"Unexpected {e=}, {type(e)=}")
+        connect.getLogger().info("VERSIONS: Project " + project + " failed" + " -- " + df["key"] )
+        connect.getLogger().info(f"Unexpected {e=}, {type(e)=}" + project)
     except:
-        print("Not found: versions") 
+        connect.getLogger().info("Not found: versions in: " + project) 
     return
   
   

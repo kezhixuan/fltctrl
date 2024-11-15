@@ -45,7 +45,12 @@ class connectDB():
         pass
 
     def getEngine(self):
+        print("Test the Engined file")
         return str(self.engine)
+    
+    def getLogger(self):
+        return log
+        
     
     def write2DB(self, engine, data: pd.DataFrame , tableName, prefix):
         log.info('Start writing into table ' + tableName )
@@ -56,6 +61,6 @@ class connectDB():
             success = True
             log.info('Successfull writen into table ' + tableName + ' and ' + str(data.size) + ' records saved!')
         except:
-            sucdess = False
+            success = False
             log.critical('Writing into table ' + tableName + ' failed!')
         return success

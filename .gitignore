@@ -15,4 +15,6 @@ old_script.txt
 atlassian/__pycache__/*
 atlassian/utils/__pycache__/*
 ownDev/*
+ownDev/defect_regression.py
 SQDashboard.log
+test/testData.json

@@ -6,7 +6,7 @@ import atlassian.ConnectAtlassian as ca
 import atlassian.issuesReleases as ir
 import atlassian.utils.loadConfig as conf
 from database.common.connect import connectDB
-from ownDev.Issues import Issues
+
 from sqlalchemy import MetaData, Table, ForeignKeyConstraint, create_engine, URL, text
 from sqlalchemy.sql import select
 from sqlalchemy.orm import Session, mapper
