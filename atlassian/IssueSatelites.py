@@ -7,25 +7,44 @@ import time
 import numpy as np
 import re
 from openpyxl import Workbook
+from database.common.connect import connectDB as connect
 import atlassian.utils.cleanDF as clDF
 from datetime import datetime
 from numpy import int64
 import atlassian.utils.loadConfig as conf
 
 
+pd.options.mode.copy_on_write = True
+
 class IssueSatelites:
   prefixFact = "fact_ji_"
+  status = True
+  def __init__(self, df, project, engine, refresh_IDX):
   
-  def __init__(self, df, project, engine, refresh_IDX, credentials):
-    self.creds = credentials
 
-    self.affectedVersion(df, project, engine, refresh_IDX)
-    self.fixVersions(df, project, engine, refresh_IDX)
-    self.jiraComponents(df, engine, refresh_IDX)
-    self.jiraCustomfield(df, engine, refresh_IDX)
-    self.jiraLabels(df, engine, refresh_IDX)
-    self.jiraSquads(df, project, engine,  refresh_IDX)
+    success_aV = self.affectedVersion(df, project, engine, refresh_IDX)
+    success_fV = self.fixVersions(df, project, engine, refresh_IDX)
+    success_Co = self.jiraComponents(df, engine, refresh_IDX)
+    success_Cf = self.jiraCustomfield(df, engine, refresh_IDX)
+    success_La = self.jiraLabels(df, engine, refresh_IDX)
+    success_Sq = self.jiraSquads(df, project, engine,  refresh_IDX)
     
+    
+    if success_aV != True:
+      self.status = False
+    elif success_fV != True:
+      self.status = False
+    elif success_Co != True:
+      self.status = False
+    elif success_Cf != True:
+      self.status = False
+    elif success_La != True:
+      self.status = False
+    elif success_Sq!= True:
+      self.status = False
+    else:
+      self.status = True
+
     pass
   
   def customReleaseName(self,project, release):
@@ -51,7 +70,10 @@ class IssueSatelites:
             df_fixversions["name"] = self.customReleaseName(project, df_f["name"])
             df_fixversions["archived"] = df_f["archived"]
             df_fixversions["released"] = df_f['released']
-            df_fixversions["releaseDate"] = df_f['releaseDate']
+            if 'releaseDate' in df_f:
+              df_fixversions["releaseDate"] = df_f['releaseDate']
+            else:
+              df_fixversions["releaseDate"] = ""
             df_fixversions["description"] = df_f['description']
             print(df_fixversions.columns)
             df_f.drop(0, axis=1, inplace=True)
@@ -60,13 +82,16 @@ class IssueSatelites:
             df_fixversions['issue_key'] = df['key']
             df_fixversions["Refresh_Cycle"] = int(refresh_IDX)
      # df_fixversions.rename(columns={col:f'fields.fixVersions.{col}' for col in df_fixversions.columns}, inplace=True)
-      df_fixversions.to_sql(self.prefixFact+'fixversions', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
+            connect.write2DB(self, engine, df_fixversions, "fixversions", self.prefixFact)
+      #df_fixversions.to_sql(self.prefixFact+'fixversions', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
     except Exception as e:
-        print("----> fixVersions --> " + df["key"])
-        print(f"Unexpected {e=}, {type(e)=}")
+        connect.getLogger().info("FIXVERION: Project " + project + " failed" + " -- " + df["key"] )
+        print(f"Unexpected {e=}, {type(e)=}" + project)
+        return False
     except:
       print("Not found: fixVersion" + " - SateliteClass Exception")
-    return
+      return False
+    return True
 
   def affectedVersion(self, df, project, engine, refresh_IDX):
     # also known as "affectedVersion"
@@ -81,22 +106,27 @@ class IssueSatelites:
                   df_versions["name"] = self.customReleaseName(project, df_v["name"])
                   df_versions["archived"] = df_v["archived"]
                   df_versions["released"] = df_v['released']
-                  df_versions["releaseDate"] = df_v['releaseDate']
+                  if 'releaseDate' in df_v:
+                    df_versions["releaseDate"] = df_v['releaseDate']
+                  else:
+                    df_versions["releseDate"] = ""
                   df_versions["description"] = df_v['description']
-                  print(df_versions.columns)
-                  df_v.drop(0, axis=1, inplace=True)
-                  print(df_versions.columns)
+                  #print(df_versions.columns)
+                  #df_v.drop(0, axis=1, inplace=True)
+                  #print(df_versions.columns)
                   df_versions['issue_key'] = df['key']
                   df_versions["Refresh_Cycle"] = int(refresh_IDX)
                   df_versions["issueKey_RC"] = df["key"] + "-" + str(refresh_IDX)
-            df_versions.to_sql(self.prefixFact+'versions', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
+                  connect.write2DB(self, engine, df_versions, "versions", self.prefixFact)
+            #df_versions.to_sql(self.prefixFact+'versions', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
             #df_versions.rename(columns={col:f'fields.versions.{col}' for col in df_versions.columns}, inplace=True)
     except Exception as e:
-        print("----> versions --> " + df["key"])
-        print(f"Unexpected {e=}, {type(e)=}")
+      connect.getLogger().info("VERSIONS: Project " + project + " failed" + " -- " + df["key"] )
+      connect.getLogger().info(f"Unexpected {e=}, {type(e)=}" + project)
     except:
-        print("Not found: versions") 
-    return
+      connect.getLogger().info("Not found: versions in: " + project) 
+      return False
+    return True
   
   
   def jiraComponents(self, df, engine, refresh_IDX):
@@ -114,15 +144,16 @@ class IssueSatelites:
             df_components["issue_key"] = df["key"]
             df_components["Refresh_Cycle"] = int(refresh_IDX)
             df_components["issueKey_RC"] = df["key"] + "-" + str(refresh_IDX)
-            df_components.to_sql(self.prefixFact+'components', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
+            connect.write2DB(self, engine, df_components, "components", self.prefixFact)
+            #df_components.to_sql(self.prefixFact+'components', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
       #df_components.rename(columns={col:f'fields.components{col}' for col in df_components.columns}, inplace=True)
     except Exception as e:
       print("----> components --> " + df["key"])
       print(f"Unexpected {e=}, {type(e)=}")
     except:
       print("Not found: components")  
-    
-    return
+      return False
+    return True
 
   def jiraLabels(self, df, engine, refresh_IDX):
     try: 
@@ -135,15 +166,16 @@ class IssueSatelites:
           df_labels["label"] = df_l["labels"]        
           df_labels["issue_key"] = df_l["key"]
           df_labels["Refresh_Cycle"] = int(refresh_IDX)
-          df_labels.to_sql(self.prefixFact+'labels', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
-      
+          #df_labels.to_sql(self.prefixFact+'labels', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
+          connect.write2DB(self, engine, df_labels, "labels", self.prefixFact)
       #df_labels.rename(columns={col:f'fields.labels.{col}' for col in df_labels.columns}, inplace=True)
     except Exception as e:
       print("----> labels --> " + df["key"])
       print(f"Unexpected {e=}, {type(e)=}")
     except:
       print("Not found: labels")
-    return
+      return False
+    return True
 
 # Squads are used in GILDS, special in SELS to organize the teams. Bugs must be assigned to one Squad.
   def jiraSquads(self, df, project, engine, refresh_IDX):
@@ -156,10 +188,14 @@ class IssueSatelites:
               if not df_l.empty:
                 df_squads = pd.DataFrame()
                 df_squads["issueKey_RC"] = df_l["key"] + "-" + str(refresh_IDX)
-                df_squads["squad"] = df_l["squads"].apply(pd.Series)["value"]
+                if "squad" in df_l:
+                  df_squads["squad"] = df_l["squads"].apply(pd.Series)["value"]
+                else:
+                  df_squads["squad"] = ""
                 df_squads["issue_key"] = df_l["key"]
                 df_squads["Refresh_Cycle"] = int(refresh_IDX)
-                df_squads.to_sql(self.prefixFact+'squads', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
+                connect.write2DB(self, engine, df_squads, "squads", self.prefixFact)
+                #df_squads.to_sql(self.prefixFact+'squads', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
           
         #df_labels.rename(columns={col:f'fields.labels.{col}' for col in df_labels.columns}, inplace=True)
       except Exception as e:
@@ -167,7 +203,8 @@ class IssueSatelites:
         print(f"Unexpected {e=}, {type(e)=}")
       except:
         print("Not found: squad")
-      return
+        return False
+      return True
 
 
   def jiraCustomfield(self, df, engine, refresh_IDX):
@@ -186,10 +223,14 @@ class IssueSatelites:
               df_affected_version["name"] = dfr[colCheck +".name"]
               df_affected_version["archived"] = dfr[colCheck + ".archived"]
               df_affected_version["released"] = dfr[colCheck + '.released']
-              df_affected_version["releaseDate"] = dfr[colCheck + '.releasedate']
+              if "releasedate" in dfr:
+                df_affected_version["releaseDate"] = dfr[colCheck + '.releasedate']
+              else:
+                df_affected_version["releaseDate"] = ""
               df_affected_version["issue_key"] = df["key"]
               df_affected_version["Refresh_Cycle"] = int(refresh_IDX)
-              df_affected_version.to_sql(self.prefixFact+'versions', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
+              connect.write2DB(self, engine, df_affected_version, "versions", self.prefixFact)
+              #df_affected_version.to_sql(self.prefixFact+'versions', con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
           
           # df_affected_version.rename(columns={col:f'fields.customfield_14162.{col}' for col in df_affected_version.columns}, inplace=True)
           except Exception as e:
@@ -197,6 +238,6 @@ class IssueSatelites:
             print(f"Unexpected {e=}, {type(e)=}")
           except:
             print("Not found: 14162 (affected version)") 
-
-    return "Alll gooood !"
+            return False
+    return True
       

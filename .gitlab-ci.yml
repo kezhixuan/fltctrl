@@ -12,6 +12,10 @@
 # https://docs.gitlab.com/ee/development/cicd/templates.html
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
+#workflow:
+#  rules:
+#    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"'
+
 variables:
   DOCKERNAME: docker.signintra.com/qa-dashboard/qa-dashboard/flightctrl/sqdashboard:latest
 
@@ -23,19 +27,28 @@ stages:          # List of stages for jobs, and their order of execution
   - test
   - deploy
 
-build-job:       # This job runs in the build stage, which runs first.
-  stage: build
-  image: docker:latest
-  before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+include:
+    - component: $CI_SERVER_FQDN/tap/cicd-components/docker/build@~latest
+      inputs:
+        stage: build
+#  when: manual
+
+sqdashboard-job-unit-test:
+  image: ${CI_REGISTRY_IMAGE}:sha-${CI_COMMIT_SHORT_SHA}
+  stage: test
+  environment: production
   script:
-    - docker build -t $DOCKERNAME .
-    - docker push $DOCKERNAME
-  when: manual
+    - echo "Start of the Unit Tests"
+    - envsubst < ${CI_PROJECT_DIR}/FC_Test_tmpl.json > ${CI_PROJECT_DIR}/FC_Test.json
+    - python3 -m pytest
 
 sqdashboard-job-jira_tsc:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
+  only:
+    refs:
+      - main
   script:
     - echo "Run is starting"
     - envsubst < ${CI_PROJECT_DIR}/FC_Test_tmpl.json > ${CI_PROJECT_DIR}/FC_Test.json

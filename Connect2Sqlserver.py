@@ -6,7 +6,7 @@ import atlassian.ConnectAtlassian as ca
 import atlassian.issuesReleases as ir
 import atlassian.utils.loadConfig as conf
 from database.common.connect import connectDB
-from ownDev.Issues import Issues
+
 from sqlalchemy import MetaData, Table, ForeignKeyConstraint, create_engine, URL, text
 from sqlalchemy.sql import select
 from sqlalchemy.orm import Session, mapper
@@ -50,25 +50,6 @@ class Connect2Sqlserver(connectDB):
                     self.refresh_IDX = int(row.refreshIDX)+1
             except:
                 self.refresh_IDX = 1
-
-
-        #regression AI
-
-        #dfIssues = dfIssues.reindex(columns=['project','created','severity','priority','issuetype','release phase'])
-        #regressAI = dfIssues.reset_index(drop=True, inplace=True)
-
-        # regressAI = pd.MultiIndex(dfIssues)
-        #regressAI.query("issuetype == 'Bug' & priority != 'NaN' & severity != 'NaN' & 'release phase' != 'NaN'", inplace=True)
-
-
-
-        #defreg = dr.defect_regression()
-        #regressAI['severityScore'] = regressAI.apply(defreg.SevMapping, axis=1)
-        #regressAI['priorityScore'] = regressAI.apply(defreg.PrioMapping, axis=1)
-        #regressAI['sevScore'] = regressAI.apply(defreg.sevScore,axis=1)
-
-        #defreg.calculate_regression(regressAI)
-
 
         datedata = {"IDX": self.refresh_IDX, "RefreshDate": datetime.today()}
         dateDF = pd.DataFrame([datedata])
