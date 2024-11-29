@@ -6,14 +6,14 @@ import datetime as dt
 import time
 import numpy as np
 import codecs
-import atlassian.utils.loadConfig as lC 
+import src.dataSource.atlassian.utils.loadConfig as lC 
 from datetime import datetime
 from numpy import int64
 from database.common.connect import connectDB as connect
-from atlassian import IssueSatelites as atl
-from atlassian.utils import columnHandling as utl
-from atlassian.utils import columnHandlingCustom as cutl
-from atlassian.utils import manageLogin as mgl
+from src.dataSource.atlassian import IssueSatelites as atl
+from src.dataSource.atlassian.utils import columnHandling as utl
+from src.dataSource.atlassian.utils import columnHandlingCustom as cutl
+from src.dataSource.atlassian.utils import manageLogin as mgl
 
 pd.options.mode.copy_on_write = True
 

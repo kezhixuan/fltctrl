@@ -1,0 +1,51 @@
+{
+    "general": {
+        "standard": [
+            "id",
+            "caseID_RC",
+            "title",
+            "section_id",
+            "template_id",
+            "type_id",
+            "typeID_RC",
+            "priority_id",
+            "milestone_id",
+            "refs",
+            "created_by",
+            "created_on",
+            "updated_by",
+            "updated_on",
+            "estimate",
+            "estimate_forecast",
+            "suite_id",
+            "display_order",
+            "is_deleted",
+            "custom_preconds",
+            "custom_steps",
+            "custom_expected",
+            "custom_steps_separated",
+            "custom_mission",
+            "custom_goals",
+            "custom_environment",
+            "custom_automated",
+            "custom_security",
+            "custom_duration",
+            "custom_testrail_bdd_scenario",
+            "Refresh_Cycle",
+            "project_RC"],
+        "gitdao": [
+            "custom_automation_type",
+            "custom_robot", 
+            "custom_descriptions", 
+            "custom_confluencereference"],
+        "gilds": [
+            "custom_release",
+            "custom_averagecallpermina",
+            "custom_regressiontype"],
+        "gtd": [],
+        "gois":[],
+        "gitdcl": [
+            "custom_testdata"
+        ]
+    }
+}

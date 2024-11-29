@@ -1,7 +1,7 @@
 import pytest
 import pandas as pd
 
-from atlassian.utils.loadConfig import loadConfig as conf
+from src.dataSource.atlassian.utils.loadConfig import loadConfig as conf
 
 
 class TestloadConfig():

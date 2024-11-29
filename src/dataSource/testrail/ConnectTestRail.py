@@ -1,0 +1,208 @@
+import requests
+import json
+import time
+import pandas as pd
+from datetime import datetime
+from requests.auth import HTTPBasicAuth
+from sqlalchemy import create_engine
+from database.common.testrail_tabs import testrail_tabs
+from database.common.connect import connectDB as connect
+from src.dataSource.atlassian.utils.loadConfig import loadConfig
+
+class ConnectTestRail:
+    
+    def __init__(self, testRail):
+        self.testRail = testRail
+        self.base_url = testRail.url
+        self.auth = HTTPBasicAuth(testRail.username, testRail.api_token)
+        self.trCaseAttrs =  loadConfig.readTRAttributes(self)
+
+    def get_test_case_type(self):
+            # Construct the URL for fetching test cases
+        url = f"{self.base_url}/index.php?/api/v2/get_case_types"
+        headers = {
+            "Content-Type": "application/json"
+        }
+        response = requests.get(url, headers=headers, auth=self.auth)
+        
+        if response.status_code == 200:
+            return response.json()
+        else:
+            raise Exception(f"Error fetching test cases: {response.status_code} - {response.text}")
+    
+    def create_case_type_df(self,dfct):
+        # Normalize the JSON response into a Pandas DataFrame
+        return pd.json_normalize(dfct)
+    
+    def transform_case_type_df(self, df, refresh_IDX):
+                # Example field mapping and transformation
+        dfct = self.create_case_type_df(df)
+        dfct.rename(columns={
+            'id': 'id',
+            'is_default': 'is_default',
+            'name': 'name'
+        }, inplace=True)
+        dfct["Refresh_Cycle"] = int(refresh_IDX)
+        dfct["typeID_RC"] = dfct.apply(lambda row: str(row["id"])+"-"+str(refresh_IDX), axis=1)
+        # Add more field transformation logic as needed
+        return dfct
+    
+    def store_test_case_types(self, df, engine, refresh_ID):
+        # Add load_id to the DataFrame and store it in the database
+        connect.write2DB(self, engine, df, "case_types", "dim_tr_")
+        print("Test case_types stored successfully")
+    
+    def get_test_cases(self, projConfig, suite):
+        end_of_stream = False
+        case_lst = []
+        retries = 0
+        total_cases =0
+        offset = 0
+        # Construct the URL for fetching test cases
+        while (not end_of_stream) and (retries < 4):
+            url = f"{self.base_url}/index.php?/api/v2/get_cases/{projConfig["testrail_id"]}&suite_id={suite}&offset={offset}" if projConfig["testrail_id"] else f"{self.base_url}/index.php?/api/v2/get_cases"
+            headers = {
+                "Content-Type": "application/json"
+            }
+            response = requests.get(url, headers=headers, auth=self.auth)
+            if response.status_code == 429: #rate limit hit
+                print("Rate limited. Waiting 60 seconds...")
+                retries += 1
+                time.sleep(60)
+            
+            elif response.status_code == 401: #unauthorized:
+                print("Unathorized. Please update credentials")
+                end_of_stream = True
+            
+            elif response.status_code == 403: #forbidden:
+                print("Forbidden")
+                end_of_stream = True
+
+            elif response.status_code == 200:
+        
+                if response.json()['cases'] == []:
+                    end_of_stream = True
+                else:
+                    case_lst.extend(response.json()['cases'])
+                    offset = response.json()['size'] + offset
+                    # print(start_at)
+                    # print(end_of_stream)
+                    total_cases = total_cases + offset 
+                    time.sleep(0.2)
+            else:
+                raise Exception(f"Error code {response.status_code}: {response.json()}")
+                end_of_stream = True
+        
+        return case_lst
+        
+        
+    def create_dataframe(self, test_cases):
+        # Normalize the JSON response into a Pandas DataFrame
+        df = pd.json_normalize(test_cases)
+        return df
+    
+    def convert_to_datetime(self, input):
+        # Convert string to datetime object
+        try:
+            return datetime.fromtimestamp(input)
+            #return datetime.strptime(input, "%Y-%m-%dT%H:%M:%S%z")
+        except ValueError:
+            return datetime.strptime("1970-01-01", "%Y-%m-%d")
+        
+    def create_project_RC(self, id, refresh_IDX, trConfig):
+        return trConfig["jira_project"] + str(refresh_IDX)
+    
+    def transform_data(self, df, refresh_IDX, projConfig):
+        # Example field mapping and transformation
+        df['created_on'] = df['created_on'].apply(lambda x: self.convert_to_datetime(x))
+        df['updated_on'] = df['updated_on'].apply(lambda x: self.convert_to_datetime(x))
+        df["Refresh_Cycle"] = int(refresh_IDX)
+        df['project_RC'] = df['suite_id'].apply(lambda x: self.create_project_RC(x,refresh_IDX, projConfig))
+      #  df.rename(columns={
+      #      'id': 'id',
+      #      'title': 'title',
+      #      'section_id': 'section_id',
+      #      'template_id': 'template_id',
+      #      'type_id': 'type_id',
+      #      'priority_id': 'priority_id',
+      #      'milestone_id': 'milestone_id',
+      #      'refs': 'refs',
+      #      'created_by': 'created_by',
+      #      'created_on': 'created_on',
+      #      'updated_by': 'updated_by',
+      #      'updated_on': 'updated_on',
+      #      'estimate': 'estimate',
+      #      'estimate_forecast': 'estimate_forecast',
+      #      'suite_id': 'suite_id',
+      #      'display_order': 'display_order',
+      #      'is_deleted': 'is_deleted',
+      #      'custom_automation_type': 'custom_automation_type',
+      #      'custom_preconds': 'custom_preconds',
+      #      'custom_steps': 'custom_steps',
+      #      'custom_expected': 'custom_expected',
+      #      'custom_steps_separated': 'custom_steps_separated',
+      #      'custom_mission': 'custom_mission',
+      #      'custom_goals': 'custom_goals'
+      #  }, inplace=True)
+        df["typeID_RC"] = df.apply(lambda row: str(row["type_id"])+"-"+str(refresh_IDX), axis=1)
+        df["caseID_RC"] = df.apply(lambda row: str(row["id"])+"-"+str(refresh_IDX), axis=1)
+        # Add more field transformation logic as needed
+        attGroup = self.trCaseAttrs["general"]
+        columns = attGroup["standard"]
+        print(projConfig.itDomain +  "----" + projConfig.jira_id)
+        if projConfig.itDomain == "GITDAOx":
+            columns = columns + attGroup["gitdao"]
+        elif projConfig.itDomain == "GITD":
+            columns = columns + attGroup["gtd"]
+      #  elif projConfig.itDomain == "GILDS" and (projConfig.jira_id != "LIN" or projConfig.jira_id != "CMP"):
+      #      columns = columns + attGroup["gilds"]
+        elif projConfig.itDomain == "GOISx":
+            columns = columns + attGroup["gois"]
+        
+            
+    
+        print(columns)
+        dfTC = df[columns]
+        
+        
+        
+        return dfTC
+    
+    def store_test_cases(self, df, engine, refresh_ID):
+        # Add load_id to the DataFrame and store it in the database
+        connect.write2DB(self, engine, df, "cases", "dim_tr_")
+        print("Test cases stored successfully")
+
+
+    def load_data(self, project_id, testRail, engine, refresh_IDX, config):
+        # Generate a unique load ID for the entire load process
+        #load_id = datetime.now().strftime("%Y%m%d%H%M%S")
+        case_types = self.transform_case_type_df(self.get_test_case_type(), refresh_IDX)
+        self.store_test_case_types(case_types, engine, refresh_IDX) 
+
+        for index, projectConf in config.iterrows():
+            suits = projectConf.suite_id
+            for index, suite in enumerate(projectConf.suite_id):
+                if projectConf.refresh_active == "y":
+                    print(suite)
+                    test_cases = self.get_test_cases(projectConf,suite)
+                    df = self.create_dataframe(test_cases)
+                    df = self.transform_data(df, refresh_IDX, projectConf)
+
+                    
+                    self.store_test_cases(df, engine, refresh_IDX,)
+
+# Usage example
+#if __name__ == "__main__":
+#    base_url = "https://yourtestrailurl.testrail.io"
+#    username = "your_username"
+#    api_key = "your_api_key"
+    
+#    connect_testrail = ConnectTestRail(base_url, username, api_key)
+    
+#    # Load data for all projects
+#    connect_testrail.load_data()
+    
+#    # Load data for a specific project
+#    project_id = 1
+#    connect_testrail.load_data(project_id)

@@ -12,6 +12,16 @@ class loadConfig:
         print(config)
         return config
     
+    def readTRConfig(self):
+        config = pd.read_json(codecs.open("config/testrail.json",'r','utf-8'))
+        testRails = pd.DataFrame(config)
+        return testRails
+    
+    def readTRAttributes(self):
+        config = pd.read_json(codecs.open("src/dataSource/atlassian/config/TestRail.json", 'r', 'utf-8'))
+        trAttr = pd.DataFrame(config)
+        return trAttr
+
     ##get testrail info by jira id
     def getTestRail(self,jiraId):
         config = pd.read_json(codecs.open("config/testrail.json",'r','utf-8'))

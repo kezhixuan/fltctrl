@@ -8,10 +8,10 @@ import numpy as np
 import re
 from openpyxl import Workbook
 from database.common.connect import connectDB as connect
-import atlassian.utils.cleanDF as clDF
+import src.dataSource.atlassian.utils.cleanDF as clDF
 from datetime import datetime
 from numpy import int64
-import atlassian.utils.loadConfig as conf
+import src.dataSource.atlassian.utils.loadConfig as conf
 
 
 pd.options.mode.copy_on_write = True

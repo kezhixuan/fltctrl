@@ -34,8 +34,8 @@
     },
 
     "testrail" : {
-        "url":"",
-        "username":"",
-        "password":""
+        "url":"https://dbschenker.testrail.io",
+        "username":"$testrail_tsc_user",
+        "api_token":"$testrail_tsc_token"
     }
 }
