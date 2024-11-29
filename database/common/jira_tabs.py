@@ -1,5 +1,5 @@
 from sqlalchemy import Table, MetaData, Column, Integer, VARCHAR, BIGINT, Boolean, DATETIME, PrimaryKeyConstraint, ForeignKeyConstraint
-from connect import connectDB
+from database.common.connect import connectDB
 
 
 class jira_tabs(connectDB):
@@ -32,6 +32,7 @@ class jira_tabs(connectDB):
                         Column('report_start_date', VARCHAR(None)),
                         Column('topic_id', VARCHAR(None)) ,
                         Column('issues_system', BIGINT), 
+                        Column('itdomain', VARCHAR(None)),
                         Column('Refresh_Cycle', BIGINT), 
                         Column('project_RC', VARCHAR(200), primary_key=True),
                         schema="SQ")

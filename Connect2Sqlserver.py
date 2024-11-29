@@ -1,10 +1,10 @@
 import pandas as pd
 import codecs
-import pyodbc
-import atlassian.ConnectAtlassian as ca
+import src.dataSource.atlassian.ConnectAtlassian as ca
 #import ownDev.defect_regression as dr
-import atlassian.issuesReleases as ir
-import atlassian.utils.loadConfig as conf
+import src.dataSource.atlassian.issuesReleases as ir
+import src.dataSource.atlassian.utils.loadConfig as conf
+from src.dataSource.testrail import ConnectTestRail as testr
 from database.common.connect import connectDB
 
 from sqlalchemy import MetaData, Table, ForeignKeyConstraint, create_engine, URL, text
@@ -29,11 +29,14 @@ class Connect2Sqlserver(connectDB):
         self.env = sys.argv[1]
         self.localTest = sys.argv[2]
         self.jiraService = sys.argv[3]
+        self.testRail = "testrail"
         self.prefix = "dim_ji_"
+        self.trConfig = conf.loadConfig().readTRConfig()
+        self.jiConfig = conf.loadConfig().readConfig()
+        self.config = pd.merge(self.trConfig, self.jiConfig, on="jira_id")
+        self.config = self.config.reset_index()
 
         # Configure Database connnection
-
-        
         ############## end Database Connection Configuration ##################
         # create and establish a database session
         super().__init__(sys.argv[1], sys.argv[2])
@@ -41,6 +44,7 @@ class Connect2Sqlserver(connectDB):
         connData = pd.read_json(codecs.open(self.env+".json",'r','utf-8'))
 
         self.jiraCon = connData[self.jiraService]
+        self.testrailCon = connData[self.testRail]
 
         # get and set history index
         with self.engine.connect() as conn:
@@ -60,6 +64,7 @@ class Connect2Sqlserver(connectDB):
             dateDF.to_sql("dim_refresh_history", conn,schema='SQ', chunksize=2000, index=False, if_exists='append')
             conn.commit()
 
+        # load the jira configuration
         dfConfig = conf.loadConfig().readConfig()
         dfConfig["Refresh_Cycle"] = int(self.refresh_IDX)
         with self.engine.begin() as conn:
@@ -68,9 +73,10 @@ class Connect2Sqlserver(connectDB):
             dfConfig.to_sql('dim_sq_config', con=self.engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
         conn.commit()
 
+
+
     def getJiraReleases(self):
-        pass
-    # get the Jira releases
+#    # get the Jira releases
         isr = ir.issuesReleases(self.jiraCon, self.jiraService )
         dfReleases = isr.get_releases()
         dfReleases["Refresh_Cycle"] = int(self.refresh_IDX)
@@ -79,12 +85,21 @@ class Connect2Sqlserver(connectDB):
 
         
     def getJiraIssues(self):
-    # get the jira issues
+#    # get the jira issues
         testproj =""
         jiraIssues = ca.ConnectAtlassian(self.jiraCon, self.jiraService)
         dfIssues=jiraIssues.GetIssues(testproj,self.jiraService, self.engine, self.refresh_IDX)
         dfIssues["Refresh_Cycle"] = int(self.refresh_IDX)
     
+    def getTestRailData(self):
+        project_id=""
+        
+        testR = testr.ConnectTestRail(self.testrailCon)
+        testR.load_data(project_id, self.testRail, self.engine, self.refresh_IDX, self.config)
+        
+        
+    
 loadJiraData = Connect2Sqlserver()
-loadJiraData.getJiraReleases()
-loadJiraData.getJiraIssues()
+loadJiraData.getTestRailData()
+#loadJiraData.getJiraReleases()
+#loadJiraData.getJiraIssues()

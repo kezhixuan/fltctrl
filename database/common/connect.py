@@ -60,7 +60,8 @@ class connectDB():
             conn.commit()
             success = True
             log.info('Successfull writen into table ' + tableName + ' and ' + str(data.size) + ' records saved!')
-        except:
+        except Exception as e:
             success = False
+            print(e.with_traceback())
             log.critical('Writing into table ' + tableName + ' failed!')
         return success

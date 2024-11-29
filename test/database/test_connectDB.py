@@ -2,7 +2,7 @@ from unittest.mock import Mock, patch
 from unittest import mock
 import pandas as pd
 import numpy as np
-from atlassian import IssueSatelites as atl
+from src.dataSource.atlassian import IssueSatelites as atl
 from database.common.connect import connectDB
 from sqlalchemy import engine
 # Unit Test Class for the Database connection handling.

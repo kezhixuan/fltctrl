@@ -8,6 +8,7 @@
         "project_name": "WebClaims",
         "issue_types": "AND created > '2019-07-01' and issuetype in (Bug, Epic, 'Change Request', Improvement, 'New Feature', 'Remove Feature', Story)",
         "report_start_date": "2019-12-31",
+        "itDomain": "GITDF",
         "topic_id": "TSCTOPIC-25",
         "issues_system":1
     },
@@ -20,6 +21,7 @@
         "project_name": "LiNeS",
         "issue_types": "AND created > '2019-07-01' and issuetype in (Bug, 'Change Request', Demand, Improvement, 'New Feature', 'Remove Feature', Story, 'Technical Improvement')",
         "report_start_date": "2019-12-31",
+        "itDomain": "GILDS",
         "topic_id": "TSCTOPIC-110",
         "issues_system":1
     },
@@ -32,6 +34,7 @@
         "project_name": "MDMADM",
         "issue_types": "AND created > '2019-07-01' and issuetype in (Bug, 'Change Request', Demand, Improvement, 'New Feature', 'Remove Feature', Story, 'Technical Improvement')",
         "report_start_date": "2019-12-31",
+        "itDomain": "GITDF",
         "topic_id": "TSCTOPIC-78",
         "issues_system":1
     },
@@ -44,6 +47,7 @@
         "project_name": "Schenker Identity Management Service",
         "issue_types": "AND created > '2019-07-01' and issuetype in ( Bug, Demand)",
         "report_start_date": "2019-12-31",
+        "itDomain": "GOIS",
         "topic_id": "TSCTOPIC-11",
         "issues_system":1
     },
@@ -56,6 +60,7 @@
         "project_name": "Output & Document Management",
         "issue_types": "AND created > '2019-07-01' and issuetype in (Bug, 'Change Request', Demand, Improvement, 'New Feature', 'Remove Feature', Story, 'Technical Improvement')",
         "report_start_date": "2019-12-31",
+        "itDomain": "GITD",
         "topic_id": "TSCTOPIC-10",
         "issues_system":1
     },
@@ -68,6 +73,7 @@
         "project_name": "GXD - TSC Solution Delivery / Application Maintenance",
         "issue_types": "AND created > '2019-07-01' and issuetype in (Defect, 'Change Request', Demand, Improvement, 'New Feature', 'Remove Feature', Story, 'Technical Improvement')",
         "report_start_date": "2019-12-31",
+        "itDomain": "GITDAO",
         "topic_id": "TSCTOPIC-12",
         "issues_system":1
     },
@@ -80,6 +86,7 @@
         "project_name": "SPACE 2.0",
         "issue_types": "AND created > '2019-07-01' and issuetype in (Bug, 'Change Request', Demand, Improvement, 'New Feature', 'Remove Feature', Story, 'Technical Improvement')",
         "report_start_date": "2019-12-31",
+        "itDomain": "GITDAO",
         "topic_id": "TSCTOPIC-12",
         "issues_system":1
     },
@@ -92,6 +99,7 @@
         "project_name": "CMP",
         "issue_types": "AND created > '2019-07-01' and issuetype in ( Defect, Epic, 'User Story')",
         "report_start_date": "2019-12-31",
+        "itDomain": "GILDS",
         "topic_id": "TSCTOPIC-11",
         "issues_system":1
     },
@@ -104,6 +112,7 @@
         "project_name": "GXD 2.0 Revised",
         "issue_types": "",
         "report_start_date": "2019-12-31",
+        "itDomain": "GITDAO",
         "topic_id": "TSCTOPIC-12",
         "issues_system":1
     },
@@ -116,6 +125,7 @@
         "project_name": "GXDTSCSDAM",
         "issue_types": "",
         "report_start_date": "2019-12-31",
+        "itDomain": "GITDAO",
         "topic_id": "TSCTOPIC-14",
         "issues_system":1
     },
@@ -128,6 +138,7 @@
         "project_name": "Global Calculation Tool",
         "issue_types": "",
         "report_start_date": "2019-12-31",
+        "itDomain": "GITDCL",
         "topic_id": "TSCTOPIC-15",
         "issues_system":1
     },
@@ -140,6 +151,7 @@
         "project_name": "APAC TMS DBC",
         "issue_types": "",
         "report_start_date": "2019-12-31",
+        "itDomain": "TSC",
         "topic_id": "TSCTOPIC-16",
         "issues_system":1
     },
@@ -152,6 +164,7 @@
         "project_name": "Apple WMS - APAC",
         "issue_types": "",
         "report_start_date": "",
+        "itDomain": "GITDCL",
         "topic_id": "",
         "issues_system":1
     },
@@ -164,6 +177,7 @@
         "project_name": "GXD Rebuild",
         "issue_types": "",
         "report_start_date": "",
+        "itDomain": "GITDAO",
         "topic_id": "",
         "issues_system":1
     },
@@ -176,6 +190,7 @@
         "project_name": "SPACE 2.0 CARE & TEMPLATE Change",
         "issue_types": "",
         "report_start_date": "",
+        "itDomain": "GITDAO",
         "topic_id": "",
         "issues_system":1
     },
@@ -188,6 +203,7 @@
         "project_name": "Global Risk & Insurance Rating Engine",
         "issue_types": "",
         "report_start_date": "",
+        "itDomain": "GITDAO",
         "topic_id": "",
         "issues_system":1
     },
@@ -200,6 +216,7 @@
         "project_name": "Global Shop Floor Solutions",
         "issue_types": "",
         "report_start_date": "",
+        "itDomain": "GITDCL",
         "topic_id": "",
         "issues_system": ""
     },
@@ -212,6 +229,7 @@
         "project_name": "Japan-Flight Planning",
         "issue_types": "",
         "report_start_date": "",
+        "itDomain": "GITDCL",
         "topic_id": "",
         "issues_system": ""
     },
@@ -224,6 +242,7 @@
         "project_name": "Americas-SSC",
         "issue_types": "",
         "report_start_date": "",
+        "itDomain": "GITDF",
         "topic_id": "",
         "issues_system": ""
     },
@@ -236,6 +255,7 @@
         "project_name": "APAC eServices Change",
         "issue_types": "",
         "report_start_date": "",
+        "itDomain": "GITDCL",
         "topic_id": "",
         "issues_system": ""
     },
@@ -248,6 +268,7 @@
         "project_name": "APAC eServices API",
         "issue_types": "",
         "report_start_date": "",
+        "itDomain": "GITDAO",
         "topic_id": "",
         "issues_system": ""
     },
@@ -260,6 +281,7 @@
         "project_name": "GPIS eProject 2.0",
         "issue_types": "",
         "report_start_date": "",
+        "itDomain": "GITDAO",
         "topic_id": "",
         "issues_system": ""
     },
@@ -272,6 +294,7 @@
         "project_name": "Connect2MDM",
         "issue_types": "",
         "report_start_date": "",
+        "itDomain": "GITDF",
         "topic_id": "",
         "issues_system": ""
     },
@@ -284,6 +307,7 @@
         "project_name": "SLS Agile",
         "issue_types": "",
         "report_start_date": "",
+        "itDomain": "GILDS",
         "topic_id": "",
         "issues_system": ""
     },
@@ -296,6 +320,7 @@
         "project_name": "SLS Agile",
         "issue_types": "",
         "report_start_date": "",
+        "itDomain": "GILDS",
         "topic_id": "",
         "issues_system": ""
     },
@@ -308,6 +333,7 @@
         "project_name": "Cisco Houston",
         "issue_types": "",
         "report_start_date": "",
+        "itDomain": "GITDCL",
         "topic_id": "",
         "issues_system": ""
     },
@@ -320,6 +346,7 @@
         "project_name": "Rate Cube",
         "issue_types": "",
         "report_start_date": "",
+        "itDomain": "GITDAO",
         "topic_id": "",
         "issues_system": ""
     },
@@ -332,6 +359,7 @@
         "project_name": "Carrier Manager",
         "issue_types": "",
         "report_start_date": "",
+        "itDomain": "GILDS",
         "topic_id": "",
         "issues_system": ""
     },
@@ -344,11 +372,12 @@
         "project_name": "Connect2People",
         "issue_types": "",
         "report_start_date": "",
+        "itDomain": "GITDF",
         "topic_id": "",
         "issues_system": ""
     },
     {
-        "refresh_active": "y",
+        "refresh_active": "n",
         "jira_system": "TSC",
         "jira_id": "CISCOSLC",
         "jira_project": "CISCOSLC",
@@ -356,6 +385,7 @@
         "project_name": "CiscoSLC",
         "issue_types": "",
         "report_start_date": "",
+        "itDomain": "GITDCL",
         "topic_id": "",
         "issues_system": ""
     },
@@ -368,6 +398,7 @@
         "project_name": "Customs",
         "issue_types": "",
         "report_start_date": "",
+        "itDomain": "GITDAO",
         "topic_id": "",
         "issues_system": ""
     }

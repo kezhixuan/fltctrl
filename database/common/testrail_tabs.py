@@ -1,6 +1,6 @@
 from sqlalchemy import Table, MetaData, Column, Integer, VARCHAR, BIGINT, Boolean, DATETIME, PrimaryKeyConstraint, ForeignKeyConstraint
-from connect import connectDB
-from jira_tabs import jira_tabs
+from database.common.connect import connectDB
+from database.common.jira_tabs import jira_tabs
 
 
 
@@ -15,15 +15,15 @@ class testrail_tabs (connectDB):
 
                 m.create_all(bind=self.engine)
         
-        dim_tr_case_types = Table('dim_tr_case_types', m,
-            Column('self', VARCHAR(255)),
-            Column('id', BIGINT),
-            Column('caseID_RC', VARCHAR(200), primary_key=True),
-            Column('type', VARCHAR(255)),
-            Column('regression', Boolean),
-            schema="SQ"
-        )
 
+        dim_tr_case_types = Table('dim_tr_case_types', m,
+            Column('id', BIGINT),
+            Column('is_default', VARCHAR(200)),
+            Column('name', VARCHAR(255)),
+            Column('Refresh_Cycle', BIGINT),
+            Column('typeID_RC', VARCHAR(200), primary_key=True),
+            schema="SQ")
+        
         dim_tr_cases = Table('dim_tr_cases', m,
             Column('id', BIGINT) ,
             Column('caseID_RC', VARCHAR(200), primary_key=True),
@@ -31,6 +31,7 @@ class testrail_tabs (connectDB):
             Column('section_id', BIGINT) ,
             Column('template_id', BIGINT) ,
             Column('type_id', BIGINT) ,
+            Column('typeID_RC', VARCHAR(200)),
             Column('priority_id', BIGINT) ,
             Column('milestone_id', BIGINT) ,
             Column('refs', VARCHAR(None)) ,
@@ -38,7 +39,7 @@ class testrail_tabs (connectDB):
             Column('created_on', DATETIME) ,
             Column('updated_by', BIGINT) ,
             Column('updated_on', DATETIME),
-            Column('estimate', BIGINT) ,
+            Column('estimate', VARCHAR(None)) ,
             Column('estimate_forecast', VARCHAR(None)),
             Column('suite_id', BIGINT) ,
             Column('display_order', BIGINT) ,
@@ -50,10 +51,24 @@ class testrail_tabs (connectDB):
             Column('custom_steps_separated', VARCHAR(None)) ,
             Column('custom_mission', VARCHAR(None)) ,
             Column('custom_goals', VARCHAR(None)) ,
+            Column('custom_environment', VARCHAR(None)) ,
+            Column('custom_tc_status', VARCHAR(None)) ,
+            Column('custom_automated', VARCHAR(None)) ,
+            Column('custom_release', VARCHAR(None)) ,
+            Column('custom_functionality', VARCHAR(None)) ,
+            Column('custom_security', VARCHAR(None)) ,
+            Column('custom_averagecallpermina', VARCHAR(None)) ,
+            Column('custom_duration', VARCHAR(None)) ,
+            Column('custom_regressiontype', VARCHAR(None)) ,
+            Column('custom_testrail_bdd_scenario', VARCHAR(None)) ,
+            Column('custom_testdata', VARCHAR(None)),
+            Column('custom_robot', VARCHAR(None)),
+            Column('custom_descriptions', VARCHAR(None)),
+            Column('custom_confluencereference', VARCHAR(None)),
             Column('Refresh_Cycle', BIGINT),
             Column('project_RC', VARCHAR(200)),
             ForeignKeyConstraint(["project_RC"],jira_tabs.dim_sq_config.primary_key,use_alter=True,name="fk_tr_cases_sq_config"),
-            ForeignKeyConstraint(["caseID_RC"],dim_tr_case_types.primary_key,use_alter=True,name="fk_tr_case_type_sq_config"),
+            ForeignKeyConstraint(["typeID_RC"],dim_tr_case_types.primary_key,use_alter=True,name="fk_tr_case_type_sq_config"),
             schema="SQ")
 
         fact_tr_run = Table('fact_tr_run', m,
