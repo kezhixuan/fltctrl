@@ -60,7 +60,8 @@ class ConnectTestRail:
         offset = 0
         # Construct the URL for fetching test cases
         while (not end_of_stream) and (retries < 4):
-            url = f"{self.base_url}/index.php?/api/v2/get_cases/{projConfig["testrail_id"]}&suite_id={suite}&offset={offset}"
+            id =  projConfig["testrail_id"]
+            url = f"{self.base_url}/index.php?/api/v2/get_cases/{id}&suite_id={suite}&offset={offset}"
             headers = {
                 "Content-Type": "application/json"
             }
