@@ -101,5 +101,5 @@ class Connect2Sqlserver(connectDB):
     
 loadJiraData = Connect2Sqlserver()
 loadJiraData.getTestRailData()
-#loadJiraData.getJiraReleases()
-#loadJiraData.getJiraIssues()
+loadJiraData.getJiraReleases()
+loadJiraData.getJiraIssues()
