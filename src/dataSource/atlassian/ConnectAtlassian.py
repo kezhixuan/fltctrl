@@ -99,7 +99,7 @@ class ConnectAtlassian:
     columH = utl.columnHandling()
     columCH = cutl.columnHandlingCustom()
 
-    jql = json.load(codecs.open("atlassian/config/JiraAttributes.json",'r','utf-8'))
+    jql = json.load(codecs.open("src/dataSource/atlassian/config/JiraAttributes.json",'r','utf-8'))
 
     if jiraService == "jira_tsc":
       jql_fields = ", ".join(jql["general"]["standard"]) + ", " + ", ".join(jql["general"]["customFields"])
