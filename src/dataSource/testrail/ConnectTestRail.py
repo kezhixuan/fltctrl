@@ -151,23 +151,11 @@ class ConnectTestRail:
         attGroup = self.trCaseAttrs["general"]
         columns = attGroup["standard"]
         print(projConfig.itDomain +  "----" + projConfig.jira_id)
-        if projConfig.itDomain == "GITDAOx":
-            columns = columns + attGroup["gitdao"]
-        elif projConfig.itDomain == "GITD":
-            columns = columns + attGroup["gtd"]
-      #  elif projConfig.itDomain == "GILDS" and (projConfig.jira_id != "LIN" or projConfig.jira_id != "CMP"):
-      #      columns = columns + attGroup["gilds"]
-        elif projConfig.itDomain == "GOISx":
-            columns = columns + attGroup["gois"]
         
-            
-    
-        print(columns)
-        dfTC = df[columns]
-        
-        
-        
-        return dfTC
+        if projConfig.regType == "y":
+            columns = columns + attGroup["regFlag"]
+
+        return df[columns]    
     
     def store_test_cases(self, df, engine, refresh_ID):
         # Add load_id to the DataFrame and store it in the database

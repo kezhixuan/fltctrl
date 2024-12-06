@@ -33,19 +33,7 @@
             "custom_testrail_bdd_scenario",
             "Refresh_Cycle",
             "project_RC"],
-        "gitdao": [
-            "custom_automation_type",
-            "custom_robot", 
-            "custom_descriptions", 
-            "custom_confluencereference"],
-        "gilds": [
-            "custom_release",
-            "custom_averagecallpermina",
-            "custom_regressiontype"],
-        "gtd": [],
-        "gois":[],
-        "gitdcl": [
-            "custom_testdata"
-        ]
+        "regFlag":[
+            "custom_regressiontype"]
     }
 }
