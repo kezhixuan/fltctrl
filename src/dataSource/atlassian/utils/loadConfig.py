@@ -46,6 +46,8 @@ class loadConfig:
                 jiraProjects.query("refresh_active == 'y' & jira_system == 'TSC' & jira_project == '" + testProj + "'", inplace=True)
             else:
                 jiraProjects.query("refresh_active == 'y' & jira_system == 'TSC'", inplace=True)
+        elif jiraService == "jira_tsc1":
+            jiraProjects.query("refresh_active == 'y' & jira_system == 'TSC1'", inplace=True)
         elif jiraService == "jira_gilds":
             jiraProjects.query("refresh_active == 'y' & jira_system == 'GILDS'", inplace=True)
         print(jiraProjects)    
