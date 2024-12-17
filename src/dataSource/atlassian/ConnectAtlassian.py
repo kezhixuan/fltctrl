@@ -179,7 +179,7 @@ class ConnectAtlassian:
         "fields.customfield_14455.value","fields.customfield_11487.value","fields.customfield_11106.value","fields.customfield_11107.value"])]
       dfSatelite = df.loc[:, df.columns.isin(["id", "key","fields.customfield_11095","fields.project.name","fields.labels","fields.versions","fields.fixVersions","fields.components"])]
 
-    elif jiraService == "jira_tsc":
+    elif jiraService in ("jira_tsc", "jira_tsc1"):
       dfCore = df.loc[:, df.columns.isin(["id","key","fields.issuetype.name","fields.project.name", "fields.project.key","fields.priority.name",
         "fields.status.name","fields.creator.displayName", "fields.created","fields.summary",
         "fields.statuscategorychangedate","fields.duedate","fields.updated",
