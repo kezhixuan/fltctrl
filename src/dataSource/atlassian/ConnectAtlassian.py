@@ -103,7 +103,7 @@ class ConnectAtlassian:
 
     jql = json.load(codecs.open("src/dataSource/atlassian/config/JiraAttributes.json",'r','utf-8'))
 
-    if jiraService == "jira_tsc":
+    if jiraService in ("jira_tsc","jira_tsc1"):
       jql_fields = ", ".join(jql["general"]["standard"]) + ", " + ", ".join(jql["general"]["customFields"])
       filter = ", ".join(jql["general"]["filter"])
     elif jiraService == "jira_gilds":
