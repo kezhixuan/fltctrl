@@ -25,6 +25,7 @@ default:
 stages:          # List of stages for jobs, and their order of execution
   - build
   - test
+  - predeploy
   - deploy
 
 
@@ -42,6 +43,20 @@ sqdashboard-job-unit-test:
     - echo "Start of the Unit Tests"
     - envsubst < ${CI_PROJECT_DIR}/FC_Test_tmpl.json > ${CI_PROJECT_DIR}/FC_Test.json
     - python3 -m pytest
+
+sqdashboard-job-prework:      # This job runs in the deploy stage.
+  stage: predeploy  # It only runs when *both* jobs in the test stage complete successfully.
+  environment: production
+  only:
+    refs:
+      - main
+  script:
+    - echo "Run is starting"
+    - envsubst < ${CI_PROJECT_DIR}/FC_Test_tmpl.json > ${CI_PROJECT_DIR}/FC_Test.json
+    #- python3 ${CI_PROJECT_DIR}/testMSSQL.py
+    #- the jira_gilds parameter represents the target jira instance. it can be also jira_issues.
+    - python3 ${CI_PROJECT_DIR}/InitLoadSetup.py FC_Test fc_db jira_tsc
+
 
 sqdashboard-job-jira_tsc:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.

@@ -16,6 +16,10 @@ class jira_tabs(connectDB):
         dim_refresh_history = Table('dim_refresh_history', m,
                         Column('index', BIGINT),
                         Column('IDX', BIGINT, primary_key=True),
+                        Column('SysJi1', VARCHAR(None)),
+                        Column('SysJi2', VARCHAR(None)),
+                        Column('SysJi3', VARCHAR(None)),
+                        Column('SysTr1', VARCHAR(None)),
                         Column('RefreshDate', DATETIME),
                         schema="SQ")
 

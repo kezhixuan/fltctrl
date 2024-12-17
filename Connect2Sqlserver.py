@@ -35,6 +35,7 @@ class Connect2Sqlserver(connectDB):
         self.jiConfig = conf.loadConfig().readConfig()
         self.config = pd.merge(self.trConfig, self.jiConfig, on="jira_id")
         self.config = self.config.reset_index()
+        self.upDate = False
 
         # Configure Database connnection
         ############## end Database Connection Configuration ##################
@@ -46,32 +47,9 @@ class Connect2Sqlserver(connectDB):
         self.jiraCon = connData[self.jiraService]
         self.testrailCon = connData[self.testRail]
 
-        # get and set history index
-        with self.engine.connect() as conn:
-            try:
-                result = conn.execute(text("select max([IDX]) as refreshIDX from sq.dim_refresh_history"))
-                for row in result:
-                    self.refresh_IDX = int(row.refreshIDX)+1
-            except:
-                self.refresh_IDX = 1
-
-        datedata = {"IDX": self.refresh_IDX, "RefreshDate": datetime.today()}
-        dateDF = pd.DataFrame([datedata])
-        with self.engine.begin() as conn:
-            # update refresh cylce history
-            # enabl e inserting values into IDENTITY column
-            conn.exec_driver_sql(f"SET IDENTITY_INSERT sq.dim_refresh_history ON")
-            dateDF.to_sql("dim_refresh_history", conn,schema='SQ', chunksize=2000, index=False, if_exists='append')
-            conn.commit()
-
-        # load the jira configuration
-        dfConfig = conf.loadConfig().readConfig()
-        dfConfig["Refresh_Cycle"] = int(self.refresh_IDX)
-        with self.engine.begin() as conn:
-        #   conn.exec_driver_sql(f"delete from sq.dim_sq_config")
-            dfConfig['project_RC'] = dfConfig['jira_project'] + str(self.refresh_IDX)
-            dfConfig.to_sql('dim_sq_config', con=self.engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
-        conn.commit()
+        ofile = open('refreshIDX.txt')
+        IDX = ofile.readline()
+        self.refresh_IDX = str(IDX)
 
 
 
@@ -82,7 +60,7 @@ class Connect2Sqlserver(connectDB):
         dfReleases["Refresh_Cycle"] = int(self.refresh_IDX)
         dfReleases['project_RC'] = dfReleases['project'] + str(self.refresh_IDX)
         dfReleases.to_sql(self.prefix+'releases', con=self.engine,schema='SQ', chunksize=2000, index=False, if_exists='append')
-
+        #self.closeRun("Releases")
         
     def getJiraIssues(self):
 #    # get the jira issues
@@ -90,14 +68,32 @@ class Connect2Sqlserver(connectDB):
         jiraIssues = ca.ConnectAtlassian(self.jiraCon, self.jiraService)
         dfIssues=jiraIssues.GetIssues(testproj,self.jiraService, self.engine, self.refresh_IDX)
         dfIssues["Refresh_Cycle"] = int(self.refresh_IDX)
+        #self.closeRun("Issues")
     
     def getTestRailData(self):
         project_id=""
         
         testR = testr.ConnectTestRail(self.testrailCon)
         testR.load_data(project_id, self.testRail, self.engine, self.refresh_IDX, self.config)
-        
-        
+        #self.closeRun("TestRail")
+
+
+    def closeRun(self, state):
+        with self.engine.connect() as conn:
+            try:
+                #result = conn.execute(text("update sq.dim_refresh_history rh set SysJi1 = 'TSC1' where day(rh.RefreshDate) = day(getdate())"))
+                if state == "Issues":
+                    sql = "update sq.dim_refresh_history rh set SysJi1 = 'TSC1' where rh.IDX = %s"
+                elif state == "Releases":
+                    sql = "update sq.dim_refresh_history rh set SysJi2 = 'TSC1' where rh.IDX = %s"
+                elif state == "TestRail":
+                    sql = "update sq.dim_refresh_history rh set SysTr1 = 'TSC1' where rh.IDX = %s"
+                else:
+                    pass
+                result = conn.execute(sql, self.refresh_IDX)
+            except:
+                print("jobs not closed: " + state)
+
     
 loadJiraData = Connect2Sqlserver()
 loadJiraData.getTestRailData()
