@@ -74,6 +74,19 @@ sqdashboard-job-jira_tsc:      # This job runs in the deploy stage.
     #- the jira_gilds parameter represents the target jira instance. it can be also jira_issues.
     - python3 ${CI_PROJECT_DIR}/Connect2Sqlserver.py FC_Test fc_db jira_tsc
 
+sqdashboard-job-jira_tsc1:      # This job runs in the deploy stage.
+  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  environment: production
+  only:
+    refs:
+      - main
+  script:
+    - echo "Run is starting"
+    - envsubst < ${CI_PROJECT_DIR}/FC_Test_tmpl.json > ${CI_PROJECT_DIR}/FC_Test.json
+    #- python3 ${CI_PROJECT_DIR}/testMSSQL.py
+    #- the jira_gilds parameter represents the target jira instance. it can be also jira_issues.
+    - python3 ${CI_PROJECT_DIR}/Connect2Sqlserver.py FC_Test fc_db jira_tsc1
+
 sqdashboard-job-jira_gilds:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
