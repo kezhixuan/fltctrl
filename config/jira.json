@@ -157,7 +157,7 @@
     },
     {
         "refresh_active": "y",
-        "jira_system": "TSC",
+        "jira_system": "TSC1",
         "jira_id": "AWA",
         "jira_project": "AWA",
         "jira_project_name": "Apple WMS - APAC",
@@ -170,7 +170,7 @@
     },
     {
         "refresh_active": "y",
-        "jira_system": "TSC",
+        "jira_system": "TSC1",
         "jira_id": "GXDRE",
         "jira_project": "GXDRE",
         "jira_project_name": "GXD Rebuild",
@@ -183,7 +183,7 @@
     },
     {
         "refresh_active": "n",
-        "jira_system": "TSC",
+        "jira_system": "TSC1",
         "jira_id": "S20CTC",
         "jira_project": "S20CTC",
         "jira_project_name": "SPACE 2.0 CARE & TEMPLATE Change",
@@ -196,7 +196,7 @@
     },
     {
         "refresh_active": "y",
-        "jira_system": "TSC",
+        "jira_system": "TSC1",
         "jira_id": "GRIP",
         "jira_project": "GRIP",
         "jira_project_name": "Global Risk & Insurance Rating Engine",
@@ -222,7 +222,7 @@
     },
     {
         "refresh_active": "n",
-        "jira_system": "TSC",
+        "jira_system": "TSC1",
         "jira_id": "JFP",
         "jira_project": "JFP",
         "jira_project_name": "Japan-Flight Planning",
@@ -235,7 +235,7 @@
     },
     {
         "refresh_active": "y",
-        "jira_system": "TSC",
+        "jira_system": "TSC1",
         "jira_id": "AMSSC",
         "jira_project": "AMSSC",
         "jira_project_name": "Americas-SSC",
@@ -248,7 +248,7 @@
     },
     {
         "refresh_active": "y",
-        "jira_system": "TSC",
+        "jira_system": "TSC1",
         "jira_id": "AEC",
         "jira_project": "AEC",
         "jira_project_name": "APAC eServices Change",
@@ -261,7 +261,7 @@
     },
     {
         "refresh_active": "n",
-        "jira_system": "TSC",
+        "jira_system": "TSC1",
         "jira_id": "AECAPI",
         "jira_project": "AECAPI",
         "jira_project_name": "APAC eServices API",
@@ -274,7 +274,7 @@
     },
     {
         "refresh_active": "y",
-        "jira_system": "TSC",
+        "jira_system": "TSC1",
         "jira_id": "GE20",
         "jira_project": "GE20",
         "jira_project_name": "GPIS eProject 2.0",
@@ -287,7 +287,7 @@
     },
     {
         "refresh_active": "y",
-        "jira_system": "TSC",
+        "jira_system": "TSC1",
         "jira_id": "C2MDM",
         "jira_project": "C2MDM",
         "jira_project_name": "Connect2MDM",
@@ -339,7 +339,7 @@
     },
     {
         "refresh_active": "n",
-        "jira_system": "TSC",
+        "jira_system": "TSC1",
         "jira_id": "RATE",
         "jira_project": "RATE",
         "jira_project_name": "Rate Cube",
@@ -378,7 +378,7 @@
     },
     {
         "refresh_active": "n",
-        "jira_system": "TSC",
+        "jira_system": "TSC1",
         "jira_id": "CISCOSLC",
         "jira_project": "CISCOSLC",
         "jira_project_name": "CiscoSLC",

@@ -16,6 +16,10 @@ class issuesReleases:
   def __init__(self, connectJira, instance):
     print(connectJira)
     login = mgl.manageLogin()
+
+    if instance == 'jira_tsc1':
+        instance = 'jira_tsc'
+    
     self.creds = login.getCreds(connectJira, instance)
     self.instance = instance
 
