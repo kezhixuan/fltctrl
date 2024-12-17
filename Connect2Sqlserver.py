@@ -42,10 +42,14 @@ class Connect2Sqlserver(connectDB):
         # create and establish a database session
         super().__init__(sys.argv[1], sys.argv[2])
 
+        
         connData = pd.read_json(codecs.open(self.env+".json",'r','utf-8'))
 
-        self.jiraCon = connData[self.jiraService]
-        self.testrailCon = connData[self.testRail]
+        if self.jiraService == 'jira_tsc1':
+            self.jiraCon = connData['jira_tsc']
+        else:
+            self.jiraCon = connData[self.jiraService]
+            self.testrailCon = connData[self.testRail]
 
         ofile = open('refreshIDX.txt')
         IDX = ofile.readline()
@@ -96,6 +100,6 @@ class Connect2Sqlserver(connectDB):
 
     
 loadJiraData = Connect2Sqlserver()
-loadJiraData.getTestRailData()
+#loadJiraData.getTestRailData()
 loadJiraData.getJiraReleases()
 loadJiraData.getJiraIssues()
