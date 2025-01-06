@@ -52,6 +52,90 @@ class ConnectTestRail:
         connect.write2DB(self, engine, df, "case_types", "dim_tr_")
         print("Test case_types stored successfully")
     
+    def get_testrail_items(self, endpoint,object,param):
+        end_of_stream = False
+        items = []
+        retries = 0
+        offset = 0
+        # Construct the URL for fetching test cases
+        while (not end_of_stream) and (retries < 4):
+            url = f"{self.base_url}/index.php?/api/v2/{endpoint}/{param}&offset={offset}"
+            headers = {
+                "Content-Type": "application/json"
+            }
+            response = requests.get(url, headers=headers, auth=self.auth)
+            if response.status_code == 429: #rate limit hit
+                print("Rate limited. Waiting 60 seconds...")
+                retries += 1
+                time.sleep(60)
+            
+            elif response.status_code == 401: #unauthorized:
+                print("Unathorized. Please update credentials")
+                end_of_stream = True
+            
+            elif response.status_code == 403: #forbidden:
+                print("Forbidden")
+                end_of_stream = True
+
+            elif response.status_code == 200:
+        
+                if response.json()[f'{object}'] == []:
+                    end_of_stream = True
+                else:
+                    items += response.json()[f'{object}']
+                    offset = response.json()['size'] + offset
+                    time.sleep(0.2)
+            else:
+                raise Exception(f"Error code {response.status_code}: {response.json()}")
+                end_of_stream = True
+        
+        return items
+    
+    def process_test_runs(self,projConfig,engine,refresh_IDX):
+        #1.get test run
+        runs = self.get_testrail_items('get_runs','runs', projConfig["testrail_id"])
+        #2.create data_frame
+        df = pd.json_normalize(runs)
+        #3.convert some column values
+        df['created_on'] = df['created_on'].apply(lambda x: self.convert_to_datetime(x))
+        df['updated_on'] = df['updated_on'].apply(lambda x: self.convert_to_datetime(x))
+        df["Refresh_Cycle"] = int(refresh_IDX)
+        df["runID_RC"] = df.apply(lambda row: str(row["id"])+"-"+str(refresh_IDX), axis=1)
+        # Add more field transformation logic as needed
+        attGroup = self.trCaseAttrs["general"]
+        columns = attGroup["standard"]
+        print(projConfig.itDomain +  "----" + projConfig.jira_id)
+        
+        if projConfig.regType == "y":
+            columns = columns + attGroup["regFlag"]
+        #4.store test run data
+        connect.write2DB(self, engine, df, "runs", "fact_tr_")
+        print("Test runs stored successfully")
+        return runs
+    
+    
+    def process_tests(self,projConfig,engine,refresh_IDX,runs):
+        all_tests = []
+        for run in runs:
+            tests = self.get_testrail_items('get_tests','tests', run["id"])
+            all_tests +=tests
+        #2.create data_frame
+        df = pd.json_normalize(all_tests)
+        #3.convert some column values
+        df["Refresh_Cycle"] = int(refresh_IDX)
+        df["testID_RC"] = df.apply(lambda row: str(row["id"])+"-"+str(refresh_IDX), axis=1)
+        # Add more field transformation logic as needed
+        attGroup = self.trCaseAttrs["general"]
+        columns = attGroup["standard"]
+        print(projConfig.itDomain +  "----" + projConfig.jira_id)
+        
+        if projConfig.regType == "y":
+            columns = columns + attGroup["regFlag"]
+        #4.store test run data
+        connect.write2DB(self, engine, df, "tests", "fact_tr_")
+        print("Tests stored successfully")
+        return runs    
+    
     def get_test_cases(self, projConfig, suite):
         end_of_stream = False
         case_lst = []
@@ -154,4 +238,24 @@ class ConnectTestRail:
 
                     
                     self.store_test_cases(df, engine, refresh_IDX,)
+                    runs = self.process_test_runs(projectConf, engine, refresh_IDX)
+                    self.process_tests(projectConf, engine, refresh_IDX,runs)
+
+# class testRail:
+#     def __init__(self):
+#         print("hahhah")
+
+# Usage example
+# if __name__ == "__main__":
+#    projConfig = {"testrail_id": 117,"jira_id":"RATE","suite_id":[18469],"regType":"y","automation_flag": "n"}
+#    railInstance = testRail()
+#    connect_testrail = ConnectTestRail(railInstance)
+#    connect_testrail.process_test_runs(projConfig,1)
+#    # Load data for all projects
+#    connect_testrail.load_data()
+    
+#    # Load data for a specific project
+#    project_id = 1
+#    connect_testrail.load_data(project_id)
+
 
