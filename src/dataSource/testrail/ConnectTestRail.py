@@ -203,32 +203,6 @@ class ConnectTestRail:
         df['updated_on'] = df['updated_on'].apply(lambda x: self.convert_to_datetime(x))
         df["Refresh_Cycle"] = int(refresh_IDX)
         df['project_RC'] = df['suite_id'].apply(lambda x: self.create_project_RC(x,refresh_IDX, projConfig))
-      #  df.rename(columns={
-      #      'id': 'id',
-      #      'title': 'title',
-      #      'section_id': 'section_id',
-      #      'template_id': 'template_id',
-      #      'type_id': 'type_id',
-      #      'priority_id': 'priority_id',
-      #      'milestone_id': 'milestone_id',
-      #      'refs': 'refs',
-      #      'created_by': 'created_by',
-      #      'created_on': 'created_on',
-      #      'updated_by': 'updated_by',
-      #      'updated_on': 'updated_on',
-      #      'estimate': 'estimate',
-      #      'estimate_forecast': 'estimate_forecast',
-      #      'suite_id': 'suite_id',
-      #      'display_order': 'display_order',
-      #      'is_deleted': 'is_deleted',
-      #      'custom_automation_type': 'custom_automation_type',
-      #      'custom_preconds': 'custom_preconds',
-      #      'custom_steps': 'custom_steps',
-      #      'custom_expected': 'custom_expected',
-      #      'custom_steps_separated': 'custom_steps_separated',
-      #      'custom_mission': 'custom_mission',
-      #      'custom_goals': 'custom_goals'
-      #  }, inplace=True)
         df["typeID_RC"] = df.apply(lambda row: str(row["type_id"])+"-"+str(refresh_IDX), axis=1)
         df["caseID_RC"] = df.apply(lambda row: str(row["id"])+"-"+str(refresh_IDX), axis=1)
         # Add more field transformation logic as needed
