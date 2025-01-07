@@ -246,11 +246,13 @@ class ConnectTestRail:
 #         print("hahhah")
 
 # Usage example
-# if __name__ == "__main__":
-#    projConfig = {"testrail_id": 117,"jira_id":"RATE","suite_id":[18469],"regType":"y","automation_flag": "n"}
-#    railInstance = testRail()
-#    connect_testrail = ConnectTestRail(railInstance)
-#    connect_testrail.process_test_runs(projConfig,1)
+#if __name__ == "__main__":
+#    base_url = "https://yourtestrailurl.testrail.io"
+#    username = "your_username"
+#    api_key = "your_api_key"
+    
+#    connect_testrail = ConnectTestRail(base_url, username, api_key)
+    
 #    # Load data for all projects
 #    connect_testrail.load_data()
     
