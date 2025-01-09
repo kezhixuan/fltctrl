@@ -73,7 +73,7 @@ class testrail_tabs (connectDB):
 
         fact_tr_runs = Table('fact_tr_runs', m,
             Column('id', BIGINT) ,
-            Column('runID_RC', BIGINT, primary_key=True) ,
+            Column('runID_RC', VARCHAR(200), primary_key=True) ,
             Column('suite_id', BIGINT) ,
             Column('name', VARCHAR(200)) ,
             Column('description', VARCHAR(None)) ,
@@ -111,11 +111,11 @@ class testrail_tabs (connectDB):
 
         fact_tr_tests = Table('fact_tr_tests', m,
             Column('id', BIGINT) ,
-            Column('testID_RC', BIGINT, primary_key=True) ,
-            Column('caseID_RC', BIGINT),
+            Column('testID_RC', VARCHAR(200), primary_key=True) ,
+            Column('caseID_RC', VARCHAR(200)),
             Column('assignedto_id', BIGINT),
             Column('status_id', BIGINT),
-            Column('runID_RC', BIGINT),
+            Column('runID_RC', VARCHAR(200)),
             Column('title', VARCHAR(200)),
             Column('template_id', BIGINT),
             Column('type_id', BIGINT),
@@ -134,9 +134,9 @@ class testrail_tabs (connectDB):
             Column('custom_mission', VARCHAR(None)) ,
             Column('custom_goals', VARCHAR(None)) ,
             Column('Refresh_Cycle', BIGINT),
-            ForeignKeyConstraint(["runID_RC"],jira_tabs.dim_sq_config.primary_key,use_alter=True,name="fact_tr_runs"),
-            ForeignKeyConstraint(["caseID_RC"],jira_tabs.dim_sq_config.primary_key,use_alter=True,name="dim_tr_cases"),
-            ForeignKeyConstraint(["Refresh_Cycle"],jira_tabs.dim_refresh_history.primary_key, use_alter=True, name="fk_tr_run_index_refresh_hist" ),
+            ForeignKeyConstraint(["runID_RC"],fact_tr_runs.primary_key,use_alter=True,name="fk_tr_tests_runs"),
+            ForeignKeyConstraint(["caseID_RC"],dim_tr_cases.primary_key,use_alter=True,name="fk_tr_tests_cases"),
+            ForeignKeyConstraint(["Refresh_Cycle"],jira_tabs.dim_refresh_history.primary_key, use_alter=True, name="fk_tr_test_index_refresh_hist" ),
             schema="SQ")
         
         # fact_tr_results = Table('fact_tr_results', m,
