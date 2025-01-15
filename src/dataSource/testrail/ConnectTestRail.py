@@ -93,30 +93,37 @@ class ConnectTestRail:
     
     def process_test_runs(self,projConfig,engine,refresh_IDX):
         #1.get test run
-        runs = self.get_testrail_items('get_runs','runs', projConfig["testrail_id"])
+        startdate = int(datetime(2014, 1, 1, 0, 0).timestamp())
+        param = str(projConfig["testrail_id"]) + "&created_after=" + str(startdate)
+        runs = self.get_testrail_items('get_runs','runs', param)
         #2.create data_frame
+
         df = pd.json_normalize(runs)
-        #3.convert some column values
-        df['created_on'] = df['created_on'].apply(lambda x: self.convert_to_datetime(x))
-        df['updated_on'] = df['updated_on'].apply(lambda x: self.convert_to_datetime(x))
-        df["Refresh_Cycle"] = int(refresh_IDX)
-        df["runID_RC"] = df.apply(lambda row: str(row["id"])+"-"+str(refresh_IDX), axis=1)
-        # Add more field transformation logic as needed
-        attGroup = self.trCaseAttrs["general"]
-        columns = attGroup["standard"]
-        print(projConfig.itDomain +  "----" + projConfig.jira_id)
-        
-        if projConfig.regType == "y":
-            columns = columns + attGroup["regFlag"]
-        #4.store test run data
-        connect.write2DB(self, engine, df, "runs", "fact_tr_")
-        print("Test runs stored successfully")
+        if not df.empty:
+            #3.convert some column values
+            df['created_on'] = df['created_on'].apply(lambda x: self.convert_to_datetime(x))
+            df['updated_on'] = df['updated_on'].apply(lambda x: self.convert_to_datetime(x))
+            df['completed_on'] = df['completed_on'].apply(lambda x: self.convert_to_datetime(x))
+            df["Refresh_Cycle"] = int(refresh_IDX)
+            df["runID_RC"] = df.apply(lambda row: str(row["id"])+"-"+str(refresh_IDX), axis=1)
+            # Add more field transformation logic as needed
+            attGroup = self.trCaseAttrs["general"]
+            columns = attGroup["standard"]
+            print(projConfig.itDomain +  "----" + projConfig.jira_id)
+            
+            #4.store test run data
+            connect.write2DB(self, engine, df, "runs", "fact_tr_")
+            print("Test runs stored successfully")
         return runs
     
     
     def process_tests(self,projConfig,engine,refresh_IDX,runs):
         all_tests = []
-        for run in runs:
+        runs = pd.json_normalize(runs)
+        runs['created_on'] = runs['created_on'].apply(lambda x: self.convert_to_datetime(x))
+        runs['created_on'] = pd.to_datetime(runs["created_on"])
+        runs = runs[runs["created_on"] > "2024-01-01 00:00:00"]
+        for index, run in runs.iterrows():
             tests = self.get_testrail_items('get_tests','tests', run["id"])
             all_tests +=tests
         #2.create data_frame
@@ -229,17 +236,20 @@ class ConnectTestRail:
 
         for index, projectConf in config.iterrows():
             suits = projectConf.suite_id
-            for index, suite in enumerate(projectConf.suite_id):
-                if projectConf.refresh_active == "y":
-                    print(suite)
-                    test_cases = self.get_test_cases(projectConf,suite)
-                    df = self.create_dataframe(test_cases)
-                    df = self.transform_data(df, refresh_IDX, projectConf)
-
+            if projectConf.testrail_id != '15':
+                if projectConf.testrail_id < 900000:
+                    if projectConf.refresh_active == "y":
+                        for index, suite in enumerate(projectConf.suite_id):
                     
-                    self.store_test_cases(df, engine, refresh_IDX,)
-                    runs = self.process_test_runs(projectConf, engine, refresh_IDX)
-                    self.process_tests(projectConf, engine, refresh_IDX,runs)
+                            print(suite)
+                            test_cases = self.get_test_cases(projectConf,suite)
+                            df = self.create_dataframe(test_cases)
+                            df = self.transform_data(df, refresh_IDX, projectConf)
+
+                            
+                            self.store_test_cases(df, engine, refresh_IDX,)
+                        runs = self.process_test_runs(projectConf, engine, refresh_IDX)
+                        #  self.process_tests(projectConf, engine, refresh_IDX,runs)
 
 # class testRail:
 #     def __init__(self):

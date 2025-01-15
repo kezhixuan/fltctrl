@@ -49,7 +49,8 @@ class Connect2Sqlserver(connectDB):
             self.jiraCon = connData['jira_tsc']
         else:
             self.jiraCon = connData[self.jiraService]
-            self.testrailCon = connData[self.testRail]
+
+        self.testrailCon = connData[self.testRail]
 
         ofile = open('refreshIDX.txt')
         IDX = ofile.readline()
@@ -76,7 +77,6 @@ class Connect2Sqlserver(connectDB):
     
     def getTestRailData(self):
         project_id=""
-        
         testR = testr.ConnectTestRail(self.testrailCon)
         testR.load_data(project_id, self.testRail, self.engine, self.refresh_IDX, self.config)
         #self.closeRun("TestRail")
@@ -100,6 +100,6 @@ class Connect2Sqlserver(connectDB):
 
     
 loadJiraData = Connect2Sqlserver()
-#loadJiraData.getTestRailData()
+loadJiraData.getTestRailData()
 loadJiraData.getJiraReleases()
 loadJiraData.getJiraIssues()

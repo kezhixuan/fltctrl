@@ -43,7 +43,10 @@ class InitLoadSetup(connectDB):
         super().__init__(sys.argv[1], sys.argv[2])
 
         connData = pd.read_json(codecs.open(self.env+".json",'r','utf-8'))
-
+        
+        if self.jiraService == 'jira_tsc1':
+            self.jiraService = 'jira_tsc'
+        
         self.jiraCon = connData[self.jiraService]
         self.testrailCon = connData[self.testRail]
 
