@@ -16,7 +16,9 @@ import sys
 import json
 
 
-class Connect2Sqlserver(connectDB):
+class Connect2TestRail(connectDB):
+# seperating testrail from jira connection
+
     env=[]
     localTest=[]
     prefix="dim_"
@@ -57,24 +59,11 @@ class Connect2Sqlserver(connectDB):
         self.refresh_IDX = str(IDX)
 
 
+    def getTestRailData(self):
+        project_id=""
+        testR = testr.ConnectTestRail(self.testrailCon)
+        testR.load_data(project_id, self.testRail, self.engine, self.refresh_IDX, self.config)
 
-    def getJiraReleases(self):
-#    # get the Jira releases
-        isr = ir.issuesReleases(self.jiraCon, self.jiraService )
-        dfReleases = isr.get_releases()
-        dfReleases["Refresh_Cycle"] = int(self.refresh_IDX)
-        dfReleases['project_RC'] = dfReleases['project'] + str(self.refresh_IDX)
-        dfReleases.to_sql(self.prefix+'releases', con=self.engine,schema='SQ', chunksize=2000, index=False, if_exists='append')
-        #self.closeRun("Releases")
-        
-    def getJiraIssues(self):
-#    # get the jira issues
-        testproj =""
-        jiraIssues = ca.ConnectAtlassian(self.jiraCon, self.jiraService)
-        dfIssues=jiraIssues.GetIssues(testproj,self.jiraService, self.engine, self.refresh_IDX)
-        dfIssues["Refresh_Cycle"] = int(self.refresh_IDX)
-        #self.closeRun("Issues")
     
-loadJiraData = Connect2Sqlserver()
-loadJiraData.getJiraReleases()
-loadJiraData.getJiraIssues()
+loadJiraData = Connect2TestRail()
+loadJiraData.getTestRailData()
