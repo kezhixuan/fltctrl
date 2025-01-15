@@ -93,7 +93,7 @@ class ConnectTestRail:
     
     def process_test_runs(self,projConfig,engine,refresh_IDX):
         #1.get test run
-        startdate = int(datetime(2014, 1, 1, 0, 0).timestamp())
+        startdate = int(datetime(2024, 1, 1, 0, 0).timestamp())
         param = str(projConfig["testrail_id"]) + "&created_after=" + str(startdate)
         runs = self.get_testrail_items('get_runs','runs', param)
         #2.create data_frame
@@ -249,7 +249,7 @@ class ConnectTestRail:
                             
                             self.store_test_cases(df, engine, refresh_IDX,)
                         runs = self.process_test_runs(projectConf, engine, refresh_IDX)
-                        #  self.process_tests(projectConf, engine, refresh_IDX,runs)
+                        #self.process_tests(projectConf, engine, refresh_IDX,runs)
 
 # class testRail:
 #     def __init__(self):
