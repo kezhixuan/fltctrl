@@ -44,16 +44,9 @@
     {
       "testrail_id": 12,
       "jira_id": "GXD",
-      "suite_id": [622,703],
+      "suite_id": [622,703,20,411,704],
       "regType": "y",
       "automation_flag": "n"
-    },
-    {
-      "testrail_id": 12,
-      "jira_id": "GXD",
-      "suite_id": [411],
-      "regType": "y",
-      "automation_flag": "y"
     },
     {
       "testrail_id": 34,
@@ -91,13 +84,6 @@
       "automation_flag": "n"
     },
     {
-      "testrail_id": 12,
-      "jira_id": "GXD",
-      "suite_id": [20],
-      "regType": "y",
-      "automation_flag": "y"
-    },
-    {
       "testrail_id": 85,
       "jira_id": "S20CTC",
       "suite_id": [3711],
@@ -116,20 +102,6 @@
       "jira_id": "JFP",
       "suite_id": [16148],
       "regType": "y",
-      "automation_flag": "n"
-    },
-    {
-      "testrail_id": 15,
-      "jira_id": "AMSSC",
-      "suite_id": [29],
-      "regType": "y",
-      "automation_flag": "n"
-    },
-    {
-      "testrail_id": 10,
-      "jira_id": "AEC",
-      "suite_id": [13],
-      "regType": "n",
       "automation_flag": "n"
     },
     {

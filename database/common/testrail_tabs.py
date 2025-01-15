@@ -100,6 +100,7 @@ class testrail_tabs (connectDB):
             Column('created_on', DATETIME) ,
             Column('created_by', VARCHAR(200)),
             Column('updated_on', DATETIME),
+            Column('project_id', BIGINT),
             Column('refs', VARCHAR(200)),
             Column('url', VARCHAR(200)) ,
             Column('Refresh_Cycle', BIGINT),
