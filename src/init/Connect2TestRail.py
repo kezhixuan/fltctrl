@@ -17,6 +17,8 @@ import json
 
 
 class Connect2TestRail(connectDB):
+# seperating testrail from jira connection
+
     env=[]
     localTest=[]
     prefix="dim_"

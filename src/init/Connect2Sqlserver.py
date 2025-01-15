@@ -75,31 +75,6 @@ class Connect2Sqlserver(connectDB):
         dfIssues["Refresh_Cycle"] = int(self.refresh_IDX)
         #self.closeRun("Issues")
     
-    def getTestRailData(self):
-        project_id=""
-        testR = testr.ConnectTestRail(self.testrailCon)
-        testR.load_data(project_id, self.testRail, self.engine, self.refresh_IDX, self.config)
-        #self.closeRun("TestRail")
-
-
-    def closeRun(self, state):
-        with self.engine.connect() as conn:
-            try:
-                #result = conn.execute(text("update sq.dim_refresh_history rh set SysJi1 = 'TSC1' where day(rh.RefreshDate) = day(getdate())"))
-                if state == "Issues":
-                    sql = "update sq.dim_refresh_history rh set SysJi1 = 'TSC1' where rh.IDX = %s"
-                elif state == "Releases":
-                    sql = "update sq.dim_refresh_history rh set SysJi2 = 'TSC1' where rh.IDX = %s"
-                elif state == "TestRail":
-                    sql = "update sq.dim_refresh_history rh set SysTr1 = 'TSC1' where rh.IDX = %s"
-                else:
-                    pass
-                result = conn.execute(sql, self.refresh_IDX)
-            except:
-                print("jobs not closed: " + state)
-
-    
 loadJiraData = Connect2Sqlserver()
-loadJiraData.getTestRailData()
 loadJiraData.getJiraReleases()
 loadJiraData.getJiraIssues()
