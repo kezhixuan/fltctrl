@@ -18,7 +18,7 @@ class loadConfig:
         return testRails
     
     def readTRAttributes(self):
-        config = pd.read_json(codecs.open("src/dataSource/atlassian/config/TestRail.json", 'r', 'utf-8'))
+        config = pd.read_json(codecs.open("src/dataSource/testrail/config/TestRail.json", 'r', 'utf-8'))
         trAttr = pd.DataFrame(config)
         return trAttr
 

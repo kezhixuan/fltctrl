@@ -196,11 +196,14 @@ class ConnectTestRail:
     def convert_to_datetime(self, input):
         # Convert string to datetime object
         try:
-            return datetime.fromtimestamp(input)
+            date = datetime.fromtimestamp(input)
             #return datetime.strptime(input, "%Y-%m-%dT%H:%M:%S%z")
-        except ValueError:
-            return datetime.strptime("1970-01-01", "%Y-%m-%d")
+        except (ValueError, TypeError):
+            date = datetime.strptime("2024-01-01", "%Y-%m-%d")
         
+        return date
+
+
     def create_project_RC(self, id, refresh_IDX, trConfig):
         return trConfig["jira_project"] + str(refresh_IDX)
     
@@ -219,7 +222,13 @@ class ConnectTestRail:
         
         if projConfig.regType == "y":
             columns = columns + attGroup["regFlag"]
-
+        if projConfig.testrail_id == 162:
+            try:
+                columns.remove('custom_steps')
+                columns.remove('custom_automated')
+                columns.remove('custom_security')
+            except (ValueError):
+                pass
         return df[columns]    
     
     def store_test_cases(self, df, engine, refresh_ID):
