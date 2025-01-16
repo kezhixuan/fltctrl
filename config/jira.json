@@ -401,5 +401,18 @@
         "itDomain": "GITDAO",
         "topic_id": "",
         "issues_system": ""
+    },
+    {
+        "refresh_active": "y",
+        "jira_system": "GITDAO",
+        "jira_id": "TANGO/eQP&GRIT Project",
+        "jira_project": "TANGO/eQP&GRIT Project",
+        "jira_project_name": "TANGO/eQP&GRIT Project",
+        "project_name": "TANGO/eQP&GRIT Project",
+        "issue_types": "",
+        "report_start_date": "",
+        "itDomain": "GITDAO",
+        "topic_id": "",
+        "issues_system": ""
     }
 ]

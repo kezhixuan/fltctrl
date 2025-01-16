@@ -222,7 +222,13 @@ class ConnectTestRail:
         
         if projConfig.regType == "y":
             columns = columns + attGroup["regFlag"]
-
+        if projConfig.testrail_id == 162:
+            try:
+                columns.remove('custom_steps')
+                columns.remove('custom_automated')
+                columns.remove('custom_security')
+            except (ValueError):
+                pass
         return df[columns]    
     
     def store_test_cases(self, df, engine, refresh_ID):
