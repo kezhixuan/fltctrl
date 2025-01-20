@@ -66,6 +66,8 @@ sqdashboard-job-prework:      # This job runs in the deploy stage.
 sqdashboard-job-jira_tsc:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
+  dependencies:
+    - sqdashboard-job-prework
   only:
     refs:
       - main
@@ -81,6 +83,8 @@ sqdashboard-job-jira_tsc:      # This job runs in the deploy stage.
 sqdashboard-job-jira_tsc1:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
+  dependencies:
+    - sqdashboard-job-prework
   only:
     refs:
       - main
@@ -96,6 +100,8 @@ sqdashboard-job-jira_tsc1:      # This job runs in the deploy stage.
 sqdashboard-job-jira_gilds:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
+  dependencies:
+    - sqdashboard-job-prework
   script:
     - echo "Run is starting"
     - envsubst < ${CI_PROJECT_DIR}/FC_Test_tmpl.json > ${CI_PROJECT_DIR}/FC_Test.json
@@ -107,6 +113,8 @@ sqdashboard-job-jira_gilds:      # This job runs in the deploy stage.
 sqdashboard-job-etl:      # This job runs in the deploy stage.
   stage: etl  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
+  dependencies: 
+    - sqdashboard-job-jira_gilds
   script:
     - echo "Run is starting"
     - envsubst < ${CI_PROJECT_DIR}/FC_Test_tmpl.json > ${CI_PROJECT_DIR}/FC_Test.json
