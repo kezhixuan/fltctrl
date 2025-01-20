@@ -188,7 +188,7 @@ class IssueSatelites:
               if not df_l.empty:
                 df_squads = pd.DataFrame()
                 df_squads["issueKey_RC"] = df_l["key"] + "-" + str(refresh_IDX)
-                if "squad" in df_l:
+                if "squads" in df_l:
                   df_squads["squad"] = df_l["squads"].apply(pd.Series)["value"]
                 else:
                   df_squads["squad"] = ""

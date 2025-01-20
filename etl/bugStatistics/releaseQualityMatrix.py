@@ -4,7 +4,9 @@ import matplotlib.pyplot as plt
 import sys
 import pandas as pd
 from database.common.connect import connectDB
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, text, MetaData, schema, Table
+from sqlalchemy.engine.url import URL
+from sqlalchemy.ext.declarative import declarative_base
 
 
 #conn = connectDB(sys.argv[1], sys.argv[2])
@@ -109,6 +111,15 @@ class loadIssuse4Release(connectDB):
 
         plt.show()
 
+    def cleanUpDB(self, table_name):    
+        Base = declarative_base()
+        metadata = MetaData(schema="SQ")
+        metadata.reflect(bind=self.engine)
+        pre_table = Table(table_name, metadata)
+        pre_table.drop(self.engine, checkfirst=True)
+        
 
 xx = loadIssuse4Release()
+xx.cleanUpDB("etl_bugs_stats")
+xx.cleanUpDB("etl_bugs_agg")
 xx.getAllBug()
