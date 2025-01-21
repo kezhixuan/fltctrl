@@ -11,7 +11,7 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "args": ["FC_Test", "fc_db", "jira_gilds", "testrail"],
+            "args": ["FC_Test", "fc_db", "jira_tsc", "testrail"],
             "console": "integratedTerminal",
             "justMyCode": false
         }

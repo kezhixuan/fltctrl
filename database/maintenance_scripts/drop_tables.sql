@@ -8,11 +8,11 @@ drop table sq.fact_ji_issues
 drop table sq.dim_ji_releases
 
 -- Delete TestRail Tables --
-drop table sq.fact_tr_results
-drop table sq.fact_tr_run
+drop table sq.fact_tr_tests
+drop table sq.fact_tr_runs
 
-drop table sq.dim_tr_case_types
 drop table sq.dim_tr_cases
+drop table sq.dim_tr_case_types
 drop table sq.fact_case_fields
 drop table sq.fact_groups
 drop table sq.fact_results

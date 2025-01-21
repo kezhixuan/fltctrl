@@ -65,6 +65,8 @@ class testrail_tabs (connectDB):
             Column('custom_robot', VARCHAR(None)),
             Column('custom_descriptions', VARCHAR(None)),
             Column('custom_confluencereference', VARCHAR(None)),
+            Column('projectTR', BIGINT),
+            Column('projectJI', VARCHAR(200)),
             Column('Refresh_Cycle', BIGINT),
             Column('project_RC', VARCHAR(200)),
             ForeignKeyConstraint(["project_RC"],jira_tabs.dim_sq_config.primary_key,use_alter=True,name="fk_tr_cases_sq_config"),
