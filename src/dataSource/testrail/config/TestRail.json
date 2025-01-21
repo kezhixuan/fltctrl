@@ -32,6 +32,8 @@
             "custom_duration",
             "custom_testrail_bdd_scenario",
             "Refresh_Cycle",
+            "projectJI",
+            "projectTR",
             "project_RC"],
         "regFlag":[
             "custom_regressiontype"]
