@@ -213,7 +213,7 @@ class ConnectTestRail:
         df['updated_on'] = df['updated_on'].apply(lambda x: self.convert_to_datetime(x))
         df["Refresh_Cycle"] = int(refresh_IDX)
         df['projectTR'] = projConfig["testrail_id"]
-        df['projectJI'] = projConfig["jira_project"]
+        df['projectJI'] = projConfig["jira_id"]
         df['project_RC'] = df['suite_id'].apply(lambda x: self.create_project_RC(x,refresh_IDX, projConfig))
         df["typeID_RC"] = df.apply(lambda row: str(row["type_id"])+"-"+str(refresh_IDX), axis=1)
         df["caseID_RC"] = df.apply(lambda row: str(row["id"])+"-"+str(refresh_IDX), axis=1)
