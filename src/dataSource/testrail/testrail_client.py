@@ -1,7 +1,9 @@
 from testrailAPI import TestRailAPI
 
+
 class clientTestRail(TestRailAPI):
     pass
+
 
 ## The purpose is to get data from the test rail instance
 ## Client should read json files from the folder: TestRailProjects
