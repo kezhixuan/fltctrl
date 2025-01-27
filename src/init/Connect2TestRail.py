@@ -59,7 +59,7 @@ class Connect2TestRail(connectDB):
 
     def getTestRailData(self):
         project_id = ""
-        
+        # reading the system parameter
         jira_service = self.jiraService.split("_",1)[1].upper()
 
         config = self.config[self.config["jira_system"] == jira_service]
