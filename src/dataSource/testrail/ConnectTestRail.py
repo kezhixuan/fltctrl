@@ -286,7 +286,7 @@ class ConnectTestRail:
                                 refresh_IDX,
                             )
                         runs = self.process_test_runs(projectConf, engine, refresh_IDX)
-                        self.process_tests(projectConf, engine, refresh_IDX, runs)
+                        #self.process_tests(projectConf, engine, refresh_IDX, runs)
 
 
 # class testRail:
