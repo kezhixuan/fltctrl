@@ -59,9 +59,14 @@ class Connect2TestRail(connectDB):
 
     def getTestRailData(self):
         project_id = ""
+        
+        jira_service = self.jiraService.split("_",1)[1].upper()
+
+        config = self.config[self.config["jira_system"] == jira_service]
+
         testR = testr.ConnectTestRail(self.testrailCon)
         testR.load_data(
-            project_id, self.testRail, self.engine, self.refresh_IDX, self.config
+            project_id, self.testRail, self.engine, self.refresh_IDX, config
         )
 
 

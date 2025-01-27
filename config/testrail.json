@@ -56,6 +56,13 @@
       "automation_flag": "y"
     },
     {
+      "testrail_id": 170,
+      "jira_id": "GXDRE",
+      "suite_id": [33594,33591],
+      "regType": "y",
+      "automation_flag": "y"
+    },
+    {
       "testrail_id": 21,
       "jira_id": "SPAC",
       "suite_id": [181],
