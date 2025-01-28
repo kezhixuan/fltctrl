@@ -64,7 +64,6 @@ sqdashboard-job-prework:      # This job runs in the deploy stage.
       - refreshIDX.txt
 
 
-
 sqdashboard-job-jira_tsc:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
