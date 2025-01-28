@@ -27,6 +27,7 @@ stages:          # List of stages for jobs, and their order of execution
   - test
   - predeploy
   - deploy
+  - testrail
   - etl
 
 
