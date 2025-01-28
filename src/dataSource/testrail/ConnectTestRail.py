@@ -255,6 +255,13 @@ class ConnectTestRail:
                 columns.remove("custom_security")
             except ValueError:
                 pass
+        if projConfig.testrail_id == 170:
+            try:
+                columns.remove("custom_steps")
+                columns.remove("custom_automated")
+                columns.remove("custom_security")
+            except ValueError:
+                pass
         return df[columns]
 
     def store_test_cases(self, df, engine, refresh_ID):

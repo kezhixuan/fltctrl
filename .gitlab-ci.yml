@@ -63,56 +63,6 @@ sqdashboard-job-prework:      # This job runs in the deploy stage.
     paths:
       - refreshIDX.txt
 
-sqdashboard-job-TestRail TSC:      # This job runs in the deploy stage.
-  stage: testrail  # It only runs when *both* jobs in the test stage complete successfully.
-  environment: production
-  dependencies:
-    - sqdashboard-job-prework
-  only:
-    refs:
-      - main
-  script:
-    - echo "Run is starting"
-    - envsubst < ${CI_PROJECT_DIR}/FC_Test_tmpl.json > ${CI_PROJECT_DIR}/FC_Test.json
-    - export PYTHONPATH=${CI_PROJECT_DIR}
-    #- python3 ${CI_PROJECT_DIR}/testMSSQL.py
-    #- the jira_gilds parameter represents the target jira instance. it can be also jira_issues.
-    - cat refreshIDX.txt
-    - python3 ${CI_PROJECT_DIR}/src/init/Connect2TestRail.py FC_Test fc_db jira_tsc
-
-sqdashboard-job-TestRail TSC1:      # This job runs in the deploy stage.
-  stage: testrail  # It only runs when *both* jobs in the test stage complete successfully.
-  environment: production
-  dependencies:
-    - sqdashboard-job-prework
-  only:
-    refs:
-      - main
-  script:
-    - echo "Run is starting"
-    - envsubst < ${CI_PROJECT_DIR}/FC_Test_tmpl.json > ${CI_PROJECT_DIR}/FC_Test.json
-    - export PYTHONPATH=${CI_PROJECT_DIR}
-    #- python3 ${CI_PROJECT_DIR}/testMSSQL.py
-    #- the jira_gilds parameter represents the target jira instance. it can be also jira_issues.
-    - cat refreshIDX.txt
-    - python3 ${CI_PROJECT_DIR}/src/init/Connect2TestRail.py FC_Test fc_db jira_tsc1
-
-sqdashboard-job-TestRail GILDS:      # This job runs in the deploy stage.
-  stage: testrail  # It only runs when *both* jobs in the test stage complete successfully.
-  environment: production
-  dependencies:
-    - sqdashboard-job-prework
-  only:
-    refs:
-      - testrail
-  script:
-    - echo "Run is starting"
-    - envsubst < ${CI_PROJECT_DIR}/FC_Test_tmpl.json > ${CI_PROJECT_DIR}/FC_Test.json
-    - export PYTHONPATH=${CI_PROJECT_DIR}
-    #- python3 ${CI_PROJECT_DIR}/testMSSQL.py
-    #- the jira_gilds parameter represents the target jira instance. it can be also jira_issues.
-    - cat refreshIDX.txt
-    - python3 ${CI_PROJECT_DIR}/src/init/Connect2TestRail.py FC_Test fc_db jira_gilds
 
 sqdashboard-job-jira_tsc:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
@@ -160,6 +110,58 @@ sqdashboard-job-jira_gilds:      # This job runs in the deploy stage.
     #- python3 ${CI_PROJECT_DIR}/testMSSQL.py
     #- the jira_gilds parameter represents the target jira instance. it can be also jira_issues.
     - python3 ${CI_PROJECT_DIR}/src/init/Connect2Sqlserver.py FC_Test fc_db jira_gilds
+
+sqdashboard-job-testrail_tsc:      # This job runs in the deploy stage.
+  stage: testrail  # It only runs when *both* jobs in the test stage complete successfully.
+  environment: production
+  dependencies:
+    - sqdashboard-job-jira_tsc
+  only:
+    refs:
+      - main
+  script:
+    - echo "Run is starting"
+    - envsubst < ${CI_PROJECT_DIR}/FC_Test_tmpl.json > ${CI_PROJECT_DIR}/FC_Test.json
+    - export PYTHONPATH=${CI_PROJECT_DIR}
+    #- python3 ${CI_PROJECT_DIR}/testMSSQL.py
+    #- the jira_gilds parameter represents the target jira instance. it can be also jira_issues.
+    - cat refreshIDX.txt
+    - python3 ${CI_PROJECT_DIR}/src/init/Connect2TestRail.py FC_Test fc_db jira_tsc
+
+sqdashboard-job-testrail_tsc1:      # This job runs in the deploy stage.
+  stage: testrail  # It only runs when *both* jobs in the test stage complete successfully.
+  environment: production
+  dependencies:
+    - sqdasqdashboard-job-jira_tsc1
+  only:
+    refs:
+      - main
+  script:
+    - echo "Run is starting"
+    - envsubst < ${CI_PROJECT_DIR}/FC_Test_tmpl.json > ${CI_PROJECT_DIR}/FC_Test.json
+    - export PYTHONPATH=${CI_PROJECT_DIR}
+    #- python3 ${CI_PROJECT_DIR}/testMSSQL.py
+    #- the jira_gilds parameter represents the target jira instance. it can be also jira_issues.
+    - cat refreshIDX.txt
+    - python3 ${CI_PROJECT_DIR}/src/init/Connect2TestRail.py FC_Test fc_db jira_tsc1
+
+sqdashboard-job-testrail_gilds:      # This job runs in the deploy stage.
+  stage: testrail  # It only runs when *both* jobs in the test stage complete successfully.
+  environment: production
+  dependencies:
+    - sqdashboard-job-jira_gilds
+  only:
+    refs:
+      - testrail
+  script:
+    - echo "Run is starting"
+    - envsubst < ${CI_PROJECT_DIR}/FC_Test_tmpl.json > ${CI_PROJECT_DIR}/FC_Test.json
+    - export PYTHONPATH=${CI_PROJECT_DIR}
+    #- python3 ${CI_PROJECT_DIR}/testMSSQL.py
+    #- the jira_gilds parameter represents the target jira instance. it can be also jira_issues.
+    - cat refreshIDX.txt
+    - python3 ${CI_PROJECT_DIR}/src/init/Connect2TestRail.py FC_Test fc_db jira_gilds
+
 
 sqdashboard-job-etl:      # This job runs in the deploy stage.
   stage: etl  # It only runs when *both* jobs in the test stage complete successfully.
