@@ -65,6 +65,8 @@ sqdashboard-job-prework:      # This job runs in the deploy stage.
 sqdashboard-job-TestRail TSC:      # This job runs in the deploy stage.
   stage: testrail  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
+  dependencies:
+    - sqdashboard-job-prework
   only:
     refs:
       - main
@@ -80,6 +82,8 @@ sqdashboard-job-TestRail TSC:      # This job runs in the deploy stage.
 sqdashboard-job-TestRail TSC1:      # This job runs in the deploy stage.
   stage: testrail  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
+  dependencies:
+    - sqdashboard-job-prework
   only:
     refs:
       - main
@@ -95,6 +99,8 @@ sqdashboard-job-TestRail TSC1:      # This job runs in the deploy stage.
 sqdashboard-job-TestRail GILDS:      # This job runs in the deploy stage.
   stage: testrail  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
+  dependencies:
+    - sqdashboard-job-prework
   only:
     refs:
       - testrail
