@@ -5,6 +5,7 @@ import pandas as pd
 from datetime import datetime
 from requests.auth import HTTPBasicAuth
 from sqlalchemy import create_engine
+from sqlalchemy.exc import IntegrityError
 from database.common.testrail_tabs import testrail_tabs
 from database.common.connect import connectDB as connect
 from src.dataSource.atlassian.utils.loadConfig import loadConfig
@@ -272,8 +273,12 @@ class ConnectTestRail:
     def load_data(self, project_id, testRail, engine, refresh_IDX, config):
         # Generate a unique load ID for the entire load process
         # load_id = datetime.now().strftime("%Y%m%d%H%M%S")
-        case_types = self.transform_case_type_df(self.get_test_case_type(), refresh_IDX)
-        self.store_test_case_types(case_types, engine, refresh_IDX)
+        if config["jira_system"][0] == "TSC":
+            try:
+                case_types = self.transform_case_type_df(self.get_test_case_type(), refresh_IDX)
+                self.store_test_case_types(case_types, engine, refresh_IDX)
+            except IntegrityError as e:
+                print(f'Integrity error: {e}')
 
         for index, projectConf in config.iterrows():
             suits = projectConf.suite_id
@@ -293,7 +298,7 @@ class ConnectTestRail:
                                 refresh_IDX,
                             )
                         runs = self.process_test_runs(projectConf, engine, refresh_IDX)
-                        #self.process_tests(projectConf, engine, refresh_IDX, runs)
+                        self.process_tests(projectConf, engine, refresh_IDX, runs)
 
 
 # class testRail:
