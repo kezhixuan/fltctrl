@@ -153,7 +153,7 @@ sqdashboard-job-testrail_gilds:      # This job runs in the deploy stage.
     - sqdashboard-job-jira_gilds
   only:
     refs:
-      - testrail
+      - main
   script:
     - echo "Run is starting"
     - envsubst < ${CI_PROJECT_DIR}/FC_Test_tmpl.json > ${CI_PROJECT_DIR}/FC_Test.json
