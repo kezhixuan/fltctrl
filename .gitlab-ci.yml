@@ -64,6 +64,7 @@ sqdashboard-job-prework:      # This job runs in the deploy stage.
       - refreshIDX.txt
 
 
+
 sqdashboard-job-jira_tsc:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
@@ -115,7 +116,6 @@ sqdashboard-job-testrail_tsc:      # This job runs in the deploy stage.
   stage: testrail  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
   dependencies:
-    - sqdashboard-job-jira_tsc
     - sqdashboard-job-prework
   only:
     refs:
@@ -134,7 +134,6 @@ sqdashboard-job-testrail_tsc1:      # This job runs in the deploy stage.
   environment: production
   dependencies:
     - sqdashboard-job-prework
-    - sqdasqdashboard-job-jira_tsc1
   only:
     refs:
       - main
@@ -153,10 +152,9 @@ sqdashboard-job-testrail_gilds:      # This job runs in the deploy stage.
   dependencies:
   # create dependency on to the gilds jirea
     - sqdashboard-job-prework
-    - sqdashboard-job-jira_gilds
   only:
     refs:
-      - testrail
+      - main
   script:
     - echo "Run is starting"
     - envsubst < ${CI_PROJECT_DIR}/FC_Test_tmpl.json > ${CI_PROJECT_DIR}/FC_Test.json
