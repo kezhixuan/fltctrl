@@ -26,7 +26,7 @@ stages:          # List of stages for jobs, and their order of execution
   - build
   - test
   - predeploy
-  - deploy
+  - jira
   - testrail
   - etl
 
@@ -35,12 +35,19 @@ include:
     - component: $CI_SERVER_FQDN/tap/cicd-components/docker/build@~latest
       inputs:
         stage: build
+        only:
+          refs:
+            - main
+
 #  when: manual
 
 sqdashboard-job-unit-test:
   image: ${CI_REGISTRY_IMAGE}:sha-${CI_COMMIT_SHORT_SHA}
   stage: test
   environment: production
+  only:
+    refs:
+      - main
   script:
     - echo "Start of the Unit Tests"
     - envsubst < ${CI_PROJECT_DIR}/FC_Test_tmpl.json > ${CI_PROJECT_DIR}/FC_Test.json
@@ -66,7 +73,7 @@ sqdashboard-job-prework:      # This job runs in the deploy stage.
 
 
 sqdashboard-job-jira_tsc:      # This job runs in the deploy stage.
-  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  stage: jira  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
   dependencies:
     - sqdashboard-job-prework
@@ -83,7 +90,7 @@ sqdashboard-job-jira_tsc:      # This job runs in the deploy stage.
     - python3 ${CI_PROJECT_DIR}/src/init/Connect2Sqlserver.py FC_Test fc_db jira_tsc
 
 sqdashboard-job-jira_tsc1:      # This job runs in the deploy stage.
-  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  stage: jira  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
   dependencies:
     - sqdashboard-job-prework
@@ -100,7 +107,7 @@ sqdashboard-job-jira_tsc1:      # This job runs in the deploy stage.
     - python3 ${CI_PROJECT_DIR}/src/init/Connect2Sqlserver.py FC_Test fc_db jira_tsc1
 
 sqdashboard-job-jira_gilds:      # This job runs in the deploy stage.
-  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  stage: jira  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
   dependencies:
     - sqdashboard-job-prework
@@ -118,6 +125,7 @@ sqdashboard-job-testrail_tsc:      # This job runs in the deploy stage.
   environment: production
   dependencies:
     - sqdashboard-job-prework
+  needs: ["sqdashboard-job-jira_tsc"]    
   only:
     refs:
       - main
@@ -135,6 +143,7 @@ sqdashboard-job-testrail_tsc1:      # This job runs in the deploy stage.
   environment: production
   dependencies:
     - sqdashboard-job-prework
+  needs: ["sqdashboard-job-jira_tsc1"]
   only:
     refs:
       - main
@@ -153,6 +162,7 @@ sqdashboard-job-testrail_gilds:      # This job runs in the deploy stage.
   dependencies:
   # create dependency on to the gilds jirea
     - sqdashboard-job-prework
+  needs: ["sqdashboard-job-jira_gilds"]
   only:
     refs:
       - main
