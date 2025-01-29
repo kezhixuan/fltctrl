@@ -35,9 +35,7 @@ include:
     - component: $CI_SERVER_FQDN/tap/cicd-components/docker/build@~latest
       inputs:
         stage: build
-        only:
-          refs:
-            - main
+
 
 #  when: manual
 
