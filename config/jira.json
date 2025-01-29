@@ -404,7 +404,7 @@
     },
     {
         "refresh_active": "y",
-        "jira_system": "GITDAO",
+        "jira_system": "TSC1",
         "jira_id": "TANGO/eQP&GRIT Project",
         "jira_project": "TANGO/eQP&GRIT Project",
         "jira_project_name": "TANGO/eQP&GRIT Project",
