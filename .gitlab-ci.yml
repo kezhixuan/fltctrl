@@ -141,7 +141,7 @@ sqdashboard-job-testrail_tsc1:      # This job runs in the deploy stage.
   environment: production
   dependencies:
     - sqdashboard-job-prework
-  needs: ["sqdashboard-job-prework","sqdashboard-job-jira_tsc1"]
+  needs: ["sqdashboard-job-prework","sqdashboard-job-jira_tsc1","sqdashboard-job-testrail_tsc"]
   only:
     refs:
       - main
@@ -160,7 +160,7 @@ sqdashboard-job-testrail_gilds:      # This job runs in the deploy stage.
   dependencies:
   # create dependency on to the gilds jirea
     - sqdashboard-job-prework
-  needs: ["sqdashboard-job-prework","sqdashboard-job-jira_gilds"]
+  needs: ["sqdashboard-job-prework","sqdashboard-job-jira_gilds", "sqdashboard-job-testrail_tsc"]
   only:
     refs:
       - main
@@ -179,6 +179,7 @@ sqdashboard-job-testrail_gitdao:      # This job runs in the deploy stage.
   dependencies:
   # create dependency on to the gilds jirea
     - sqdashboard-job-prework
+  needs: ["sqdashboard-job-prework", "sqdashboard-job-testrail_tsc"]
   only:
     refs:
       - main
