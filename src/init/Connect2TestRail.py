@@ -46,7 +46,7 @@ class Connect2TestRail(connectDB):
 
         connData = pd.read_json(codecs.open(self.env + ".json", "r", "utf-8"))
 
-        if self.jiraService == "jira_tsc1":
+        if self.jiraService == "jira_tsc1" or self.jiraService == "jira_gitdao":
             self.jiraCon = connData["jira_tsc"]
         else:
             self.jiraCon = connData[self.jiraService]
