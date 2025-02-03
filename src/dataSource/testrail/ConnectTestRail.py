@@ -227,7 +227,6 @@ class ConnectTestRail:
         #parsing the references to jira issues
         refs['refs'] = refs['refs'].str.split(',')
         refs = refs.explode('refs').reset_index(drop=True)
-        print("Test cases refs stored successfully")
         return refs
 
 
@@ -264,6 +263,7 @@ class ConnectTestRail:
                 columns.remove("custom_steps")
                 columns.remove("custom_automated")
                 columns.remove("custom_security")
+                df.rename(columns={'custom_robot':'custom_automated'}, inplace=True)
             except ValueError:
                 pass
         if projConfig.testrail_id == 170:
@@ -286,7 +286,8 @@ class ConnectTestRail:
     def load_data(self, project_id, testRail, engine, refresh_IDX, config):
         # Generate a unique load ID for the entire load process
         # load_id = datetime.now().strftime("%Y%m%d%H%M%S")
-       
+    
+                
         if config['jira_system'].iloc[0] == "TSC":
             try:
                 case_types = self.transform_case_type_df(self.get_test_case_type(), refresh_IDX)
