@@ -134,7 +134,7 @@ sqdashboard-job-testrail_tsc:      # This job runs in the deploy stage.
     #- python3 ${CI_PROJECT_DIR}/testMSSQL.py
     #- the jira_gilds parameter represents the target jira instance. it can be also jira_issues.
     - cat refreshIDX.txt
-    - python3 ${CI_PROJECT_DIR}/src/init/Connect2TestRail.py FC_Test fc_db jira_tsc
+    - python3 ${CI_PROJECT_DIR}/src/init/Connect2TestRail.py FC_Test fc_db jira_tsc testrail
 
 sqdashboard-job-testrail_tsc1:      # This job runs in the deploy stage.
   stage: testrail  # It only runs when *both* jobs in the test stage complete successfully.
@@ -152,7 +152,7 @@ sqdashboard-job-testrail_tsc1:      # This job runs in the deploy stage.
     #- python3 ${CI_PROJECT_DIR}/testMSSQL.py
     #- the jira_gilds parameter represents the target jira instance. it can be also jira_issues.
     - cat refreshIDX.txt
-    - python3 ${CI_PROJECT_DIR}/src/init/Connect2TestRail.py FC_Test fc_db jira_tsc1
+    - python3 ${CI_PROJECT_DIR}/src/init/Connect2TestRail.py FC_Test fc_db jira_tsc1 testrail
 
 sqdashboard-job-testrail_gilds:      # This job runs in the deploy stage.
   stage: testrail  # It only runs when *both* jobs in the test stage complete successfully.
@@ -171,7 +171,7 @@ sqdashboard-job-testrail_gilds:      # This job runs in the deploy stage.
     #- python3 ${CI_PROJECT_DIR}/testMSSQL.py
     #- the jira_gilds parameter represents the target jira instance. it can be also jira_issues.
     - cat refreshIDX.txt
-    - python3 ${CI_PROJECT_DIR}/src/init/Connect2TestRail.py FC_Test fc_db jira_gilds
+    - python3 ${CI_PROJECT_DIR}/src/init/Connect2TestRail.py FC_Test fc_db jira_gilds testrail
 
 sqdashboard-job-testrail_gitdao:      # This job runs in the deploy stage.
   stage: testrail  # It only runs when *both* jobs in the test stage complete successfully.
@@ -190,7 +190,7 @@ sqdashboard-job-testrail_gitdao:      # This job runs in the deploy stage.
     #- python3 ${CI_PROJECT_DIR}/testMSSQL.py
     #- the jira_gilds parameter represents the target jira instance. it can be also jira_issues.
     - cat refreshIDX.txt
-    - python3 ${CI_PROJECT_DIR}/src/init/Connect2TestRail.py FC_Test fc_db jira_gitdao
+    - python3 ${CI_PROJECT_DIR}/src/init/Connect2TestRail.py FC_Test fc_db jira_gitdao testrail
 
 
 sqdashboard-job-etl:      # This job runs in the deploy stage.
