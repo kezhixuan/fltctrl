@@ -1,7 +1,7 @@
 import pandas as pd
 import codecs
 import src.dataSource.atlassian.ConnectAtlassian as ca
-
+import argparse
 # import ownDev.defect_regression as dr
 import src.dataSource.atlassian.issuesReleases as ir
 import src.dataSource.atlassian.utils.loadConfig as conf
@@ -28,9 +28,18 @@ class Connect2TestRail(connectDB):
     jiraService = []
 
     def __init__(self):
-        self.env = sys.argv[1]
-        self.localTest = sys.argv[2]
-        self.jiraService = sys.argv[3]
+        parser = argparse.ArgumentParser(description="Please share env variables")
+        parser.add_argument("env", type=str, help="env")
+        parser.add_argument("localTest", type=str, help="localTest")
+        parser.add_argument("jiraService", type=str, help="jiraService")
+        parser.add_argument("testrail", type=str, help="testrail")
+        args = parser.parse_args()
+
+ 
+
+        self.env = args.env
+        self.localTest = args.localTest
+        self.jiraService = args.jiraService
         self.testRail = "testrail"
         self.prefix = "dim_ji_"
         self.trConfig = conf.loadConfig().readTRConfig()
@@ -69,6 +78,8 @@ class Connect2TestRail(connectDB):
             project_id, self.testRail, self.engine, self.refresh_IDX, config
         )
 
+if __name__ == "__main__":
+    #print(f"Hallo {args.name1}, {args.name2}, {args.name3}")
+    loadJiraData = Connect2TestRail()
+    loadJiraData.getTestRailData()
 
-loadJiraData = Connect2TestRail()
-loadJiraData.getTestRailData()

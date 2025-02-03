@@ -25,8 +25,10 @@ drop table sq.fact_tr_users
 
 drop table sq.fact_tr_groups
 drop table sq.fact_tr_case_fields
-drop table sq.dim_tr_case_types
+
 drop table sq.dim_tr_cases
+drop table sq.dim_tr_case_types
+drop table sq.fact_tr_refs
 drop table sq.dim_tr_projects
 
 -- Delete ETL Tables

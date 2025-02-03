@@ -10,7 +10,7 @@ class loadConfig:
     ##get all jira configurations
     def readConfig(self):
         config = pd.read_json(codecs.open("config/jira.json", "r", "utf-8"))
-        print(config)
+        
         return config
 
     def readTRConfig(self):
@@ -30,7 +30,7 @@ class loadConfig:
         config = pd.read_json(codecs.open("config/testrail.json", "r", "utf-8"))
         testRails = pd.DataFrame(config)
         testRails.query(f"jira_id == '{jiraId}'", inplace=True)
-        print(testRails)
+        
         return testRails
 
     ##get jira projects by jira service

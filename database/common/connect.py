@@ -23,7 +23,7 @@ class connectDB():
 
         connect2 = connData[localTest]
 
-        print(connect2.head())
+        log.info("Database connector !")
         self.url_object = URL.create(
                     "mssql+pyodbc",
                     username=connect2["username"],
