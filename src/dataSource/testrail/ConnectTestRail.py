@@ -223,10 +223,18 @@ class ConnectTestRail:
 
         return date
 
+    def extract_case_refs(self, refs):
+        #parsing the references to jira issues
+        refs['refs'] = refs['refs'].str.split(',')
+        refs = refs.explode('refs').reset_index(drop=True)
+        print("Test cases refs stored successfully")
+        return refs
+
+
     def create_project_RC(self, id, refresh_IDX, trConfig):
         return trConfig["jira_project"] + str(refresh_IDX)
 
-    def transform_data(self, df, refresh_IDX, projConfig):
+    def transform_data(self, df, refresh_IDX, projConfig, engine):
         # Example field mapping and transformation
         df["created_on"] = df["created_on"].apply(lambda x: self.convert_to_datetime(x))
         df["updated_on"] = df["updated_on"].apply(lambda x: self.convert_to_datetime(x))
@@ -247,6 +255,8 @@ class ConnectTestRail:
         columns = attGroup["standard"]
         print(projConfig.itDomain + "----" + projConfig.jira_id)
 
+ 
+
         if projConfig.regType == "y":
             columns = columns + attGroup["regFlag"]
         if projConfig.testrail_id == 162:
@@ -265,10 +275,13 @@ class ConnectTestRail:
                 pass
         return df[columns]
 
-    def store_test_cases(self, df, engine, refresh_ID):
+    def store_test_cases(self, df, refs, engine, refresh_ID):
         # Add load_id to the DataFrame and store it in the database
         connect.write2DB(self, engine, df, "cases", "dim_tr_")
         print("Test cases stored successfully")
+        
+        connect.write2DB(self, engine, refs, "refs", "fact_tr_")
+        print("Test cases refs stored successfully")
 
     def load_data(self, project_id, testRail, engine, refresh_IDX, config):
         # Generate a unique load ID for the entire load process
@@ -291,10 +304,15 @@ class ConnectTestRail:
                             print(suite)
                             test_cases = self.get_test_cases(projectConf, suite)
                             df = self.create_dataframe(test_cases)
-                            df = self.transform_data(df, refresh_IDX, projectConf)
+                            df = self.transform_data(df, refresh_IDX, projectConf, engine)
+
+                            df_refs = df[["caseID_RC", "refs","id"]]
+                            df_refs = self.extract_case_refs(df_refs)
+                            df_refs["refresh_cycle"] = refresh_IDX
 
                             self.store_test_cases(
                                 df,
+                                df_refs,
                                 engine,
                                 refresh_IDX,
                             )

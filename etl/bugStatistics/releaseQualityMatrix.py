@@ -78,8 +78,7 @@ class loadIssuse4Release(connectDB):
                 " from sq.fact_ji_issues iss " +
                 " LEFT OUTER JOIN sq.fact_ji_squads sq  on sq.issueKey_RC = iss.issueKey_RC " +
                 " LEFT JOIN sq.fact_ji_versions vs on vs.issueKey_RC = iss.issueKey_RC " +
-                " where iss.project in ('SLS Agile', 'STAR Platform', 'WebClaims', 'MDM ADM') " +
-                " and iss.Refresh_Cycle between " + str(min) + " and "  + lastCycle + " ")
+                " where project = 'WebClaims' and iss.Refresh_Cycle = " + lastCycle + " ")
             print(sql_str)
             
             
@@ -90,6 +89,9 @@ class loadIssuse4Release(connectDB):
         allBugs['sevScore'] = allBugs.apply(loadIssuse4Release.sevScore, axis=1)
         allBugs['severity_val'] = allBugs.apply(loadIssuse4Release.SevMapping, axis=1)
         allBugs['releaseP_val'] = allBugs.apply(loadIssuse4Release.RelPMapping, axis=1)
+
+#        print(allBugs.describe(include='Project'))
+ #       print(allBugs.dtypes.value_counts())
 
         allBugs.to_sql('etl_bugs_stats', con=self.engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
 
@@ -104,7 +106,9 @@ class loadIssuse4Release(connectDB):
         bugAgg = allBugs.groupby(['Project','IssueType','ReleasePhase','Squad','Severity','ReleaseName'], as_index=False).agg({'IssueType': 'count','Severity': 'count'})
         bugAgg.to_sql('etl_bugs_agg', con=self.engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
         print(bugAgg.head())
-        
+
+        print(bugAgg.datatype.unique())
+
         sn.displot(data=allBugs[filt_gen_22], col='Project', col_wrap=4, x ="sevScore", hue="year", fill=True, facet_kws={'sharey': False, 'sharex': False},kind="kde",  aspect=1.5, alpha=0.2)
         print(allBugs.head())
         plt.xlabel('Severity Score')
@@ -120,6 +124,6 @@ class loadIssuse4Release(connectDB):
         
 
 xx = loadIssuse4Release()
-xx.cleanUpDB("etl_bugs_stats")
-xx.cleanUpDB("etl_bugs_agg")
+#xx.cleanUpDB("etl_bugs_stats")
+#xx.cleanUpDB("etl_bugs_agg")
 xx.getAllBug()

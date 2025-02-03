@@ -168,6 +168,15 @@ class testrail_tabs (connectDB):
             schema="SQ"
         )
 
+        fact_tr_refs = Table('fact_tr_refs', m,
+            Column('caseID_RC', VARCHAR(200)),
+            Column('id', BIGINT),
+            Column('refs', VARCHAR(200)),
+            Column('Refresh_Cycle', BIGINT),
+            ForeignKeyConstraint(["caseID_RC"], dim_tr_cases.primary_key, use_alter=True, name="fk_tr_case_refs_cases"),
+            schema="SQ"
+        )
+
         fact_tr_case_fields = Table('fact_tr_case_fields', m,
             Column('self', VARCHAR(255)),
             Column('id', BIGINT),

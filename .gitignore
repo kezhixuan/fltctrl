@@ -19,3 +19,4 @@ ownDev/defect_regression.py
 SQDashboard.log
 test/testData.json
 refreshIDX.txt
+test/testfile.py
