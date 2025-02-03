@@ -28,7 +28,7 @@ class InitLoadSetup(connectDB):
     def __init__(self):
         self.env = sys.argv[1]
         self.localTest = sys.argv[2]
-        self.jiraService = sys.argv[3]
+        self.jiraService = "jira_tsc"
         self.testRail = "testrail"
         self.prefix = "dim_ji_"
         self.trConfig = conf.loadConfig().readTRConfig()

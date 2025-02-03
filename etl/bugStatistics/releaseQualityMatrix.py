@@ -78,7 +78,7 @@ class loadIssuse4Release(connectDB):
                 " from sq.fact_ji_issues iss " +
                 " LEFT OUTER JOIN sq.fact_ji_squads sq  on sq.issueKey_RC = iss.issueKey_RC " +
                 " LEFT JOIN sq.fact_ji_versions vs on vs.issueKey_RC = iss.issueKey_RC " +
-                " where project = 'WebClaims' and iss.Refresh_Cycle = " + lastCycle + " ")
+                " where iss.Refresh_Cycle = " + lastCycle + " ")
             print(sql_str)
             
             
@@ -107,7 +107,7 @@ class loadIssuse4Release(connectDB):
         bugAgg.to_sql('etl_bugs_agg', con=self.engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
         print(bugAgg.head())
 
-        print(bugAgg.datatype.unique())
+#        print(bugAgg.datatype.unique())
 
         sn.displot(data=allBugs[filt_gen_22], col='Project', col_wrap=4, x ="sevScore", hue="year", fill=True, facet_kws={'sharey': False, 'sharex': False},kind="kde",  aspect=1.5, alpha=0.2)
         print(allBugs.head())
@@ -124,6 +124,6 @@ class loadIssuse4Release(connectDB):
         
 
 xx = loadIssuse4Release()
-#xx.cleanUpDB("etl_bugs_stats")
-#xx.cleanUpDB("etl_bugs_agg")
+xx.cleanUpDB("etl_bugs_stats")
+xx.cleanUpDB("etl_bugs_agg")
 xx.getAllBug()
