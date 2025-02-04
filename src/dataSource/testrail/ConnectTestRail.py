@@ -261,9 +261,10 @@ class ConnectTestRail:
         if projConfig.testrail_id == 162:
             try:
                 columns.remove("custom_steps")
-                columns.remove("custom_automated")
                 columns.remove("custom_security")
-                df.rename(columns={'custom_robot':'custom_automated'}, inplace=True)
+                columns.append("custom_robot")
+                df["custom_automated"] = df["custom_robot"]
+                #df.rename(columns={'custom_robot':'custom_automated'}, inplace=True)
             except ValueError:
                 pass
         if projConfig.testrail_id == 170:
@@ -286,10 +287,6 @@ class ConnectTestRail:
     def load_data(self, project_id, testRail, engine, refresh_IDX, config):
         # Generate a unique load ID for the entire load process
         # load_id = datetime.now().strftime("%Y%m%d%H%M%S")
-    
-        with engine.connect() as connection:
-            reidx = connection.execute(text("select max([IDX]) as refreshIDX from sq.dim_refresh_history"))
-
 
         if config['jira_system'].iloc[0] == "TSC" and reidx != refresh_IDX:
             try:
