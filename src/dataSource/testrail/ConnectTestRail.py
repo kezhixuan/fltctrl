@@ -17,7 +17,7 @@ class ConnectTestRail:
         self.testRail = testRail
         self.base_url = testRail.url
         self.auth = HTTPBasicAuth(testRail.username, testRail.api_token)
-        self.trCaseAttrs = loadConfig.readTRAttributes(self)
+        
 
     def get_test_case_type(self):
         # Construct the URL for fetching test cases
@@ -235,6 +235,11 @@ class ConnectTestRail:
 
     def transform_data(self, df, refresh_IDX, projConfig, engine):
         # Example field mapping and transformation
+        self.trCaseAttrs = loadConfig.readTRAttributes(self)
+        attGroup = self.trCaseAttrs["general"]
+        columns = attGroup["standard"]
+        print(projConfig.itDomain + "----" + projConfig.jira_id)
+        # Adjusting the dataframe columns and change the date format to a human readable one
         df["created_on"] = df["created_on"].apply(lambda x: self.convert_to_datetime(x))
         df["updated_on"] = df["updated_on"].apply(lambda x: self.convert_to_datetime(x))
         df["Refresh_Cycle"] = int(refresh_IDX)
@@ -249,13 +254,7 @@ class ConnectTestRail:
         df["caseID_RC"] = df.apply(
             lambda row: str(row["id"]) + "-" + str(refresh_IDX), axis=1
         )
-        # Add more field transformation logic as needed
-        attGroup = self.trCaseAttrs["general"]
-        columns = attGroup["standard"]
-        print(projConfig.itDomain + "----" + projConfig.jira_id)
-
- 
-
+        
         if projConfig.regType == "y":
             columns = columns + attGroup["regFlag"]
         if projConfig.testrail_id == 162:
@@ -263,6 +262,8 @@ class ConnectTestRail:
                 columns.remove("custom_steps")
                 columns.remove("custom_security")
                 columns.append("custom_robot")
+                if 'custom_automated' in df:
+                    columns.remove("custom_automated")
                 df["custom_automated"] = df["custom_robot"]
                 #df.rename(columns={'custom_robot':'custom_automated'}, inplace=True)
             except ValueError:
@@ -288,7 +289,7 @@ class ConnectTestRail:
         # Generate a unique load ID for the entire load process
         # load_id = datetime.now().strftime("%Y%m%d%H%M%S")
 
-        if config['jira_system'].iloc[0] == "TSC":
+        if config['jira_system'].iloc[0] == "GITDAO":
             try:
                 case_types = self.transform_case_type_df(self.get_test_case_type(), refresh_IDX)
                 self.store_test_case_types(case_types, engine, refresh_IDX)
