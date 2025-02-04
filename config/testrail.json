@@ -185,7 +185,7 @@
       "testrail_id": 162,
       "jira_id": "TANGO/eQP&GRIT Project",
       "suite_id": [31732,31731,31733,31649],
-      "regType": "n",
+      "regType": "y",
       "automation_flag": "n"
     }
 ]
