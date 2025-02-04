@@ -4,7 +4,7 @@ import time
 import pandas as pd
 from datetime import datetime
 from requests.auth import HTTPBasicAuth
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine,text
 from sqlalchemy.exc import IntegrityError
 from database.common.testrail_tabs import testrail_tabs
 from database.common.connect import connectDB as connect
@@ -210,7 +210,7 @@ class ConnectTestRail:
 
     def create_dataframe(self, test_cases):
         # Normalize the JSON response into a Pandas DataFrame
-        df = pd.json_normalize(test_cases)
+        df = pd.json_normalize(test_cases,max_level=1)
         return df
 
     def convert_to_datetime(self, input):
@@ -287,8 +287,11 @@ class ConnectTestRail:
         # Generate a unique load ID for the entire load process
         # load_id = datetime.now().strftime("%Y%m%d%H%M%S")
     
-                
-        if config['jira_system'].iloc[0] == "TSC":
+        with engine.connect() as connection:
+            reidx = connection.execute(text("select max([IDX]) as refreshIDX from sq.dim_refresh_history"))
+
+
+        if config['jira_system'].iloc[0] == "TSC" and reidx != refresh_IDX:
             try:
                 case_types = self.transform_case_type_df(self.get_test_case_type(), refresh_IDX)
                 self.store_test_case_types(case_types, engine, refresh_IDX)
