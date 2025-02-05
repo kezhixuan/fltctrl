@@ -289,7 +289,7 @@ class ConnectTestRail:
         # Generate a unique load ID for the entire load process
         # load_id = datetime.now().strftime("%Y%m%d%H%M%S")
 
-        if config['jira_system'].iloc[0] == "GITDAO":
+        if config['jira_system'].iloc[0] == "TSC":
             try:
                 case_types = self.transform_case_type_df(self.get_test_case_type(), refresh_IDX)
                 self.store_test_case_types(case_types, engine, refresh_IDX)
