@@ -34,8 +34,7 @@
             "Refresh_Cycle",
             "projectJI",
             "projectTR",
-            "project_RC"],
-        "regFlag":[
+            "project_RC",
             "custom_regressiontype"]
     }
 }
