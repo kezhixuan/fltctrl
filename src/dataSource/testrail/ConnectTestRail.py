@@ -229,6 +229,28 @@ class ConnectTestRail:
         refs = refs.explode('refs').reset_index(drop=True)
         return refs
 
+    def map_Robot2Automated(self, robot):
+        # planned to to be automated (4)
+        if robot == 1:
+            return 4
+        # changed to yes (1)
+        elif robot == 2:
+            return 1
+        # automated to yes(1)
+        elif robot == 3:
+            return 1
+        # impossible to will not be automated (2)
+        elif robot == 4:
+            return 2
+        # not needed to Will not be automated (2)
+        elif robot == 5:
+            return 2
+        # Decomissied to obsolete (5) 
+        elif robot == 6:
+            return 5
+        else:
+            return 0
+
 
     def create_project_RC(self, id, refresh_IDX, trConfig):
         return trConfig["jira_project"] + str(refresh_IDX)
@@ -255,19 +277,21 @@ class ConnectTestRail:
             lambda row: str(row["id"]) + "-" + str(refresh_IDX), axis=1
         )
         
-        if projConfig.regType == "y":
-            columns = columns + attGroup["regFlag"]
-        if projConfig.testrail_id == 162:
-            try:
-                columns.remove("custom_steps")
-                columns.remove("custom_security")
-                columns.append("custom_robot")
-                if 'custom_automated' in df:
-                    columns.remove("custom_automated")
-                df["custom_automated"] = df["custom_robot"]
-                #df.rename(columns={'custom_robot':'custom_automated'}, inplace=True)
-            except ValueError:
-                pass
+        if 'custom_regressiontype' not in df:
+            df['custom_regressiontype'] = 'NaN'
+        if 'custom_steps' not in df:
+            df['custom_steps'] = 'NaN'
+        if 'custom_security' not in df:
+            df["custom_security"] = 'NaN'
+        if 'custom_robot' not in df:
+            df["custom_robot"] = 'NaN'
+        if 'custom_automated' not in df and 'custom_robot' in df:
+            df["custom_automated"] = df["custom_robot"].apply(lambda x: self.map_Robot2Automated(x))
+        elif 'custom_automated' not in df:
+            columns.append("custom_automated")
+        #df.rename(columns={'custom_robot':'custom_automated'}, inplace=True)
+        
+
         if projConfig.testrail_id == 170:
             try:
                 columns.remove("custom_steps")
