@@ -105,13 +105,13 @@ class loadIssuse4Release(connectDB):
 
 #        print(bugAgg.datatype.unique())
 
-        sn.displot(data=allBugs[filt_gen_22], col='Project', col_wrap=4, x ="sevScore", hue="year", fill=True, facet_kws={'sharey': False, 'sharex': False},kind="kde",  aspect=1.5, alpha=0.2)
-        print(allBugs.head())
-        plt.xlabel('Severity Score')
+        #sn.displot(data=allBugs[filt_gen_22], col='Project', col_wrap=4, x ="sevScore", hue="year", fill=True, facet_kws={'sharey': False, 'sharex': False},kind="kde",  aspect=1.5, alpha=0.2)
+        #print(allBugs.head())
+        #plt.xlabel('Severity Score')
 
-        plt.show()
+        #plt.show()
 
-    def createTR_JI_relation(self, connection):
+    def createTR_JI_relation(self):
         with self.engine.connect() as connection:
             sql_str = ("select iss.issue_key, iss.issuetype, iss.severity, iss.\"release phase\", refs.caseID_RC, cas.title, cas.custom_automated, cas.custom_regressiontype from sq.fact_ji_issues iss " +
                 "LEFT OUTER JOIN sq.fact_tr_refs refs ON refs.refs = iss.issue_key and refs.Refresh_Cycle = iss.Refresh_Cycle " +
@@ -136,3 +136,4 @@ xx.cleanUpDB("etl_bugs_stats")
 xx.cleanUpDB("etl_bugs_agg")
 xx.cleanUpDB("etl_tr2ji_relate")
 xx.getAllBug()
+xx.createTR_JI_relation()
