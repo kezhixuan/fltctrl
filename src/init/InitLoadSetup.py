@@ -89,6 +89,29 @@ class InitLoadSetup(connectDB):
         refreshIDX_File = open("refreshIDX.txt", "w")
         refreshIDX_File.write(str(self.refresh_IDX))
         refreshIDX_File.close()
-    
+
+
+    def cleanUp_database(self):
+        sql_script = "./database/maintenance_scripts/cleanUp.sql"
+        with open(sql_script) as file:
+            with self.engine.connect() as conn:
+                try:  
+                    for line in file:
+                # check if on current day a refresh process has already be started.
+                        print(line.rstrip())
+                        trunc_script = "delete from " + line.rstrip()
+                        check_count = "select count(*) amount from " + line.rstrip()
+                        results = pd.read_sql(check_count ,conn)
+                        print(str(results["amount"].iloc[0]))                        
+                        conn.execute(text(trunc_script).execution_options(autocommit=True))
+                        conn.commit()
+                        results = pd.read_sql(check_count ,conn)
+                        print(str(results["amount"].iloc[0]))
+                except Exception as e:
+                    print(f'Integrity error: {e}')
+                    print(line.rstrip())
+
+
 loadJiraData = InitLoadSetup()
+loadJiraData.cleanUp_database()
 loadJiraData.initFlag()
