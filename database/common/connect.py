@@ -31,7 +31,8 @@ class connectDB():
                     host=connect2["host"],
                     database=connect2["database"],
                     query={
-                        "driver": "ODBC Driver 17 for SQL Server"
+                        "driver": "ODBC Driver 17 for SQL Server",
+                        "MARS_Connection": "Yes"
                     }
             )
         ############## end Database Connection Configuration ##################
