@@ -93,7 +93,7 @@ class InitLoadSetup(connectDB):
 
     def cleanUp_database(self):
         sql_script = "database/maintenance_scripts/cleanUp.sql"
-        with open(codecs.open(sql_script, "r", "utf-8")) as file:
+        with codecs.open(sql_script, "r", "utf-8") as file:
             with self.engine.connect() as conn:
                 try:  
                     for line in file:
