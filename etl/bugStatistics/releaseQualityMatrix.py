@@ -113,7 +113,7 @@ class loadIssuse4Release(connectDB):
 
     def createTR_JI_relation(self):
         with self.engine.connect() as connection:
-            sql_str = ("select iss.issue_key, iss.project,cas. iss.issuetype, iss.severity, iss.\"release phase\", refs.caseID_RC, cas.title, cas.custom_automated, cas.custom_regressiontype from sq.fact_ji_issues iss " +
+            sql_str = ("select iss.issue_key, iss.project,cas.type_id, iss.issuetype, iss.severity, iss.\"release phase\", refs.caseID_RC, cas.title, cas.custom_automated, cas.custom_regressiontype from sq.fact_ji_issues iss " +
                 "LEFT OUTER JOIN sq.fact_tr_refs refs ON refs.refs = iss.issue_key and refs.Refresh_Cycle = iss.Refresh_Cycle " +
                 "LEFT OUTER JOIN sq.dim_tr_cases cas on cas.caseID_RC = refs.caseID_RC " +
                 "where iss.refresh_cycle = " + self.lastCycle + "")
