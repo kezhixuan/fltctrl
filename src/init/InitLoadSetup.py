@@ -92,7 +92,7 @@ class InitLoadSetup(connectDB):
 
 
     def cleanUp_database(self):
-        sql_script = "./database/maintenance_scripts/cleanUp.sql"
+        sql_script = "database/maintenance_scripts/cleanUp.sql"
         with open(sql_script) as file:
             with self.engine.connect() as conn:
                 try:  
