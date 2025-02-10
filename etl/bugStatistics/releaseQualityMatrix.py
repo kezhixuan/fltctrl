@@ -130,10 +130,10 @@ class loadIssuse4Release(connectDB):
         pre_table = Table(table_name, metadata)
         pre_table.drop(self.engine, checkfirst=True)
         
-
-xx = loadIssuse4Release()
-xx.cleanUpDB("etl_bugs_stats")
-xx.cleanUpDB("etl_bugs_agg")
-xx.cleanUpDB("etl_tr2ji_relate")
-xx.getAllBug()
-xx.createTR_JI_relation()
+    
+l4R = loadIssuse4Release()
+l4R.cleanUpDB("etl_bugs_stats")
+l4R.cleanUpDB("etl_bugs_agg")
+l4R.cleanUpDB("etl_tr2ji_relate")
+l4R.getAllBug()
+l4R.createTR_JI_relation()
