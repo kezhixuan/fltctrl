@@ -54,10 +54,12 @@ class connectDB():
         
     
     def write2DB(self, engine, data: pd.DataFrame , tableName, prefix):
-        log.info('Start writing into table ' + tableName )
+        log.info('Start writing into table ' + prefix + tableName )
+        
         try:
             with engine.begin() as conn:
                 data.to_sql(prefix+ tableName, con=engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
+            
             conn.commit()
             success = True
             log.info('Successfull writen into table ' + tableName + ' and ' + str(data.size) + ' records saved!')

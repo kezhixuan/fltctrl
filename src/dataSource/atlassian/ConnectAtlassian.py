@@ -129,23 +129,23 @@ class ConnectAtlassian:
         df = pd.json_normalize(issues)
         print("Successfully connected to jira")
 
-        try:
-            cols = [
-                col
-                for col in df.columns
-                if col
-                not in [
-                    "fields.fixVersions",
-                    "fields.customfield_11095",
-                    "fields.labels",
-                    "fields.customfield_14162",
-                    "fields.versions",
-                    "fields.components",
-                ]
-            ]
+        #     try:
+        #         cols = [
+        #             col
+        #             for col in df.columns
+        #             if col
+        #             not in [
+        #                 "fields.fixVersions",
+        #                 "fields.customfield_11095",
+        #                 "fields.labels",
+        #                 "fields.customfield_14162",
+        #                 "fields.versions",
+        #                 "fields.components",
+        #             ]
+        #         ]
         # df = df[cols].join(df_fixversions).join(df_labels).join(df_affected_version).join(df_versions).join(df_components)
-        except:
-            print("Issue: joining not working")
+        #     except:
+        #         print("Issue: joining not working")
 
         ### Customized fields from jira instance ####
         url = f"{self.creds['url']}rest/api/3/field"
@@ -245,6 +245,10 @@ class ConnectAtlassian:
                         "fields.statuscategorychangedate",
                         "fields.duedate",
                         "fields.updated",
+                        "fields.labels",
+                        "fields.versions",
+                        "fields.fixVersions",
+                        "fields.components",
                         "fields.customfield_19890.value",
                         "fields.customfield_20083.value",
                         "fields.cusotmfield_20005.value",
@@ -297,18 +301,41 @@ class ConnectAtlassian:
 
         ### Change Column names to target database table design
         dfCore, dfSatelite = columH.cleanColumnNames(project, dfCore, dfSatelite)
+        ## ensuring star references for fixVersions, versions, labels, components and squads
+        dfCore = dfCore.explode("fixVersions").apply(pd.Series)
+        dfCore["fixVersions"] = dfCore["fixVersions"].apply(pd.Series)["id"]
 
+        try:
+            dfCore = dfCore.explode("labels").apply(pd.Series)
+        #   dfCore["labels"] = dfCore["labels"].apply(pd.Series)["id"]
+        except:
+            print("no field labels in " + dfCore["project"])
+        try:
+            dfCore = dfCore.explode("versions").apply(pd.Series)
+            dfCore["versions"] = dfCore["versions"].apply(pd.Series)["id"]
+        except:
+            print("no field versions in project " + dfCore["project"])
+        
+        try:
+            dfCore = dfCore.explode("components").apply(pd.Series)
+            dfCore["components"] = dfCore["components"].apply(pd.Series)["id"]
+        except:
+            print("no field components in project " + dfCore["project"])
+        
         return dfCore, dfSatelite
 
     def convertToDateTime(self, input):
         # function that reformats input string to datetime type
         try:
-            try:
-                return datetime.strptime(input, "%Y-%m-%d")
-            except:
-                return datetime.strptime(input, "%Y-%m-%dT%H:%M:%S.%f%z")
+            
+            return datetime.strptime(input, "%Y-%m-%d").date()
         except:
-            return datetime.strptime("1970-01-01", "%Y-%m-%d")
+            try:
+            
+                return datetime.strptime(input, "%Y-%m-%dT%H:%M:%S.%f%z").date()
+            except:
+            
+                return datetime.fromtimestamp(0)
 
     def GetIssues(self, project, jiraService, engine, refresh_IDX):
         issue_lst = pd.DataFrame()
@@ -333,7 +360,7 @@ class ConnectAtlassian:
             "fixversions",
             "labels",
             "versions",
-            "componentsname",
+            "component",
         ]
         datetimex = [
             "statuscategorychangedate",
@@ -341,6 +368,7 @@ class ConnectAtlassian:
             "duedate",
             "updated",
             "affected version releasedate",
+            "timeoriginalestimate",
         ]
         numbers = ["index", "id"]
 
@@ -406,10 +434,10 @@ class ConnectAtlassian:
             issues["Refresh_Cycle"] = int(refresh_IDX)
             issues["project_RC"] = issues["jira_key"] + str(refresh_IDX)
 
+            # Adding the Dimension Table data to the database
+            atl.IssueSatelites(issues_copy, project, engine, refresh_IDX)
             # Storing the collected DataFrame in the database
             connect.write2DB(self, engine, issues, "issues", prefix)
-            # Adding the Satelite Table data to the database
-            atl.IssueSatelites(issues_copy, project, engine, refresh_IDX)
 
             issue_lst = pd.concat([issue_lst, issues], axis=0)
 

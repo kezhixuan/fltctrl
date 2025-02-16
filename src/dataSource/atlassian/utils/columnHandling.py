@@ -114,6 +114,10 @@ class columnHandling:
         dfCore.rename(columns={"fields.creator.displayName": "creator"}, inplace=True)
         dfCore.rename(columns={"fields.created": "created"}, inplace=True)
         dfCore.rename(columns={"fields.summary": "summary"}, inplace=True)
+        dfCore.rename(columns={"fields.labels": "labels"}, inplace=True)
+        dfCore.rename(columns={"fields.components": "components"}, inplace=True)
+        dfCore.rename(columns={"fields.fixVersions": "fixVersions"}, inplace=True)
+        dfCore.rename(columns={"fields.versions": "versions"}, inplace=True)
         dfCore.rename(
             columns={"fields.statuscategorychangedate": "statuscategorychangedate"},
             inplace=True,

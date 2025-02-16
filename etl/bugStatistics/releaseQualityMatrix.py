@@ -1,4 +1,4 @@
-#import numpy as np
+# import numpy as np
 import seaborn as sn
 import matplotlib.pyplot as plt
 import sys
@@ -9,128 +9,165 @@ from sqlalchemy.engine.url import URL
 from sqlalchemy.ext.declarative import declarative_base
 
 
-#conn = connectDB(sys.argv[1], sys.argv[2])
+# conn = connectDB(sys.argv[1], sys.argv[2])
 
 
 class loadIssuse4Release(connectDB):
-    env=[]
-    localTest=[]
-    conDB=[]
+    env = []
+    localTest = []
+    conDB = []
 
     def __init__(self):
         super().__init__(sys.argv[1], sys.argv[2])
         with self.engine.connect() as connection:
-            self.lastCycle = str(pd.read_sql("select max(IDX) from sq.dim_refresh_history",connection).iat[0,0])
-    
+            self.lastCycle = str(
+                pd.read_sql(
+                    "select max(IDX) from sq.dim_refresh_history", connection
+                ).iat[0, 0]
+            )
 
     def SevMapping(row):
-        if row['Severity'] == 'Major':
+        if row["Severity"] == "Major":
             sev = 3
-        elif row['Severity'] == 'Blocker':
+        elif row["Severity"] == "Blocker":
             sev = 4
-        elif row['Severity'] == 'Minor':
+        elif row["Severity"] == "Minor":
             sev = 2
         else:
             sev = 1
         return sev
 
     def RelPMapping(row):
-        if row['ReleasePhase'] == 'Functional Acceptance':
+        if row["ReleasePhase"] == "Functional Acceptance":
             rel = 2
-        elif row['ReleasePhase'] == 'Production':
+        elif row["ReleasePhase"] == "Production":
             rel = 4
-        elif row['ReleasePhase'] == 'User Acceptance':
+        elif row["ReleasePhase"] == "User Acceptance":
             rel = 3
         else:
             rel = 1
         return rel
 
     def sevScore(row):
-        if row['Severity'] == 'Major':
+        if row["Severity"] == "Major":
             sev = 3
-        elif row['Severity'] == 'Blocker':
+        elif row["Severity"] == "Blocker":
             sev = 4
-        elif row['Severity'] == 'Minor':
+        elif row["Severity"] == "Minor":
             sev = 2
         else:
             sev = 1
 
-        if row['ReleasePhase'] == 'Functional Acceptance':
+        if row["ReleasePhase"] == "Functional Acceptance":
             rel = 2
-        elif row['ReleasePhase'] == 'Production':
+        elif row["ReleasePhase"] == "Production":
             rel = 4
-        elif row['ReleasePhase'] == 'User Acceptance':
+        elif row["ReleasePhase"] == "User Acceptance":
             rel = 3
         else:
             rel = 1
 
-        return pow(sev * rel,2)
-
+        return pow(sev * rel, 2)
 
     def getAllBug(self):
         with self.engine.connect() as connection:
-            sql_str = ("select iss.project Project, iss.issueKey_RC, iss.issuetype IssueType, iss.issue_key IssueKey, iss.\"bug classification\" BugClassification," +
-                " iss.\"release phase\" ReleasePhase, iss.created Created, " +
-                " iss.severity Severity, vs.name ReleaseName, vs.releaseDate ReleaseDate, " +
-                " sq.squad Squad " +
-                " from sq.fact_ji_issues iss " +
-                " LEFT OUTER JOIN sq.fact_ji_squads sq  on sq.issueKey_RC = iss.issueKey_RC " +
-                " LEFT JOIN sq.fact_ji_versions vs on vs.issueKey_RC = iss.issueKey_RC " +
-                " where iss.Refresh_Cycle = " + self.lastCycle + " ")
+            sql_str = (
+                'select iss.project Project, iss.issueKey_RC, iss.issuetype IssueType, iss.issue_key IssueKey, iss."bug classification" BugClassification,'
+                + ' iss."release phase" ReleasePhase, iss.created Created, '
+                + " iss.severity Severity, vs.name ReleaseName, vs.releaseDate ReleaseDate, "
+                + " sq.squad Squad "
+                + " from sq.fact_ji_issues iss "
+                + " LEFT OUTER JOIN sq.fact_ji_squads sq  on sq.issueKey_RC = iss.issueKey_RC "
+                + " LEFT JOIN sq.fact_ji_versions vs on vs.issueKey_RC = iss.issueKey_RC "
+                + " where iss.Refresh_Cycle = "
+                + self.lastCycle
+                + " "
+            )
             print(sql_str)
-            allBugs = pd.read_sql(sql_str ,connection)
-        
+            allBugs = pd.read_sql(sql_str, connection)
+
         # adding further statistic fields to simplify reporting.
-        allBugs['year'] = pd.to_datetime(allBugs['Created']).dt.year  
-        allBugs['sevScore'] = allBugs.apply(loadIssuse4Release.sevScore, axis=1)
-        allBugs['severity_val'] = allBugs.apply(loadIssuse4Release.SevMapping, axis=1)
-        allBugs['releaseP_val'] = allBugs.apply(loadIssuse4Release.RelPMapping, axis=1)
+        allBugs["year"] = pd.to_datetime(allBugs["Created"]).dt.year
+        allBugs["sevScore"] = allBugs.apply(loadIssuse4Release.sevScore, axis=1)
+        allBugs["severity_val"] = allBugs.apply(loadIssuse4Release.SevMapping, axis=1)
+        allBugs["releaseP_val"] = allBugs.apply(loadIssuse4Release.RelPMapping, axis=1)
 
-#        print(allBugs.describe(include='Project'))
- #       print(allBugs.dtypes.value_counts())
+        #        print(allBugs.describe(include='Project'))
+        #       print(allBugs.dtypes.value_counts())
 
-        allBugs.to_sql('etl_bugs_stats', con=self.engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
+        allBugs.to_sql(
+            "etl_bugs_stats",
+            con=self.engine,
+            schema="SQ",
+            chunksize=2000,
+            index=False,
+            if_exists="append",
+        )
 
         print(allBugs.isnull().sum())
         print(allBugs.head())
 
+        filt_gen_22 = (allBugs["IssueType"] == "Bug") & (allBugs["year"] >= 2020)
 
-        filt_gen_22 =( 
-         (allBugs['IssueType'] == 'Bug') &
-         (allBugs['year'] >= 2020)) 
-
-        bugAgg = allBugs.groupby(['Project','IssueType','ReleasePhase','Squad','Severity','ReleaseName'], as_index=False).agg({'IssueType': 'count','Severity': 'count'})
-        bugAgg.to_sql('etl_bugs_agg', con=self.engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
+        bugAgg = allBugs.groupby(
+            [
+                "Project",
+                "IssueType",
+                "ReleasePhase",
+                "Squad",
+                "Severity",
+                "ReleaseName",
+            ],
+            as_index=False,
+        ).agg({"IssueType": "count", "Severity": "count"})
+        bugAgg.to_sql(
+            "etl_bugs_agg",
+            con=self.engine,
+            schema="SQ",
+            chunksize=2000,
+            index=False,
+            if_exists="append",
+        )
         print(bugAgg.head())
 
-#        print(bugAgg.datatype.unique())
+    #        print(bugAgg.datatype.unique())
 
-        #sn.displot(data=allBugs[filt_gen_22], col='Project', col_wrap=4, x ="sevScore", hue="year", fill=True, facet_kws={'sharey': False, 'sharex': False},kind="kde",  aspect=1.5, alpha=0.2)
-        #print(allBugs.head())
-        #plt.xlabel('Severity Score')
+    # sn.displot(data=allBugs[filt_gen_22], col='Project', col_wrap=4, x ="sevScore", hue="year", fill=True, facet_kws={'sharey': False, 'sharex': False},kind="kde",  aspect=1.5, alpha=0.2)
+    # print(allBugs.head())
+    # plt.xlabel('Severity Score')
 
-        #plt.show()
+    # plt.show()
 
     def createTR_JI_relation(self):
         with self.engine.connect() as connection:
-            sql_str = ("select iss.issue_key, iss.project,cas.type_id, iss.issuetype, iss.severity, iss.\"release phase\", refs.caseID_RC, cas.title, cas.custom_automated, cas.custom_regressiontype from sq.fact_ji_issues iss " +
-                "LEFT OUTER JOIN sq.fact_tr_refs refs ON refs.refs = iss.issue_key and refs.Refresh_Cycle = iss.Refresh_Cycle " +
-                "LEFT OUTER JOIN sq.dim_tr_cases cas on cas.caseID_RC = refs.caseID_RC " +
-                "where iss.refresh_cycle = " + self.lastCycle + "")
+            sql_str = (
+                'select iss.issue_key, iss.project,cas.type_id, iss.issuetype, iss.severity, iss."release phase", refs.caseID_RC, cas.title, cas.custom_automated, cas.custom_regressiontype from sq.fact_ji_issues iss '
+                + "LEFT OUTER JOIN sq.fact_tr_refs refs ON refs.refs = iss.issue_key and refs.Refresh_Cycle = iss.Refresh_Cycle "
+                + "LEFT OUTER JOIN sq.dim_tr_cases cas on cas.caseID_RC = refs.caseID_RC "
+                + "where iss.refresh_cycle = "
+                + self.lastCycle
+                + ""
+            )
             print(sql_str)
-            TestRail_Jira = pd.read_sql(sql_str ,connection)
+            TestRail_Jira = pd.read_sql(sql_str, connection)
 
-            TestRail_Jira.to_sql('etl_tr2ji_relate', con=self.engine, schema='SQ',chunksize=2000, index=False, if_exists='append')
-        
+            TestRail_Jira.to_sql(
+                "etl_tr2ji_relate",
+                con=self.engine,
+                schema="SQ",
+                chunksize=2000,
+                index=False,
+                if_exists="append",
+            )
 
-    def cleanUpDB(self, table_name):    
+    def cleanUpDB(self, table_name):
         Base = declarative_base()
         metadata = MetaData(schema="SQ")
         metadata.reflect(bind=self.engine)
         pre_table = Table(table_name, metadata)
         pre_table.drop(self.engine, checkfirst=True)
-        
-    
+
+
 l4R = loadIssuse4Release()
 l4R.cleanUpDB("etl_bugs_stats")
 l4R.cleanUpDB("etl_bugs_agg")
