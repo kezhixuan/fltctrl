@@ -7,6 +7,12 @@ drop table sq.fact_ji_versions
 drop table sq.fact_ji_issues
 drop table sq.dim_ji_releases
 
+drop table sq.dim_ji_squads
+drop table sq.dim_ji_fixversions
+drop table sq.dim_ji_labels
+drop table sq.dim_ji_components
+drop table sq.dim_ji_versions
+
 -- Delete TestRail Tables --
 drop table sq.fact_tr_tests
 drop table sq.fact_tr_runs
@@ -34,6 +40,7 @@ drop table sq.dim_tr_projects
 -- Delete ETL Tables
 drop table sq.etl_bugs_agg
 drop table sq.etl_bugs_stats
+drop table sq.etl_tr2ji_relate
 
 -- Delete config tables
 drop table sq.dim_refresh_history

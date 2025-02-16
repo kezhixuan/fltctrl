@@ -4,7 +4,7 @@ import time
 import pandas as pd
 from datetime import datetime
 from requests.auth import HTTPBasicAuth
-from sqlalchemy import create_engine,text
+from sqlalchemy import create_engine, text
 from sqlalchemy.exc import IntegrityError
 from database.common.testrail_tabs import testrail_tabs
 from database.common.connect import connectDB as connect
@@ -17,7 +17,6 @@ class ConnectTestRail:
         self.testRail = testRail
         self.base_url = testRail.url
         self.auth = HTTPBasicAuth(testRail.username, testRail.api_token)
-        
 
     def get_test_case_type(self):
         # Construct the URL for fetching test cases
@@ -210,7 +209,7 @@ class ConnectTestRail:
 
     def create_dataframe(self, test_cases):
         # Normalize the JSON response into a Pandas DataFrame
-        df = pd.json_normalize(test_cases,max_level=1)
+        df = pd.json_normalize(test_cases, max_level=1)
         return df
 
     def convert_to_datetime(self, input):
@@ -224,9 +223,9 @@ class ConnectTestRail:
         return date
 
     def extract_case_refs(self, refs):
-        #parsing the references to jira issues
-        refs['refs'] = refs['refs'].str.split(',')
-        refs = refs.explode('refs').reset_index(drop=True)
+        # parsing the references to jira issues
+        refs["refs"] = refs["refs"].str.split(",")
+        refs = refs.explode("refs").reset_index(drop=True)
         return refs
 
     def map_Robot2Automated(self, robot):
@@ -245,12 +244,11 @@ class ConnectTestRail:
         # not needed to Will not be automated (2)
         elif robot == 5:
             return 2
-        # Decomissied to obsolete (5) 
+        # Decomissied to obsolete (5)
         elif robot == 6:
             return 5
         else:
             return 0
-
 
     def create_project_RC(self, id, refresh_IDX, trConfig):
         return trConfig["jira_project"] + str(refresh_IDX)
@@ -276,21 +274,22 @@ class ConnectTestRail:
         df["caseID_RC"] = df.apply(
             lambda row: str(row["id"]) + "-" + str(refresh_IDX), axis=1
         )
-        
-        if 'custom_regressiontype' not in df:
-            df['custom_regressiontype'] = 'NaN'
-        if 'custom_steps' not in df:
-            df['custom_steps'] = 'NaN'
-        if 'custom_security' not in df:
-            df["custom_security"] = 'NaN'
-        if 'custom_robot' not in df:
-            df["custom_robot"] = 'NaN'
-        if 'custom_automated' not in df and 'custom_robot' in df:
-            df["custom_automated"] = df["custom_robot"].apply(lambda x: self.map_Robot2Automated(x))
-        elif 'custom_automated' not in df:
+
+        if "custom_regressiontype" not in df:
+            df["custom_regressiontype"] = "NaN"
+        if "custom_steps" not in df:
+            df["custom_steps"] = "NaN"
+        if "custom_security" not in df:
+            df["custom_security"] = "NaN"
+        if "custom_robot" not in df:
+            df["custom_robot"] = "NaN"
+        if "custom_automated" not in df and "custom_robot" in df:
+            df["custom_automated"] = df["custom_robot"].apply(
+                lambda x: self.map_Robot2Automated(x)
+            )
+        elif "custom_automated" not in df:
             columns.append("custom_automated")
-        #df.rename(columns={'custom_robot':'custom_automated'}, inplace=True)
-        
+        # df.rename(columns={'custom_robot':'custom_automated'}, inplace=True)
 
         if projConfig.testrail_id == 170:
             try:
@@ -305,7 +304,7 @@ class ConnectTestRail:
         # Add load_id to the DataFrame and store it in the database
         connect.write2DB(self, engine, df, "cases", "dim_tr_")
         print("Test cases stored successfully")
-        
+
         connect.write2DB(self, engine, refs, "refs", "fact_tr_")
         print("Test cases refs stored successfully")
 
@@ -313,12 +312,14 @@ class ConnectTestRail:
         # Generate a unique load ID for the entire load process
         # load_id = datetime.now().strftime("%Y%m%d%H%M%S")
 
-        if config['jira_system'].iloc[0] == "TSC":
+        if config["jira_system"].iloc[0] == "TSC":
             try:
-                case_types = self.transform_case_type_df(self.get_test_case_type(), refresh_IDX)
+                case_types = self.transform_case_type_df(
+                    self.get_test_case_type(), refresh_IDX
+                )
                 self.store_test_case_types(case_types, engine, refresh_IDX)
             except IntegrityError as e:
-                print(f'Integrity error: {e}')
+                print(f"Integrity error: {e}")
 
         for index, projectConf in config.iterrows():
             suits = projectConf.suite_id
@@ -330,9 +331,11 @@ class ConnectTestRail:
                             print(suite)
                             test_cases = self.get_test_cases(projectConf, suite)
                             df = self.create_dataframe(test_cases)
-                            df = self.transform_data(df, refresh_IDX, projectConf, engine)
+                            df = self.transform_data(
+                                df, refresh_IDX, projectConf, engine
+                            )
 
-                            df_refs = df[["caseID_RC", "refs","id"]]
+                            df_refs = df[["caseID_RC", "refs", "id"]]
                             df_refs = self.extract_case_refs(df_refs)
                             df_refs["refresh_cycle"] = refresh_IDX
 
@@ -343,7 +346,7 @@ class ConnectTestRail:
                                 refresh_IDX,
                             )
                         runs = self.process_test_runs(projectConf, engine, refresh_IDX)
-                       # self.process_tests(projectConf, engine, refresh_IDX, runs)
+                    # self.process_tests(projectConf, engine, refresh_IDX, runs)
 
 
 # class testRail:
@@ -364,5 +367,3 @@ class ConnectTestRail:
 #    # Load data for a specific project
 #    project_id = 1
 #    connect_testrail.load_data(project_id)
-
-

@@ -18,7 +18,7 @@ pd.options.mode.copy_on_write = True
 
 
 class IssueSatelites:
-    prefixFact = "fact_ji_"
+    prefixFact = "dim_ji_"
     status = True
 
     def __init__(self, df, project, engine, refresh_IDX):
@@ -27,7 +27,7 @@ class IssueSatelites:
         success_fV = self.fixVersions(df, project, engine, refresh_IDX)
         success_Co = self.jiraComponents(df, engine, refresh_IDX)
         success_Cf = self.jiraCustomfield(df, engine, refresh_IDX)
-        success_La = self.jiraLabels(df, engine, refresh_IDX)
+    #    success_La = self.jiraLabels(df, engine, refresh_IDX)
         success_Sq = self.jiraSquads(df, project, engine, refresh_IDX)
 
         if success_aV != True:
@@ -38,8 +38,8 @@ class IssueSatelites:
             self.status = False
         elif success_Cf != True:
             self.status = False
-        elif success_La != True:
-            self.status = False
+    #    elif success_La != True:
+    #        self.status = False
         elif success_Sq != True:
             self.status = False
         else:
@@ -61,12 +61,13 @@ class IssueSatelites:
         try:
             if "fixVersions" in df.columns:
                 df_f = df["fixVersions"].explode().apply(pd.Series)
+                df_f = df_f.drop_duplicates()
                 if "id" in df_f:
                     df_f = df_f[df_f["id"].notnull()]
                     if not df_f.empty:
                         df_fixversions = pd.DataFrame()
                         df_fixversions["self"] = df_f["self"]
-                        df_fixversions["id"] = df_f["id"]
+                        df_fixversions["fixversion_id"] = df_f["id"]
                         df_fixversions["name"] = self.customReleaseName(
                             project, df_f["name"]
                         )
@@ -106,11 +107,12 @@ class IssueSatelites:
         try:
             if "versions" in df.columns:
                 df_v = df["versions"].explode().apply(pd.Series)
+                df_v = df_v.drop_duplicates()
                 if "id" in df_v:
                     df_v = df_v[df_v["id"].notnull()]
                     if not df_v.empty:
                         df_versions = pd.DataFrame()
-                        df_versions["id"] = df_v["id"]
+                        df_versions["version_id"] = df_v["id"]
                         df_versions["name"] = self.customReleaseName(
                             project, df_v["name"]
                         )
@@ -146,12 +148,13 @@ class IssueSatelites:
         try:
             if "components" in df.columns:
                 df_c = df["components"].explode().apply(pd.Series)
+                df_c = df_c.drop_duplicates()
                 if "id" in df_c:
                     df_c = df_c[df_c["id"].notna()]
                     if not df_c.empty:
                         df_components = pd.DataFrame()
                         df_components["self"] = df_c["self"]
-                        df_components["id"] = df_c["id"]
+                        df_components["component_id"] = df_c["id"]
 
                         df_components["name"] = df_c["name"]
                         df_components["issue_key"] = df["key"]
@@ -177,8 +180,10 @@ class IssueSatelites:
             if "labels" in df.columns:
                 # df_l = df.assign(labels=df.labels.str.split(",")).explode("labels")
                 df_l = df.explode("labels")
+                df_l = df_l.drop_duplicates()
                 if not df_l.empty:
                     df_labels = pd.DataFrame()
+                    df_labels["label_id"] = df_l["id"]
                     df_labels["issueKey_RC"] = df_l["key"] + "-" + str(refresh_IDX)
                     df_labels["label"] = df_l["labels"]
                     df_labels["issue_key"] = df_l["key"]
@@ -200,6 +205,7 @@ class IssueSatelites:
             if "squads" in df.columns:
                 # df_l = df.assign(labels=df.labels.str.split(",")).explode("labels")
                 df_l = df.explode("squads").apply(pd.Series)
+                df_l = df_l.drop_duplicates()
                 if "id" in df_l:
                     df_l = df_l[df_l["id"].notna()]
                     if not df_l.empty:

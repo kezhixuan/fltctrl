@@ -1,10 +1,9 @@
-sq.fact_ji_squads
-sq.fact_ji_fixversions
-sq.fact_ji_labels
-sq.fact_ji_components
-sq.fact_ji_versions
-sq.dim_ji_releases
 sq.fact_ji_issues
+sq.dim_ji_squads
+sq.dim_ji_components
+sq.dim_ji_versions
+sq.dim_ji_releases
+sq.dim_ji_fixversions
 sq.fact_tr_tests
 sq.fact_tr_runs
 sq.fact_tr_users

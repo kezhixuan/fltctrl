@@ -2,6 +2,7 @@ import pandas as pd
 import codecs
 import src.dataSource.atlassian.ConnectAtlassian as ca
 import argparse
+
 # import ownDev.defect_regression as dr
 import src.dataSource.atlassian.issuesReleases as ir
 import src.dataSource.atlassian.utils.loadConfig as conf
@@ -35,8 +36,6 @@ class Connect2TestRail(connectDB):
         parser.add_argument("testrail", type=str, help="testrail")
         args = parser.parse_args()
 
- 
-
         self.env = args.env
         self.localTest = args.localTest
         self.jiraService = args.jiraService
@@ -69,7 +68,7 @@ class Connect2TestRail(connectDB):
     def getTestRailData(self):
         project_id = ""
         # reading the system parameter
-        jira_service = self.jiraService.split("_",1)[1].upper()
+        jira_service = self.jiraService.split("_", 1)[1].upper()
 
         config = pd.DataFrame(self.config[self.config["jira_system"] == jira_service])
 
@@ -78,8 +77,8 @@ class Connect2TestRail(connectDB):
             project_id, self.testRail, self.engine, self.refresh_IDX, config
         )
 
+
 if __name__ == "__main__":
-    #print(f"Hallo {args.name1}, {args.name2}, {args.name3}")
+    # print(f"Hallo {args.name1}, {args.name2}, {args.name3}")
     loadJiraData = Connect2TestRail()
     loadJiraData.getTestRailData()
-
