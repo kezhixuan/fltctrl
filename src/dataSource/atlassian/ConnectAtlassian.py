@@ -302,9 +302,11 @@ class ConnectAtlassian:
         ### Change Column names to target database table design
         dfCore, dfSatelite = columH.cleanColumnNames(project, dfCore, dfSatelite)
         ## ensuring star references for fixVersions, versions, labels, components and squads
-        dfCore = dfCore.explode("fixVersions").apply(pd.Series)
-        dfCore["fixVersions"] = dfCore["fixVersions"].apply(pd.Series)["id"]
-
+        try:
+            dfCore = dfCore.explode("fixVersions").apply(pd.Series)
+            dfCore["fixVersions"] = dfCore["fixVersions"].apply(pd.Series)["id"]
+        except:
+            print("no field labels in " + dfCore["project"])
         try:
             dfCore = dfCore.explode("labels").apply(pd.Series)
         #   dfCore["labels"] = dfCore["labels"].apply(pd.Series)["id"]
