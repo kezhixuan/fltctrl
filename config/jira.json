@@ -170,7 +170,7 @@
     },
     {
         "refresh_active": "y",
-        "jira_system": "TSC1",
+        "jira_system": "TSC",
         "jira_id": "GXDRE",
         "jira_project": "GXDRE",
         "jira_project_name": "GXD Rebuild",

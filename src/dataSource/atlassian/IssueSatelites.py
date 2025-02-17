@@ -14,6 +14,7 @@ from numpy import int64
 import src.dataSource.atlassian.utils.loadConfig as conf
 
 
+
 pd.options.mode.copy_on_write = True
 
 
@@ -54,6 +55,19 @@ class IssueSatelites:
             majRelease = release
 
         return majRelease
+    
+    def convertToDateTime(self, input):
+        # function that reformats input string to datetime type
+        try:
+            
+            return datetime.strptime(input, "%Y-%m-%d").date()
+        except:
+            try:
+            
+                return datetime.strptime(input, "%Y-%m-%dT%H:%M:%S.%f%z").date()
+            except:
+            
+                return datetime.fromtimestamp(0)
 
     def fixVersions(self, df, project, engine, refresh_IDX):
         ### changing from nested structure to integrated harmonized json structure. e.g. versioons {self, id, ...} to versions.self; versions.id e.g.
@@ -86,6 +100,8 @@ class IssueSatelites:
                         )
                         df_fixversions["issue_key"] = df["key"]
                         df_fixversions["Refresh_Cycle"] = int(refresh_IDX)
+
+                        df_fixversions = df_fixversions.drop_duplicates()
                         # df_fixversions.rename(columns={col:f'fields.fixVersions.{col}' for col in df_fixversions.columns}, inplace=True)
                         connect.write2DB(
                             self, engine, df_fixversions, "fixversions", self.prefixFact
@@ -249,10 +265,10 @@ class IssueSatelites:
                         print(dfr.columns)
                         if not dfr.empty:
                             df_affected_version = pd.DataFrame()
-                            df_affected_version["issueKey_RC"] = (
-                                df["key"] + "-" + str(refresh_IDX)
-                            )
-                            df_affected_version["id"] = dfr[colCheck + ".id"]
+                          #  df_affected_version["issueKey_RC"] = (
+                          #      df["key"] + "-" + str(refresh_IDX)
+                          #  )
+                            df_affected_version["version_id"] = dfr[colCheck + ".id"]
                             df_affected_version["name"] = dfr[colCheck + ".name"]
                             df_affected_version["archived"] = dfr[
                                 colCheck + ".archived"
@@ -260,14 +276,16 @@ class IssueSatelites:
                             df_affected_version["released"] = dfr[
                                 colCheck + ".released"
                             ]
-                            if "releasedate" in dfr:
-                                df_affected_version["releaseDate"] = dfr[
-                                    colCheck + ".releasedate"
-                                ]
+                            releaseDateField = colCheck + ".releasedate"
+                            
+                            if releaseDateField in dfr:
+                                df_affected_version["releaseDate"] = dfr[releaseDateField].apply(lambda x: self.convertToDateTime(x))
                             else:
                                 df_affected_version["releaseDate"] = ""
-                            df_affected_version["issue_key"] = df["key"]
+                            
+                           # df_affected_version["issue_key"] = df["key"]
                             df_affected_version["Refresh_Cycle"] = int(refresh_IDX)
+                            df_affected_version = df_affected_version.drop_duplicates()
                             connect.write2DB(
                                 self,
                                 engine,
