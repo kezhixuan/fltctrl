@@ -54,7 +54,7 @@ class ConnectAtlassian:
                 # TODO: add custom JQL here
                 "jql": "project in ("
                 + project
-                + ") AND created > '2019-01-01' and issuetype in ("
+                + ") AND created > '2022-01-01' and issuetype in ("
                 + filter
                 + ")",
                 "fields": "(" + jql_fields + ")",
