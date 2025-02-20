@@ -201,6 +201,11 @@ class ConnectAtlassian:
                         "fields.creator.displayName",
                         "fields.created",
                         "fields.summary",
+                        "fields.labels",
+                        "fields.versions",
+                        "fields.fixVersions",
+                        "fields.components",
+                        "fields.squads",
                         "fields.statuscategorychangedate",
                         "fields.duedate",
                         "fields.updated",
@@ -208,6 +213,7 @@ class ConnectAtlassian:
                         "fields.customfield_11487.value",
                         "fields.customfield_11106.value",
                         "fields.customfield_11107.value",
+                        "fields.customfield_11095",
                     ]
                 ),
             ]
@@ -323,6 +329,12 @@ class ConnectAtlassian:
             dfCore["components"] = dfCore["components"].apply(pd.Series)["id"]
         except:
             print("no field components in project " + dfCore["project"])
+        
+        try:
+            dfCore = dfCore.explode("squads").apply(pd.Series)
+            dfCore["squads"] = dfCore["squads"].apply(pd.Series)["id"]
+        except:
+            print("no field squads in project " + dfCore["project"])
         
         return dfCore, dfSatelite
 
