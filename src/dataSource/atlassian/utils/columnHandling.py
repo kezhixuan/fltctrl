@@ -124,6 +124,7 @@ class columnHandling:
         )
         dfCore.rename(columns={"fields.duedate": "duedate"}, inplace=True)
         dfCore.rename(columns={"fields.updated": "updated"}, inplace=True)
+        dfCore.rename(columns={"fields.customfield_11095": "squads"}, inplace=True)
 
         dfSatelite.rename(columns={"fields.labels": "labels"}, inplace=True)
         dfSatelite.rename(columns={"fields.components": "components"}, inplace=True)

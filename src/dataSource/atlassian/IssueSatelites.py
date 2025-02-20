@@ -221,21 +221,24 @@ class IssueSatelites:
             if "squads" in df.columns:
                 # df_l = df.assign(labels=df.labels.str.split(",")).explode("labels")
                 df_l = df.explode("squads").apply(pd.Series)
-                df_l = df_l.drop_duplicates()
+             #   df_l = df_l.drop_duplicates()
                 if "id" in df_l:
+                    print("Squad_ID: " + df_l["id"])
                     df_l = df_l[df_l["id"].notna()]
                     if not df_l.empty:
                         df_squads = pd.DataFrame()
-                        df_squads["squad_id"] = df_l["id"]
-                        df_squads["issueKey_RC"] = df_l["key"] + "-" + str(refresh_IDX)
+                     #   df_squads["issueKey_RC"] = df_l["key"] + "-" + str(refresh_IDX)
                         if "squads" in df_l:
+                            df_squads["squad_id"] = df_l["squads"].apply(pd.Series)["id"]
                             df_squads["squad"] = df_l["squads"].apply(pd.Series)[
                                 "value"
                             ]
                         else:
                             df_squads["squad"] = ""
-                        df_squads["issue_key"] = df_l["key"]
+                      #  df_squads["issue_key"] = df_l["key"]
                         df_squads["Refresh_Cycle"] = int(refresh_IDX)
+                        df_squads = df_squads.drop_duplicates()
+                        df_squads = df_squads[df_squads.squad.notnull()]
                         connect.write2DB(
                             self, engine, df_squads, "squads", self.prefixFact
                         )
