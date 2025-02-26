@@ -160,6 +160,33 @@ class loadIssuse4Release(connectDB):
                 if_exists="append",
             )
 
+    def defectKPI(self, table_name):
+        sql_str = "select * from sq.fact_ji_issues" 
+        with self.engine.connect() as connection:
+            Dkpi = pd.read_sql(sql_str, connection)
+        filed_bugs_filter = ['Defect','Bug','Defect/bug','UAT Finding','QA Test Finding']
+        #filter_bug_status = 'Rejected'
+        #filter_bug_resolution = ('Won\' t Fix','Won\'t Do', 'Rejected', 'Works as specified','Cannot Reproduce', 'Duplicate')
+
+        filed_bugs = Dkpi[Dkpi["issuetype"].isin(filed_bugs_filter)][["id","versions","fixVersions","project","severity","release phase", "issuetype", "month_agg"]]
+
+        print(filed_bugs)
+        filed_bugs.to_sql(
+                "etl_defect_escape_kpi",
+                con=self.engine,
+                schema="SQ",
+                chunksize=2000,
+                index=False,
+                if_exists="append",
+            )
+
+
+      #  filed_bugs_sql = "select count(id), iss.project, iss.versions from sq.fact_ji_issues iss where "
+      #          + "iss.issuetype in ('Defect','Bug', 'Defect\/bug', 'UAT Finding', 'QA Test Finding') "
+      #          + "and iss.status != 'Rejected' "
+      #          + "group by iss.project, iss.versions"
+      #  
+
     def cleanUpDB(self, table_name):
         Base = declarative_base()
         metadata = MetaData(schema="SQ")
@@ -169,6 +196,7 @@ class loadIssuse4Release(connectDB):
 
 
 l4R = loadIssuse4Release()
+l4R.defectKPI("etl_defect_kpi")
 l4R.cleanUpDB("etl_bugs_stats")
 l4R.cleanUpDB("etl_bugs_agg")
 l4R.cleanUpDB("etl_tr2ji_relate")

@@ -123,6 +123,7 @@ class jira_tabs(connectDB):
         Column("timeoriginalestimate", VARCHAR(None)),
         Column("description", VARCHAR(None)),
         Column("timeestimate", VARCHAR(None)),
+        Column("month_agg", VARCHAR(None)),
         Column("Refresh_Cycle", BIGINT),
         ForeignKeyConstraint(
             ["Refresh_Cycle"],
@@ -175,6 +176,7 @@ class jira_tabs(connectDB):
         Column("releaseDate", DATETIME),
         Column("issue_key", VARCHAR(None)),
         Column("Refresh_Cycle", BIGINT),
+        Column("month_agg", VARCHAR(None)),
         Column("issueKey_RC", VARCHAR(50)),
         schema="SQ",
     )
@@ -191,6 +193,7 @@ class jira_tabs(connectDB):
         Column("releaseDate", DATETIME),
         Column("issue_key", VARCHAR(None)),
         Column("Refresh_Cycle", BIGINT),
+        Column("month_agg", VARCHAR(None)),
         Column("issueKey_RC", VARCHAR(50)),
         schema="SQ",
     )

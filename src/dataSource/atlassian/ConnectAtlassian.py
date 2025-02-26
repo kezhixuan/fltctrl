@@ -33,7 +33,7 @@ class ConnectAtlassian:
         self.instance = instance
 
         pass
-
+   
     def connect2jira(self, creds, project, jql_fields, filter, startDate):
         # This function connects to the defined Jira Insance and collects all issues based on the pre-defined filter.
         # The collected jire fileds are predifined to lean the network processing.
@@ -340,8 +340,7 @@ class ConnectAtlassian:
 
     def convertToDateTime(self, input):
         # function that reformats input string to datetime type
-        try:
-            
+        try:       
             return datetime.strptime(input, "%Y-%m-%d").date()
         except:
             try:
@@ -447,6 +446,7 @@ class ConnectAtlassian:
             # Adding primary keys to the dataFrame
             issues["Refresh_Cycle"] = int(refresh_IDX)
             issues["project_RC"] = issues["jira_key"] + str(refresh_IDX)
+            issues["month_agg"] = pd.to_datetime(issues["created"]).dt.strftime("%Y%m")
 
             # Adding the Dimension Table data to the database
             atl.IssueSatelites(issues_copy, project, engine, refresh_IDX)
