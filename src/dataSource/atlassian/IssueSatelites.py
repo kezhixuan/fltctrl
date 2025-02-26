@@ -89,6 +89,7 @@ class IssueSatelites:
                         df_fixversions["released"] = df_f["released"]
                         if "releaseDate" in df_f:
                             df_fixversions["releaseDate"] = df_f["releaseDate"]
+                            df_fixversions["month_agg"] = pd.to_datetime(df_f["releaseDate"]).dt.strftime("%Y%m")
                         else:
                             df_fixversions["releaseDate"] = ""
                         df_fixversions["description"] = df_f["description"]
@@ -136,6 +137,7 @@ class IssueSatelites:
                         df_versions["released"] = df_v["released"]
                         if "releaseDate" in df_v:
                             df_versions["releaseDate"] = df_v["releaseDate"]
+                            df_versions["month_agg"] = pd.to_datetime(df_v["releaseDate"]).dt.strftime("%Y%m")
                         else:
                             df_versions["releseDate"] = ""
                         df_versions["description"] = df_v["description"]
@@ -284,6 +286,7 @@ class IssueSatelites:
                             
                             if releaseDateField in dfr:
                                 df_affected_version["releaseDate"] = dfr[releaseDateField].apply(lambda x: self.convertToDateTime(x))
+                                df_affected_version["month_agg"] = pd.to_datetime(dfr[releaseDateField]).dt.strftime("%Y%m")
                             else:
                                 df_affected_version["releaseDate"] = ""
                             
